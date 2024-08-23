@@ -3,36 +3,49 @@ services:
   app:
     container_name: app
     build:
-      context: .
-      dockerfile: ./app/Dockerfile
+      context: app
+      dockerfile: Dockerfile.dev
     depends_on:
       api:
         condition: service_healthy
       mqtt:
         condition: service_started
+    ports:
+      - 8080:80
+    volumes:
+      - ./app:/app
 
+  # runs the api
   api:
     container_name: api
     build:
-      context: .
-      dockerfile: ./api/Dockerfile
+      context: api
+      dockerfile: Dockerfile.dev
     depends_on:
       database:
         condition: service_healthy
+    ports:
+      - 8081:80
     environment:
       DATABASE_URL: "mysql://root:password@database:3306/meshtastic-map?connection_limit=100"
+    volumes:
+      - ./api:/app
+      - ./prisma:/app/prisma
 
   # listens to mqtt packets and saves to database
   mqtt:
     container_name: mqtt
     build:
-      context: .
-      dockerfile: ./mqtt/Dockerfile
+      context: mqtt
+      dockerfile: Dockerfile.dev
     depends_on:
       database:
         condition: service_healthy
     environment:
       DATABASE_URL: "mysql://root:password@database:3306/meshtastic-map?connection_limit=100"
+    volumes:
+      - ./mqtt:/app
+      - ./prisma:/app/prisma
 
   # runs the database to store everything from mqtt
   database:
@@ -41,6 +54,8 @@ services:
     environment:
       MARIADB_DATABASE: "meshtastic-map"
       MARIADB_ROOT_PASSWORD: "password"
+    ports:
+      - 3306:3306/tcp
     volumes:
       - database_data:/bitnami/mariadb
     healthcheck:
