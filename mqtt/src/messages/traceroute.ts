@@ -7,7 +7,7 @@ import {
 import type { ServiceEnvelope } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
 import { fromBinary } from "@bufbuild/protobuf";
 import { prisma } from "../db.js";
-import { COLLECT_TRACEROUTE, LOG_KNOWN_PACKET_TYPES } from "../settings.js";
+import { COLLECT_TRACEROUTES, LOG_KNOWN_PACKET_TYPES } from "../settings.js";
 import { extractMetaData } from "../tools/decrypt.js";
 
 export async function handleTraceroute(
@@ -16,9 +16,16 @@ export async function handleTraceroute(
 	payload: Data
 ): Promise<void> {
 	try {
-		const traceroute: RouteDiscovery = fromBinary(RouteDiscoverySchema, payload.payload);
+		const traceroute: RouteDiscovery = fromBinary(
+			RouteDiscoverySchema,
+			payload.payload
+		);
 
-		const { envelopeMeta, packetMeta, payloadMeta } = extractMetaData(envelope, packet, payload);
+		const { envelopeMeta, packetMeta, payloadMeta } = extractMetaData(
+			envelope,
+			packet,
+			payload
+		);
 
 		if (LOG_KNOWN_PACKET_TYPES) {
 			console.log("TRACEROUTE_APP", {
@@ -29,7 +36,7 @@ export async function handleTraceroute(
 			});
 		}
 
-		if (COLLECT_TRACEROUTE) {
+		if (COLLECT_TRACEROUTES) {
 			await prisma.traceRoute.create({
 				data: {
 					to: packet.to,
@@ -39,7 +46,9 @@ export async function handleTraceroute(
 					channel: packet.channel,
 					packet_id: packet.id,
 					channel_id: envelope.channelId,
-					gateway_id: envelope.gatewayId ? BigInt(`0x${envelope.gatewayId.replaceAll("!", "")}`) : null, // convert hex id "!f96a92f0" to bigint
+					gateway_id: envelope.gatewayId
+						? BigInt(`0x${envelope.gatewayId.replaceAll("!", "")}`)
+						: null, // convert hex id "!f96a92f0" to bigint
 				},
 			});
 		}

@@ -5,7 +5,7 @@ import {
 	PositionSchema,
 } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
 import type { ServiceEnvelope } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
-import { COLLECT_POSITION, LOG_KNOWN_PACKET_TYPES } from "../settings.js";
+import { COLLECT_POSITIONS, LOG_KNOWN_PACKET_TYPES } from "../settings.js";
 import { fromBinary } from "@bufbuild/protobuf";
 import { prisma } from "../db.js";
 import { extractMetaData } from "../tools/decrypt.js";
@@ -43,7 +43,11 @@ export async function handlePosition(
 			precision_bits: position.precisionBits,
 		};
 
-		const { envelopeMeta, packetMeta, payloadMeta } = extractMetaData(envelope, packet, payload);
+		const { envelopeMeta, packetMeta, payloadMeta } = extractMetaData(
+			envelope,
+			packet,
+			payload
+		);
 
 		if (LOG_KNOWN_PACKET_TYPES) {
 			console.log("POSITION_APP", {
@@ -69,7 +73,7 @@ export async function handlePosition(
 			});
 		}
 
-		if (COLLECT_POSITION) {
+		if (COLLECT_POSITIONS) {
 			// find an existing position with duplicate information created in the last 60 seconds
 			const isDuplicate = await prisma.position.findFirst({
 				where: {
@@ -90,7 +94,9 @@ export async function handlePosition(
 						channel: packet.channel,
 						packet_id: packet.id,
 						channel_id: envelope.channelId,
-						gateway_id: envelope.gatewayId ? BigInt(`0x${envelope.gatewayId.replaceAll("!", "")}`) : null, // convert hex id "!f96a92f0" to bigint
+						gateway_id: envelope.gatewayId
+							? BigInt(`0x${envelope.gatewayId.replaceAll("!", "")}`)
+							: null, // convert hex id "!f96a92f0" to bigint
 						latitude: position.latitudeI,
 						longitude: position.longitudeI,
 						altitude: position.altitude,
