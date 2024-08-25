@@ -9,10 +9,7 @@
 		<meta
 			name="description"
 			content="An interactive map of all Meshtastic nodes." />
-		<link
-			rel="icon"
-			type="image/png"
-			href="https://meshtastic.liamcottle.net/icon.png" />
+		<link rel="icon" type="image/png" href="/icon.png" />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
@@ -23,44 +20,43 @@
 			content="An interactive map of all Meshtastic nodes." />
 
 		<!-- tailwind css -->
-		<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+		<script src="assets/js/tailwindcss/tailwind-v3.4.3-forms-v0.5.7.js"></script>
 
 		<!-- leaflet map -->
+		<link rel="stylesheet" href="assets/js/leaflet@1.9.3/dist/leaflet.css" />
+		<script src="assets/js/leaflet@1.9.3/dist/leaflet.js"></script>
+
+		<!-- leaflet plugins -->
+		<script src="assets/js/leaflet-plugins/leaflet.polylineoffset.js"></script>
+		<script src="assets/js/leaflet-plugins/leaflet.geometryutil.js"></script>
+		<script src="assets/js/leaflet-plugins/leaflet-arrowheads.js"></script>
+
+		<!-- leaflet markercluster -->
+		<script src="assets/js/leaflet-plugins/leaflet.markercluster/leaflet.markercluster.js"></script>
 		<link
 			rel="stylesheet"
-			href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
-			integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
-			crossorigin="" />
-		<script
-			src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
-			integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
-			crossorigin=""></script>
-		<script src="plugins/leaflet.polylineoffset.js"></script>
-		<script src="plugins/leaflet.geometryutil.js"></script>
-		<script src="plugins/leaflet-arrowheads.js"></script>
-		<script src="plugins/leaflet.markercluster/leaflet.markercluster.js"></script>
+			href="assets/js/leaflet-plugins/leaflet.markercluster/MarkerCluster.css" />
 		<link
 			rel="stylesheet"
-			href="plugins/leaflet.markercluster/MarkerCluster.css" />
-		<link
-			rel="stylesheet"
-			href="plugins/leaflet.markercluster/MarkerCluster.Default.css" />
+			href="assets/js/leaflet-plugins/leaflet.markercluster/MarkerCluster.Default.css" />
 
 		<!-- leaflet groupedlayercontrol -->
-		<script src="plugins/leaflet.groupedlayercontrol/leaflet.groupedlayercontrol.js"></script>
+		<script src="assets/js/leaflet-plugins/leaflet.groupedlayercontrol/leaflet.groupedlayercontrol.js"></script>
 		<link
 			rel="stylesheet"
-			href="plugins/leaflet.groupedlayercontrol/leaflet.groupedlayercontrol.css" />
+			href="assets/js/leaflet-plugins/leaflet.groupedlayercontrol/leaflet.groupedlayercontrol.css" />
 
 		<!-- moment -->
-		<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+		<script src="assets/js/moment@2.29.1/moment.min.js"></script>
 
 		<!-- vuejs -->
-		<script src="https://unpkg.com/vue@3"></script>
-		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+		<script src="assets/js/vue@3.4.26/dist/vue.global.js"></script>
+
+		<!-- axios -->
+		<script src="assets/js/axios@1.6.8/dist/axios.min.js"></script>
 
 		<!-- chart js -->
-		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script src="assets/js/chart.js@4.4.2/dist/chart.umd.js"></script>
 
 		<style>
 			/* used to prevent ui flicker before vuejs loads */
@@ -82,6 +78,12 @@
 
 			.icon-offline {
 				background-color: #dc2626;
+				border-radius: 25px;
+				border: 1px solid white;
+			}
+
+			.icon-position-history {
+				background-color: #a855f7;
 				border-radius: 25px;
 				border: 1px solid white;
 			}
@@ -328,7 +330,7 @@
 							<a
 								@click="isShowingHardwareModels = !isShowingHardwareModels"
 								href="javascript:void(0)"
-								class="tooltip rounded-full">
+								class="tooltip rounded-full hidden sm:block">
 								<div class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full">
 									<svg
 										class="w-6 h-6"
@@ -869,7 +871,7 @@
 															class="h-20 w-20 rounded object-contain"
 															:src="`/images/devices/${hardwareModel.hardware_model_name}.png`"
 															alt=""
-															onerror="if(this.src != 'https://placehold.co/512x512?text=No+Image') this.src = 'https://placehold.co/512x512?text=No+Image';" />
+															onerror="if(this.src != '/images/no_image.png') this.src = '/images/no_image.png';" />
 													</span>
 													<div class="truncate">
 														<p
@@ -965,7 +967,7 @@
 												class="h-48 w-48 rounded object-contain"
 												:src="`/images/devices/${selectedNode.hardware_model_name}.png`"
 												alt=""
-												onerror="if(this.src != 'https://placehold.co/512x512?text=No+Image') this.src = 'https://placehold.co/512x512?text=No+Image';" />
+												onerror="if(this.src != '/images/no_image.png') this.src = '/images/no_image.png';" />
 										</div>
 									</div>
 
@@ -1264,10 +1266,10 @@
 											<div class="my-auto">Position</div>
 											<div class="ml-auto">
 												<button
-													@click="handleNodePositionHistory(selectedNode.node_id)"
+													@click="showNodePositionHistory(selectedNode.node_id)"
 													type="button"
 													class="rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-													History
+													Show History
 												</button>
 											</div>
 										</div>
@@ -2538,52 +2540,21 @@
 							class="mx-auto w-screen max-w-md p-4">
 							<div
 								class="flex h-full flex-col bg-white shadow-xl rounded-xl border">
-								<div class="p-2">
-									<div class="flex items-start justify-between">
-										<div>
-											<h2 class="font-bold">
-												{{ selectedNodeToShowPositionHistory.short_name }}
-												Position history
-											</h2>
-											<div>
-												<div class="flex items-center">
-													<label for="datetime-from" class="text-sm pr-1"
-														>From:</label
-													>
-													<input
-														type="datetime-local"
-														name="datetime-from"
-														id="datetime-from"
-														v-model="this.positionHistoryFromTimeDate"
-														class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1" />
-												</div>
-												<div class="flex items-center">
-													<label for="datetime-to" class="text-sm pr-1"
-														>To:</label
-													>
-													<input
-														type="datetime-local"
-														name="datetime-to"
-														id="datetime-to"
-														v-model="this.positionHistoryToTimeDate"
-														class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1" />
-												</div>
-											</div>
-											<button
-												@click="loadNodePositionHistory(this.selectedNodeToShowPositionHistory.node_id)"
-												class="bg-blue-500 text-white rounded-lg p-2 mt-2">
-												Fetch
-											</button>
+								<div>
+									<div class="flex p-2 border-b">
+										<div class="my-auto mr-auto font-bold">
+											{{ selectedNodeToShowPositionHistory.short_name }}
+											Position History
 										</div>
-										<div class="my-auto ml-3 flex h-7 items-center">
+										<div class="my-auto ml-3">
 											<a
 												href="javascript:void(0)"
 												class="rounded-full"
 												@click="dismissShowingNodePositionHistory">
 												<div
-													class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full">
+													class="bg-gray-100 hover:bg-gray-200 p-1 rounded-full">
 													<svg
-														class="w-6 h-6"
+														class="w-5 h-5"
 														xmlns="http://www.w3.org/2000/svg"
 														viewBox="0 0 24 24"
 														stroke-width="1.5"
@@ -2600,6 +2571,56 @@
 													</svg>
 												</div>
 											</a>
+										</div>
+									</div>
+									<div class="divide-y">
+										<!-- quick range -->
+										<div class="flex p-2 space-x-2">
+											<button
+												@click="onPositionHistoryQuickRangeClick('1h')"
+												type="button"
+												class="w-full bg-gray-100 rounded border shadow px-2 py-1 text-sm hover:bg-gray-200 text-center">
+												1 Hour
+											</button>
+											<button
+												@click="onPositionHistoryQuickRangeClick('24h')"
+												type="button"
+												class="w-full bg-gray-100 rounded border shadow px-2 py-1 text-sm hover:bg-gray-200 text-center">
+												24 Hours
+											</button>
+											<button
+												@click="onPositionHistoryQuickRangeClick('7d')"
+												type="button"
+												class="w-full bg-gray-100 rounded border shadow px-2 py-1 text-sm hover:bg-gray-200 text-center">
+												7 Days
+											</button>
+										</div>
+
+										<!-- manual range -->
+										<div class="p-2 space-y-1">
+											<!-- from -->
+											<div class="flex items-center">
+												<label class="text-sm pr-1 min-w-12 text-right"
+													>From:</label
+												>
+												<input
+													v-model="positionHistoryDateTimeFrom"
+													@change="loadNodePositionHistory(selectedNodeToShowPositionHistory.node_id)"
+													type="datetime-local"
+													class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1" />
+											</div>
+
+											<!-- to -->
+											<div class="flex items-center">
+												<label class="text-sm pr-1 min-w-12 text-right"
+													>To:</label
+												>
+												<input
+													v-model="positionHistoryDateTimeTo"
+													@change="loadNodePositionHistory(selectedNodeToShowPositionHistory.node_id)"
+													type="datetime-local"
+													class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1" />
+											</div>
 										</div>
 									</div>
 								</div>
@@ -2773,6 +2794,8 @@
 			Vue.createApp({
 				data() {
 					return {
+						isShowingAnnouncement: this.shouldShowAnnouncement(),
+
 						configNodesMaxAgeInSeconds: window.getConfigNodesMaxAgeInSeconds(),
 						configNodesOfflineAgeInSeconds:
 							window.getConfigNodesOfflineAgeInSeconds(),
@@ -2803,12 +2826,8 @@
 						selectedNodeMqttMetrics: [],
 						selectedNodeTraceroutes: [],
 
-						positionHistoryFromTimeDate: new Date(
-							new Date().getTime() - 3600 * 1000
-						)
-							.toISOString()
-							.slice(0, 16),
-						positionHistoryToTimeDate: new Date().toISOString().slice(0, 16),
+						positionHistoryDateTimeFrom: null,
+						positionHistoryDateTimeTo: null,
 						selectedNodePositionHistory: [],
 						selectedNodeToShowPositionHistory: null,
 						selectedNodePositionHistoryMarkers: [],
@@ -2840,7 +2859,7 @@
 						this.loadNodePowerMetrics(node.node_id);
 						this.loadNodeMqttMetrics(node.node_id);
 						this.loadNodeTraceroutes(node.node_id);
-						this.loadNodePositionHistory(node.node_id);
+						//this.loadNodePositionHistory(node.node_id);
 					};
 
 					// handle node callback from outside of vue
@@ -2861,6 +2880,25 @@
 					};
 				},
 				methods: {
+					getAnnouncementId: function () {
+						// change this when making a new announcement
+						return "1";
+					},
+					shouldShowAnnouncement: function () {
+						const lastSeenAnnouncementId = window.localStorage.getItem(
+							"last-seen-announcement-id"
+						);
+						return (
+							lastSeenAnnouncementId?.toString() !== this.getAnnouncementId()
+						);
+					},
+					dismissAnnouncement: function () {
+						window.localStorage.setItem(
+							"last-seen-announcement-id",
+							this.getAnnouncementId()
+						);
+						this.isShowingAnnouncement = false;
+					},
 					shouldShowInfoModal: function () {
 						return !window.getConfigHasSeenInfoModal() && !window.isMobile();
 					},
@@ -2957,19 +2995,22 @@
 					loadNodePositionHistory: function (nodeId) {
 						this.selectedNodePositionHistory = [];
 						window.axios
-							.get(
-								`/api/v1/nodes/${nodeId}/position-history?time_from=${new Date(
-									this.positionHistoryFromTimeDate
-								).getTime()}&time_to=${new Date(
-									this.positionHistoryToTimeDate
-								).getTime()}`
-							)
+							.get(`/api/v1/nodes/${nodeId}/position-history`, {
+								params: {
+									// parse from datetime-local format, and send as unix timestamp in milliseconds
+									time_from: moment(
+										this.positionHistoryDateTimeFrom,
+										"YYYY-MM-DDTHH:mm"
+									).format("x"),
+									time_to: moment(
+										this.positionHistoryDateTimeTo,
+										"YYYY-MM-DDTHH:mm"
+									).format("x"),
+								},
+							})
 							.then((response) => {
 								this.selectedNodePositionHistory =
 									response.data.position_history;
-
-								console.log(this.selectedNodePositionHistory);
-
 								if (this.selectedNodeToShowPositionHistory != null) {
 									clearAllPositionHistory();
 									onPositionHistoryUpdated(response.data.position_history);
@@ -3633,10 +3674,65 @@
 					getRegionFrequencyRange: function (regionName) {
 						return window.getRegionFrequencyRange(regionName);
 					},
-					handleNodePositionHistory: function (nodeId) {
-						this.selectedNodeToShowPositionHistory = this.selectedNode;
+					showNodePositionHistory: function (nodeId) {
+						// find node
+						const node = findNodeById(nodeId);
+						if (!node) {
+							return;
+						}
+
+						// update ui
 						this.selectedNode = null;
-						onPositionHistoryUpdated(this.selectedNodePositionHistory);
+						this.selectedNodeToShowPositionHistory = node;
+
+						// close node info tooltip as position history shows under it
+						window.closeAllTooltips();
+
+						// reset default time range when opening position history ui
+						// YYYY-MM-DDTHH:mm is the format expected by the datetime-local input type
+						this.positionHistoryDateTimeFrom = moment()
+							.subtract(1, "hours")
+							.format("YYYY-MM-DDTHH:mm");
+						this.positionHistoryDateTimeTo =
+							moment().format("YYYY-MM-DDTHH:mm");
+
+						// load position history
+						this.loadNodePositionHistory(nodeId);
+					},
+					onPositionHistoryQuickRangeClick: function (range) {
+						// update position history time range
+						switch (range) {
+							case "1h": {
+								this.positionHistoryDateTimeFrom = moment()
+									.subtract(1, "hours")
+									.format("YYYY-MM-DDTHH:mm");
+								this.positionHistoryDateTimeTo =
+									moment().format("YYYY-MM-DDTHH:mm");
+								break;
+							}
+							case "24h": {
+								this.positionHistoryDateTimeFrom = moment()
+									.subtract(24, "hours")
+									.format("YYYY-MM-DDTHH:mm");
+								this.positionHistoryDateTimeTo =
+									moment().format("YYYY-MM-DDTHH:mm");
+								break;
+							}
+							case "7d": {
+								this.positionHistoryDateTimeFrom = moment()
+									.subtract(7, "days")
+									.format("YYYY-MM-DDTHH:mm");
+								this.positionHistoryDateTimeTo =
+									moment().format("YYYY-MM-DDTHH:mm");
+								break;
+							}
+						}
+
+						// reload position history
+						const node = this.selectedNodeToShowPositionHistory;
+						if (node) {
+							this.loadNodePositionHistory(node.node_id);
+						}
 					},
 					getShareLinkForNode: function (nodeId) {
 						return window.location.origin + `/?node_id=${nodeId}`;
@@ -3662,11 +3758,11 @@
 						this.selectedNodeToShowNeighbours = null;
 					},
 					dismissShowingNodePositionHistory: function () {
-						(this.selectedNodePositionHistory = []),
-							(this.selectedNodeToShowPositionHistory = null);
-						(this.selectedNodePositionHistoryMarkers = []),
-							(this.selectedNodePositionHistoryPolyLines = []),
-							cleanUpPositionHistory();
+						this.selectedNodePositionHistory = [];
+						this.selectedNodeToShowPositionHistory = null;
+						this.selectedNodePositionHistoryMarkers = [];
+						this.selectedNodePositionHistoryPolyLines = [];
+						cleanUpPositionHistory();
 					},
 					formatUptimeSeconds: function (secondsToFormat) {
 						secondsToFormat = Number(secondsToFormat);
@@ -3885,6 +3981,11 @@
 
 			var iconOffline = L.divIcon({
 				className: "icon-offline",
+				iconSize: [16, 16], // increase from 12px to 16px to make hover easier
+			});
+
+			var iconPositionHistory = L.divIcon({
+				className: "icon-position-history",
 				iconSize: [16, 16], // increase from 12px to 16px to make hover easier
 			});
 
@@ -4760,13 +4861,11 @@
 			}
 
 			function onPositionHistoryUpdated(updatedPositionHistories) {
-				let positionHistoryMarkers = [];
-				let positionHistoryLines = [];
 				let positionHistoryLinesCords = [];
 
 				// add nodes
 				for (var positionHistory of updatedPositionHistories) {
-					// skip nodes without position
+					// skip position history without position
 					if (!positionHistory.latitude || !positionHistory.longitude) {
 						continue;
 					}
@@ -4779,7 +4878,6 @@
 						positionHistory.latitude,
 						positionHistory.longitude
 					);
-
 					if (hasLocation) {
 						// wrap longitude for shortest path, everything to left of australia should be shown on the right
 						var longitude = parseFloat(positionHistory.longitude);
@@ -4792,25 +4890,15 @@
 							longitude,
 						]);
 
-						// determine emoji to show as marker icon
-						const emoji = 128205;
-						const emojiText = String.fromCodePoint(emoji);
-
 						let tooltip = "";
-
+						tooltip += `<b>${moment(
+							new Date(positionHistory.created_at)
+						).format("DD/MM/YYYY hh:mm A")}</b></br>`;
 						tooltip += `Position: ${positionHistory.latitude}, ${positionHistory.longitude}</br>`;
-						tooltip += `Heard by: </br>`;
-						tooltip += `Timestamp: ${new Date(
-							positionHistory.time
-						).toLocaleString()}</br>`;
 
 						// create position history marker
 						const marker = L.marker([positionHistory.latitude, longitude], {
-							icon: L.divIcon({
-								className: "waypoint-label",
-								iconSize: [26, 26], // increase from 12px to 26px
-								html: emojiText,
-							}),
+							icon: iconPositionHistory,
 						})
 							.bindPopup(tooltip)
 							.on("click", function (event) {
@@ -4820,16 +4908,13 @@
 
 						// add marker to position history layer group
 						marker.addTo(nodePositionHistoryLayerGroup);
-
-						positionHistoryMarkers.push(marker);
 					}
 				}
 
-				const line = L.polyline(positionHistoryLinesCords).addTo(
+				// show lines between position history markers
+				L.polyline(positionHistoryLinesCords).addTo(
 					nodePositionHistoryLayerGroup
 				);
-
-				positionHistoryLines.push(line);
 			}
 
 			function cleanUpPositionHistory() {
