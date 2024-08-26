@@ -57,7 +57,7 @@ app.get("/", async (req, res) => {
 	res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
-app.get("/api/v1/text-messages/embed", async (req, res) => {
+app.get("/text-messages/embed", async (req, res) => {
 	res.sendFile(path.join(__dirname, "public/text-messages-embed.html"));
 });
 

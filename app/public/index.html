@@ -976,7 +976,7 @@
 										<!-- sent messages -->
 										<a
 											target="_blank"
-											:href="`/api/v1/text-messages/embed?from=${selectedNode.node_id}`"
+											:href="`/text-messages/embed?from=${selectedNode.node_id}`"
 											class="flex flex-col"
 											title="Messages sent from this Node">
 											<div class="flex mx-auto mb-1">
@@ -1004,7 +1004,7 @@
 										<!-- received messages -->
 										<a
 											target="_blank"
-											:href="`/api/v1/text-messages/embed?to=${selectedNode.node_id}`"
+											:href="`/text-messages/embed?to=${selectedNode.node_id}`"
 											class="flex flex-col"
 											title="Messages sent to this Node">
 											<div class="flex mx-auto mb-1">
@@ -1032,7 +1032,7 @@
 										<!-- gated messages -->
 										<a
 											target="_blank"
-											:href="`/api/v1/text-messages/embed?gateway_id=${selectedNode.node_id}`"
+											:href="`/text-messages/embed?gateway_id=${selectedNode.node_id}`"
 											class="flex flex-col"
 											title="Messages gated to MQTT by this Node">
 											<div class="flex mx-auto mb-1">
