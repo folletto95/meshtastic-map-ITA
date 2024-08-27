@@ -835,21 +835,12 @@
 							<div class="flex h-full flex-col bg-white shadow-xl">
 								<!-- slideover header -->
 								<div class="p-2 border-b border-gray-200 shadow">
-									<div class="flex">
-										<div class="mr-2">
-											<div
-												class="flex rounded-full h-12 w-12 text-white shadow"
-												:class="[ `bg-[${getNodeColour(selectedNode.node_id)}]` ]">
-												<div class="mx-auto my-auto">
-													{{ selectedNode.short_name }}
-												</div>
-											</div>
-										</div>
-										<div class="mr-auto">
+									<div class="flex items-start justify-between">
+										<div>
 											<h2 class="font-bold">Meshtastic Devices</h2>
 											<h3 class="text-sm">Ordered by most popular</h3>
 										</div>
-										<div class="my-auto ml-2 flex h-7 items-center">
+										<div class="my-auto ml-3 flex h-7 items-center">
 											<a
 												href="javascript:void(0)"
 												class="rounded-full"
@@ -950,8 +941,17 @@
 							<div class="flex h-full flex-col bg-white shadow-xl">
 								<!-- slideover header -->
 								<div class="p-2 border-b border-gray-200 shadow">
-									<div class="flex items-start justify-between">
-										<div>
+									<div class="flex">
+										<div class="my-auto mr-2">
+											<div
+												class="flex rounded-full h-12 w-12 text-white shadow"
+												:class="[ `bg-[${getNodeColour(selectedNode.node_id)}]` ]">
+												<div class="mx-auto my-auto">
+													{{ selectedNode.short_name }}
+												</div>
+											</div>
+										</div>
+										<div class="my-auto mr-auto">
 											<h2 class="font-bold">Node Info</h2>
 											<h3 class="text-sm">{{ selectedNode.long_name }}</h3>
 										</div>
