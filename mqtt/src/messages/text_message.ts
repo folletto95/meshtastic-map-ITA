@@ -9,7 +9,7 @@ import {
 } from "../settings.js";
 import { prisma } from "../db.js";
 import type { ServiceEnvelope } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
-import { extractMetaData } from "../tools/decrypt.js";
+import { convertHexIdToNumericId, extractMetaData } from "../tools/decrypt.js";
 
 export async function handleTextMessage(
 	envelope: ServiceEnvelope,
@@ -47,8 +47,8 @@ export async function handleTextMessage(
 					packet_id: packet.id,
 					channel_id: envelope.channelId,
 					gateway_id: envelope.gatewayId
-						? BigInt(`0x${envelope.gatewayId.replaceAll("!", "")}`)
-						: null, // convert hex id "!f96a92f0" to bigint
+						? convertHexIdToNumericId(envelope.gatewayId)
+						: null,
 					text: text,
 					rx_time: packet.rxTime,
 					rx_snr: packet.rxSnr,

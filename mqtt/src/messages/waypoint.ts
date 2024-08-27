@@ -8,7 +8,7 @@ import type { ServiceEnvelope } from "@buf/meshtastic_protobufs.bufbuild_es/mesh
 import { fromBinary } from "@bufbuild/protobuf";
 import { prisma } from "../db.js";
 import { COLLECT_WAYPOINTS, LOG_KNOWN_PACKET_TYPES } from "../settings.js";
-import { extractMetaData } from "../tools/decrypt.js";
+import { convertHexIdToNumericId, extractMetaData } from "../tools/decrypt.js";
 
 export async function handleWaypoint(
 	envelope: ServiceEnvelope,
@@ -50,8 +50,8 @@ export async function handleWaypoint(
 					packet_id: packet.id,
 					channel_id: envelope.channelId,
 					gateway_id: envelope.gatewayId
-						? BigInt(`0x${envelope.gatewayId.replaceAll("!", "")}`)
-						: null, // convert hex id "!f96a92f0" to bigint
+						? convertHexIdToNumericId(envelope.gatewayId)
+						: null,
 				},
 			});
 		}

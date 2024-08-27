@@ -116,3 +116,12 @@ export function extractBoolean(
 	if (value === "false") return false;
 	return def;
 }
+
+/**
+ * converts hex id to numeric id, for example: !FFFFFFFF to 4294967295
+ * @param hexId a node id in hex format with a prepended "!"
+ * @returns {bigint} the node id in numeric form
+ */
+export function convertHexIdToNumericId(hexId: string): bigint {
+	return BigInt(`0x${hexId.replaceAll("!", "")}`);
+}
