@@ -1322,11 +1322,13 @@
 															<div class="truncate">
 																<p
 																	class="truncate text-sm font-medium text-gray-900">
-																	Latitude
+																	Latitude, Longitude
 																</p>
 																<p class="truncate text-sm text-gray-700">
-																	<span v-if="selectedNode.latitude"
-																		>{{ selectedNode.latitude }}</span
+																	<span
+																		v-if="selectedNode.latitude && selectedNode.longitude"
+																		>{{ selectedNode.latitude }}, {{
+																		selectedNode.longitude }}</span
 																	>
 																	<span v-else class="text-gray-500">???</span>
 																</p>
