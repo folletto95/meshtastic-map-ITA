@@ -8,6 +8,8 @@ export const MQTT_PROTOCOL: MqttProtocol =
 export const MQTT_USERNAME: string = process.env.MQTT_USERNAME || "slovenia";
 export const MQTT_PASSWORD: string =
 	process.env.MQTT_PASSWORD || "meshnet-si-slovenia";
+export const MQTT_CLIENT_ID: string =
+	process.env.MQTT_CLIENT_ID || "map.meshnet.si";
 export const MQTT_TOPIC: string = process.env.MQTT_TOPIC || "si/#";
 
 export const PURGE_INTERVAL_SECONDS: number = Number.parseInt(

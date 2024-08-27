@@ -5,12 +5,14 @@ import {
 	MQTT_PASSWORD,
 	MQTT_TOPIC,
 	MQTT_PROTOCOL,
+	MQTT_CLIENT_ID,
 } from "./settings.js";
 
 export const mqttClient = mqtt.connect(MQTT_URL, {
 	username: MQTT_USERNAME,
 	password: MQTT_PASSWORD,
 	protocol: MQTT_PROTOCOL,
+	clientId: MQTT_CLIENT_ID,
 });
 
 mqttClient.on("connect", () => {
