@@ -8,16 +8,15 @@ express.get("/api/v1/nodes/:nodeId/position-history", async (req, res) => {
 		const oneHourAgoInMilliseconds = new Date().getTime() - 3600 * 1000;
 
 		// get request params
-		const nodeId = parseInt(req.params.nodeId);
-		const timeFrom = req.query.time_from ? parseInt(req.query.time_from) : oneHourAgoInMilliseconds;
-		const timeTo = req.query.time_to ? parseInt(req.query.time_to) : nowInMilliseconds;
-
-		// find node
 		const nodeId = Number.parseInt(req.params.nodeId);
 		const timeFrom = req.query.time_from
 			? Number.parseInt(req.query.time_from)
-			: new Date().getTime() - 3600 * 1000;
-		const timeTo = req.query.time_to ? Number.parseInt(req.query.time_to) : new Date().getTime();
+			: oneHourAgoInMilliseconds;
+		const timeTo = req.query.time_to
+			? Number.parseInt(req.query.time_to)
+			: nowInMilliseconds;
+
+		// find node
 
 		const node = await prisma.node.findFirst({
 			where: {
