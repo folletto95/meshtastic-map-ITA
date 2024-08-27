@@ -1218,7 +1218,9 @@
 																</p>
 																<p class="truncate text-sm text-gray-700">
 																	<span v-if="selectedNode.region_name"
-																		>{{ selectedNode.region_name }}</span
+																		>{{ selectedNode.region_name }} ({{
+																		getRegionFrequencyRange(selectedNode.region_name)
+																		}})</span
 																	>
 																	<span v-else class="text-gray-500">???</span>
 																</p>
@@ -5162,16 +5164,18 @@
 					(node.num_online_local_nodes != null
 						? `<br/>Local Nodes Online: ${node.num_online_local_nodes}`
 						: "") +
+					(node.position_precision != null && node.position_precision !== 32
+						? `<br/>Position Precision: ${formatPositionPrecision(
+								node.position_precision
+						  )}`
+						: "") +
 					`<br/><br/>Role: ${node.role_name}` +
 					`<br/>Hardware: ${node.hardware_model_name}` +
 					(node.firmware_version != null
 						? `<br/>Firmware: ${node.firmware_version}`
 						: "") +
 					(node.region_name != null
-						? `<br/>LoRa Region: ${node.region_name}`
-						: "") +
-					(loraFrequencyRange != null
-						? `<br/>LoRa Frequency: ${loraFrequencyRange}`
+						? `<br/>LoRa Region: ${node.region_name} (${loraFrequencyRange})`
 						: "") +
 					(node.modem_preset_name != null
 						? `<br/>Modem Preset: ${node.modem_preset_name}`
