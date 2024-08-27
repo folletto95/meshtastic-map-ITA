@@ -12,9 +12,10 @@ import "./routes/neighbours.js";
 import "./routes/text-messages.js";
 import "./routes/traceroutes.js";
 import "./routes/waypoints.js";
+import "./routes/position-history.js";
 
 Object.assign(BigInt.prototype, {
-  toJSON: function () {
-    return this.toString();
-  },
+	toJSON: function () {
+		return this.toString();
+	},
 });
