@@ -60,6 +60,8 @@ express.get("/api/v1/nodes/:nodeId/position-history", async (req, res) => {
 				latitude: position.latitude,
 				longitude: position.longitude,
 				altitude: position.altitude,
+				gateway_id: position.gateway_id,
+				channel_id: position.channel_id,
 				created_at: position.created_at,
 			});
 		});
