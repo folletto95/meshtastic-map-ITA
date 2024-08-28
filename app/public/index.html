@@ -2771,7 +2771,9 @@
 					if (value) {
 						return JSON.parse(value);
 					}
-				} catch (e) {}
+				} catch (e) {
+					console.error(e);
+				}
 
 				// overlays enabled by default
 				return ["Legend", "Position History"];

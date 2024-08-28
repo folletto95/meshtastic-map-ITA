@@ -42,6 +42,7 @@ export async function handleServiceEnvelope(
 				},
 			});
 		} catch (e) {
+			console.error(e);
 			// don't care if updating mqtt timestamp fails
 		}
 
