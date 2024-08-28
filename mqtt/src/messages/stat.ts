@@ -6,7 +6,6 @@ export async function handleStatMessage(topic: string, message: Buffer) {
 		const nodeIdHex = topic.split("/").pop();
 		if (!nodeIdHex) return;
 
-		const mqttConnectionState = message.toString();
 		const nodeId = convertHexIdToNumericId(nodeIdHex);
 
 		await prisma.node.updateMany({
@@ -14,7 +13,6 @@ export async function handleStatMessage(topic: string, message: Buffer) {
 				node_id: nodeId,
 			},
 			data: {
-				mqtt_connection_state: mqttConnectionState,
 				mqtt_connection_state_updated_at: new Date(),
 			},
 		});
