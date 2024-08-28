@@ -31,15 +31,19 @@ export async function handleServiceEnvelope(
 		const packet = envelope.packet;
 		if (!packet) return undefined;
 
-		// Update Node MQTT status based on Last Packet Received time
-		await prisma.node.updateMany({
-			where: {
-				node_id: convertHexIdToNumericId(envelope.gatewayId),
-			},
-			data: {
-				mqtt_connection_state_updated_at: new Date(),
-			},
-		});
+		// track when a node last gated a packet to mqtt
+		try {
+			await prisma.node.updateMany({
+				where: {
+					node_id: convertHexIdToNumericId(envelope.gatewayId),
+				},
+				data: {
+					mqtt_connection_state_updated_at: new Date(),
+				},
+			});
+		} catch (e) {
+			// don't care if updating mqtt timestamp fails
+		}
 
 		if (COLLECT_SERVICE_ENVELOPES) {
 			await prisma.serviceEnvelope.create({

@@ -3,17 +3,17 @@ import "./db.js";
 import { mqttClient } from "./mqtt.js";
 
 import {
-  purgeUnheardNodes,
-  purgeOldDeviceMetrics,
-  purgeOldEnvironmentMetrics,
-  purgeOldMapReports,
-  purgeOldNeighbourInfos,
-  purgeOldPowerMetrics,
-  purgeOldPositions,
-  purgeOldServiceEnvelopes,
-  purgeOldTextMessages,
-  purgeOldTraceroutes,
-  purgeOldWaypoints,
+	purgeUnheardNodes,
+	purgeOldDeviceMetrics,
+	purgeOldEnvironmentMetrics,
+	purgeOldMapReports,
+	purgeOldNeighbourInfos,
+	purgeOldPowerMetrics,
+	purgeOldPositions,
+	purgeOldServiceEnvelopes,
+	purgeOldTextMessages,
+	purgeOldTraceroutes,
+	purgeOldWaypoints,
 } from "./tools/purging.js";
 
 import { handleStatMessage } from "./messages/stat.js";
@@ -27,23 +27,26 @@ import { handleTextMessage } from "./messages/text_message.js";
 import { handleTraceroute } from "./messages/traceroute.js";
 import { handleWaypoint } from "./messages/waypoint.js";
 
-import { LOG_UNKNOWN_PACKET_TYPES, PURGE_INTERVAL_SECONDS } from "./settings.js";
+import {
+	LOG_UNKNOWN_PACKET_TYPES,
+	PURGE_INTERVAL_SECONDS,
+} from "./settings.js";
 
 // run automatic purge if configured
 if (PURGE_INTERVAL_SECONDS !== 0) {
-  setInterval(async () => {
-    await purgeUnheardNodes();
-    await purgeOldDeviceMetrics();
-    await purgeOldEnvironmentMetrics();
-    await purgeOldMapReports();
-    await purgeOldNeighbourInfos();
-    await purgeOldPowerMetrics();
-    await purgeOldPositions();
-    await purgeOldServiceEnvelopes();
-    await purgeOldTextMessages();
-    await purgeOldTraceroutes();
-    await purgeOldWaypoints();
-  }, PURGE_INTERVAL_SECONDS * 1000);
+	setInterval(async () => {
+		await purgeUnheardNodes();
+		await purgeOldDeviceMetrics();
+		await purgeOldEnvironmentMetrics();
+		await purgeOldMapReports();
+		await purgeOldNeighbourInfos();
+		await purgeOldPowerMetrics();
+		await purgeOldPositions();
+		await purgeOldServiceEnvelopes();
+		await purgeOldTextMessages();
+		await purgeOldTraceroutes();
+		await purgeOldWaypoints();
+	}, PURGE_INTERVAL_SECONDS * 1000);
 }
 
 // handle message received
