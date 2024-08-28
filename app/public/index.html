@@ -4840,12 +4840,14 @@
 							continue;
 						}
 
-						const neighbourI = updatedNodes.findIndex(
-							(el) => el.node_id === neighbourNode.node_id
-						);
+						const neighbourNeighbours = neighbourNode.neighbours ?? [];
 
-						if (neighbourI === -1) polylineOffset = 0;
-						else polylineOffset = 2.5;
+						if (neighbourNeighbours.length === 0) polylineOffset = 0;
+						else {
+							if (neighbourNeighbours.find((el) => el.node_id === node.node_id))
+								polylineOffset = 3;
+							else polylineOffset = -3;
+						}
 
 						const neighbourNodeMarker = findNodeMarkerById(neighbour.node_id);
 						if (neighbourNodeMarker) {
