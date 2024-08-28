@@ -5045,6 +5045,7 @@
 						const marker = L.marker([positionHistory.latitude, longitude], {
 							icon: iconPositionHistory,
 						})
+							.bindTooltip(tooltip)
 							.bindPopup(tooltip)
 							.on("click", function (event) {
 								// close tooltip on click to prevent tooltip and popup showing at same time
