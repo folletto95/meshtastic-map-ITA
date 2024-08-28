@@ -4820,7 +4820,7 @@
 					}
 				}
 
-				for (var node of updatedNodes) {
+				for (const [i, node] of updatedNodes.entries()) {
 					// find current node
 					const currentNode = findNodeMarkerById(node.node_id);
 					if (!currentNode) {
@@ -4828,7 +4828,6 @@
 					}
 
 					// add node neighbours
-					var polylineOffset = 0;
 					const neighbours = node.neighbours ?? [];
 					for (const neighbour of neighbours) {
 						// fixme: skipping zero snr? saw some crazy long neighbours with zero snr...
@@ -4840,6 +4839,13 @@
 						if (!neighbourNode) {
 							continue;
 						}
+
+						const neighbourI = updatedNodes.findIndex(
+							(el) => el.node_id === neighbourNode.node_id
+						);
+
+						if (neighbourI === -1) polylineOffset = 0;
+						else polylineOffset = 2.5;
 
 						const neighbourNodeMarker = findNodeMarkerById(neighbour.node_id);
 						if (neighbourNodeMarker) {
@@ -4867,9 +4873,6 @@
 									offset: polylineOffset,
 								}
 							).addTo(neighboursLayerGroup);
-
-							// increase offset so next neighbour does not overlay other neighbours from self
-							polylineOffset += 2;
 
 							// default to showing distance in meters
 							var distance = `${distanceInMeters} meters`;
