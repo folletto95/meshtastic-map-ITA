@@ -14,7 +14,10 @@ express.get("/api/v1/text-messages", async (req, res) => {
 		const channelId = (req.query.channel_id as string) ?? undefined;
 		const gatewayId =
 			Number.parseInt(req.query.gateway_id as string) ?? undefined;
-		const directMessageNodeIds = directMessageIds.split(",") ?? undefined;
+		const directMessageNodeIds =
+			typeof directMessageIds === "string"
+				? directMessageIds.split(",")
+				: undefined;
 		const lastId = lastI ? Number.parseInt(lastI) : undefined;
 		const count = req.query.count ? Number.parseInt(coun) : 50;
 		const order = req.query.order ?? "asc";
