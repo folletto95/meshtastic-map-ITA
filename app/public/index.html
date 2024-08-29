@@ -3112,7 +3112,10 @@
 									response.data.position_history;
 								if (this.selectedNodeToShowPositionHistory != null) {
 									clearAllPositionHistory();
-									onPositionHistoryUpdated(response.data.position_history);
+									onPositionHistoryUpdated(
+										response.data.position_history,
+										nodeId
+									);
 								}
 							})
 							.catch(() => {
@@ -5005,73 +5008,78 @@
 				}
 			}
 
-			function onPositionHistoryUpdated(updatedPositionHistories) {
+			function onPositionHistoryUpdated(updatedPositionHistories, nodeId) {
 				let positionHistoryLinesCords = [];
 
-				// add nodes
-				for (var positionHistory of updatedPositionHistories) {
-					// skip position history without position
-					if (!positionHistory.latitude || !positionHistory.longitude) {
-						continue;
-					}
+				const node = findNodeById(nodeId);
 
-					// fix lat long
-					positionHistory.latitude = positionHistory.latitude / 10000000;
-					positionHistory.longitude = positionHistory.longitude / 10000000;
-
-					var hasLocation = isValidLatLng(
-						positionHistory.latitude,
-						positionHistory.longitude
-					);
-					if (hasLocation) {
-						// wrap longitude for shortest path, everything to left of australia should be shown on the right
-						var longitude = parseFloat(positionHistory.longitude);
-						if (longitude <= 100) {
-							longitude += 360;
+				try {
+					// add nodes
+					for (var positionHistory of updatedPositionHistories) {
+						// skip position history without position
+						if (!positionHistory.latitude || !positionHistory.longitude) {
+							continue;
 						}
 
-						positionHistoryLinesCords.push([
+						// fix lat long
+						positionHistory.latitude = positionHistory.latitude / 10000000;
+						positionHistory.longitude = positionHistory.longitude / 10000000;
+
+						var hasLocation = isValidLatLng(
 							positionHistory.latitude,
-							longitude,
-						]);
+							positionHistory.longitude
+						);
+						if (hasLocation) {
+							// wrap longitude for shortest path, everything to left of australia should be shown on the right
+							var longitude = parseFloat(positionHistory.longitude);
+							if (longitude <= 100) {
+								longitude += 360;
+							}
 
-						let tooltip = "";
-						if (positionHistory.type === "position") {
-							tooltip += `<b>Position</b>`;
-						} else if (positionHistory.type === "map_report") {
-							tooltip += `<b>Map Report</b>`;
+							positionHistoryLinesCords.push([
+								positionHistory.latitude,
+								longitude,
+							]);
+
+							let tooltip = "";
+							if (positionHistory.type === "position") {
+								tooltip += `<b>Position</b>`;
+							} else if (positionHistory.type === "map_report") {
+								tooltip += `<b>Map Report</b>`;
+							}
+							tooltip += `<br/>[${escapeString(
+								node.short_name
+							)}] ${escapeString(node.long_name)}`;
+							tooltip += `<br/>${positionHistory.latitude}, ${positionHistory.longitude}`;
+							tooltip += `<br/>Heard on: ${moment(
+								new Date(positionHistory.created_at)
+							).format("DD/MM/YYYY hh:mm A")}`;
+
+							// add gateway info if available
+							if (positionHistory.gateway_id) {
+								const gatewayNode = findNodeById(positionHistory.gateway_id);
+								const gatewayNodeInfo = gatewayNode
+									? `[${gatewayNode.short_name}] ${gatewayNode.long_name}`
+									: "???";
+								tooltip += `<br/>Heard by: <a href="javascript:void(0);" onclick="goToNode(${positionHistory.gateway_id})">${gatewayNodeInfo}</a>`;
+							}
+
+							// create position history marker
+							const marker = L.marker([positionHistory.latitude, longitude], {
+								icon: iconPositionHistory,
+							})
+								.bindPopup(tooltip)
+								.on("click", function (event) {
+									// close tooltip on click to prevent tooltip and popup showing at same time
+									event.target.closeTooltip();
+								});
+
+							// add marker to position history layer group
+							marker.addTo(nodePositionHistoryLayerGroup);
 						}
-						tooltip += `<br/>[${escapeString(node.short_name)}] ${escapeString(
-							node.long_name
-						)}`;
-						tooltip += `<br/>${positionHistory.latitude}, ${positionHistory.longitude}`;
-						tooltip += `<br/>Heard on: ${moment(
-							new Date(positionHistory.created_at)
-						).format("DD/MM/YYYY hh:mm A")}`;
-
-						// add gateway info if available
-						if (positionHistory.gateway_id) {
-							const gatewayNode = findNodeById(positionHistory.gateway_id);
-							const gatewayNodeInfo = gatewayNode
-								? `[${gatewayNode.short_name}] ${gatewayNode.long_name}`
-								: "???";
-							tooltip += `<br/>Heard by: <a href="javascript:void(0);" onclick="goToNode(${positionHistory.gateway_id})">${gatewayNodeInfo}</a>`;
-						}
-
-						// create position history marker
-						const marker = L.marker([positionHistory.latitude, longitude], {
-							icon: iconPositionHistory,
-						})
-							.bindTooltip(tooltip)
-							.bindPopup(tooltip)
-							.on("click", function (event) {
-								// close tooltip on click to prevent tooltip and popup showing at same time
-								event.target.closeTooltip();
-							});
-
-						// add marker to position history layer group
-						marker.addTo(nodePositionHistoryLayerGroup);
 					}
+				} catch (error) {
+					console.error("onPositionHistoryUpdated error", error);
 				}
 
 				// show lines between position history markers
