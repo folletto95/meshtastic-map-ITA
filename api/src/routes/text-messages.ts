@@ -75,7 +75,9 @@ express.get("/api/v1/text-messages", async (req, res) => {
 			where = {
 				...where,
 				to: Number.parseInt(to as string),
-				from: Number.parseInt(from as string),
+				from: {
+					equals: Number.parseInt(from as string),
+				},
 			};
 		}
 
