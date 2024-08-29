@@ -74,10 +74,8 @@ express.get("/api/v1/text-messages", async (req, res) => {
 			// filter by to and from
 			where = {
 				...where,
-				to: Number.parseInt(to as string),
-				from: {
-					equals: Number.parseInt(from as string),
-				},
+				to: to ? BigInt(to as string) : undefined,
+				from: from ? BigInt(from as string) : undefined,
 			};
 		}
 

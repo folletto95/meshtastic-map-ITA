@@ -54,7 +54,7 @@ export const COLLECT_SERVICE_ENVELOPES: boolean =
 export const COLLECT_POSITIONS: boolean =
 	!!process.env.COLLECT_POSITIONS || true;
 export const COLLECT_TEXT_MESSAGES: boolean =
-	!!process.env.COLLECT_TEXT_MESSAGES || false;
+	!!process.env.COLLECT_TEXT_MESSAGES || true;
 export const IGNORE_DIRECT_MESSAGES: boolean =
 	!!process.env.IGNORE_DIRECT_MESSAGES || false;
 export const COLLECT_WAYPOINTS: boolean =
