@@ -21,10 +21,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push App
+      - name: Build and push APP
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: "{{defaultContext}}"
           push: true
           file: "./app/Dockerfile"
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/meshtastic-map:latest
@@ -32,7 +32,7 @@ jobs:
       - name: Build and push API
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: "{{defaultContext}}"
           push: true
           file: "./api/Dockerfile"
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/meshtastic-map-api:latest
@@ -40,7 +40,7 @@ jobs:
       - name: Build and push MQTT listener
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: "{{defaultContext}}"
           push: true
           file: "./mqtt/Dockerfile"
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/meshtastic-map-mqtt:latest
