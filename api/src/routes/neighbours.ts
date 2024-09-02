@@ -31,17 +31,51 @@ express.get("/api/v1/nodes/:nodeId/neighbours", async (req, res) => {
 			},
 		});
 
+		if (!node.neighbours) {
+			res.status(404).json({
+				message: "Not Found",
+			});
+			return;
+		}
+
+		if (!Array.isArray(node.neighbours)) {
+			res.status(500).json({
+				message: "Internal Server Error",
+			});
+			return;
+		}
+
 		res.json({
 			nodes_that_we_heard: node.neighbours.map((neighbour) => {
 				return {
-					...neighbour,
+					...(neighbour as object),
 					updated_at: node.neighbours_updated_at,
 				};
 			}),
 			nodes_that_heard_us: nodesThatHeardUs.map((nodeThatHeardUs) => {
-				const neighbourInfo = nodeThatHeardUs.neighbours.find(
-					(neighbour) => neighbour.node_id.toString() === node.node_id.toString()
-				);
+				if (!nodeThatHeardUs.neighbours) return;
+				if (!Array.isArray(nodeThatHeardUs.neighbours)) return;
+
+				const neighbourInfo = nodeThatHeardUs.neighbours.find((neighbour) => {
+					if (
+						!neighbour ||
+						typeof neighbour === "string" ||
+						typeof neighbour === "number" ||
+						neighbour === true ||
+						Array.isArray(neighbour)
+					)
+						return false;
+					neighbour.node_id?.toString() === node.node_id.toString();
+				});
+
+				if (
+					!neighbourInfo ||
+					typeof neighbourInfo === "string" ||
+					typeof neighbourInfo === "number" ||
+					neighbourInfo === true ||
+					Array.isArray(neighbourInfo)
+				)
+					return;
 				return {
 					node_id: Number(nodeThatHeardUs.node_id),
 					snr: neighbourInfo.snr,
@@ -56,4 +90,6 @@ express.get("/api/v1/nodes/:nodeId/neighbours", async (req, res) => {
 		});
 	}
 });
-console.log("API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/neighbours");
+console.log(
+	"API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/neighbours"
+);

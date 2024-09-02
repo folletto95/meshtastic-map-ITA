@@ -4,7 +4,9 @@ import express from "../express.js";
 express.get("/api/v1/nodes/:nodeId/traceroutes", async (req, res) => {
 	try {
 		const nodeId = Number.parseInt(req.params.nodeId);
-		const count = req.query.count ? Number.parseInt(req.query.count as string) : 10; // can't set to null because of $queryRaw
+		const count = req.query.count
+			? Number.parseInt(req.query.count as string)
+			: 10; // can't set to null because of $queryRaw
 
 		// find node
 		const node = await prisma.node.findFirst({
@@ -24,8 +26,20 @@ express.get("/api/v1/nodes/:nodeId/traceroutes", async (req, res) => {
 		// get latest traceroutes
 		// We want replies where want_response is false and it will be "to" the
 		// requester.
-		const traceroutes =
-			await prisma.$queryRaw`SELECT * FROM traceroutes WHERE want_response = false and \`to\` = ${node.node_id} and gateway_id is not null order by id desc limit ${count}`;
+
+		const traceroutes = await prisma.traceRoute.findMany({
+			where: {
+				to: nodeId,
+				want_response: false,
+				gateway_id: {
+					not: null,
+				},
+			},
+			orderBy: {
+				id: "desc",
+			},
+			take: count,
+		});
 
 		res.json({
 			traceroutes: traceroutes.map((trace) => {
@@ -42,4 +56,6 @@ express.get("/api/v1/nodes/:nodeId/traceroutes", async (req, res) => {
 		});
 	}
 });
-console.log("API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/traceroutes");
+console.log(
+	"API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/traceroutes"
+);

@@ -10,10 +10,10 @@ express.get("/api/v1/nodes/:nodeId/position-history", async (req, res) => {
 		// get request params
 		const nodeId = Number.parseInt(req.params.nodeId);
 		const timeFrom = req.query.time_from
-			? Number.parseInt(req.query.time_from)
+			? Number.parseInt(req.query.time_from as string)
 			: oneHourAgoInMilliseconds;
 		const timeTo = req.query.time_to
-			? Number.parseInt(req.query.time_to)
+			? Number.parseInt(req.query.time_to as string)
 			: nowInMilliseconds;
 
 		// find node
@@ -52,9 +52,19 @@ express.get("/api/v1/nodes/:nodeId/position-history", async (req, res) => {
 			},
 		});
 
-		const positionHistory = [];
+		const positionHistory: {
+			id?: bigint;
+			node_id: bigint;
+			type: string;
+			latitude: number | null;
+			longitude?: number | null;
+			altitude: number | null;
+			gateway_id?: bigint | null;
+			channel_id?: string | null;
+			created_at: Date;
+		}[] = [];
 
-		positions.forEach((position) => {
+		positions.forEach((position, i) => {
 			positionHistory.push({
 				id: position.id,
 				node_id: position.node_id,
@@ -68,7 +78,7 @@ express.get("/api/v1/nodes/:nodeId/position-history", async (req, res) => {
 			});
 		});
 
-		mapReports.forEach((mapReport) => {
+		mapReports.forEach((mapReport, i) => {
 			positionHistory.push({
 				node_id: mapReport.node_id,
 				type: "map_report",
@@ -80,7 +90,9 @@ express.get("/api/v1/nodes/:nodeId/position-history", async (req, res) => {
 		});
 
 		// sort oldest to newest
-		positionHistory.sort((a, b) => a.created_at - b.created_at);
+		positionHistory.sort(
+			(a, b) => a.created_at.getTime() - b.created_at.getTime()
+		);
 
 		res.json({
 			position_history: positionHistory,
