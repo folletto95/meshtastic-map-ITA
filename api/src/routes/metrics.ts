@@ -111,6 +111,12 @@ express.get("/api/v1/nodes/:nodeId/power-metrics", async (req, res) => {
 		const count = req.query.count
 			? Number.parseInt(req.query.count.toString())
 			: undefined;
+		const timeFrom = req.query.time_from
+			? Number.parseInt(req.query.time_from as string)
+			: undefined;
+		const timeTo = req.query.time_to
+			? Number.parseInt(req.query.time_to as string)
+			: undefined;
 
 		// find node
 		const node = await prisma.node.findFirst({
@@ -131,6 +137,10 @@ express.get("/api/v1/nodes/:nodeId/power-metrics", async (req, res) => {
 		const powerMetrics = await prisma.powerMetric.findMany({
 			where: {
 				node_id: node.node_id,
+				created_at: {
+					gte: timeFrom ? new Date(timeFrom) : undefined,
+					lte: timeTo ? new Date(timeTo) : undefined,
+				},
 			},
 			orderBy: {
 				id: "desc",
