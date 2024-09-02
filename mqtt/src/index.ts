@@ -35,6 +35,7 @@ import {
 // run automatic purge if configured
 if (PURGE_INTERVAL_SECONDS !== 0) {
 	setInterval(async () => {
+		console.log("Running automatic purge...");
 		await purgeUnheardNodes();
 		await purgeOldDeviceMetrics();
 		await purgeOldEnvironmentMetrics();

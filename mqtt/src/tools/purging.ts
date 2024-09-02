@@ -19,6 +19,8 @@ import {
 export async function purgeUnheardNodes() {
 	if (PURGE_UNHEARD_NODES_FOR_SECONDS === 0) return;
 
+	console.log("Purging unheard nodes...");
+
 	// delete all nodes that were last updated before configured purge time
 	try {
 		await prisma.node.deleteMany({
@@ -41,6 +43,8 @@ export async function purgeUnheardNodes() {
 export async function purgeOldDeviceMetrics() {
 	if (PURGE_DEVICE_METRICS_AFTER_SECONDS === 0) return;
 
+	console.log("Purging old device metrics...");
+
 	// delete all device metrics that are older than the configured purge time
 	try {
 		await prisma.deviceMetric.deleteMany({
@@ -62,6 +66,8 @@ export async function purgeOldDeviceMetrics() {
  */
 export async function purgeOldEnvironmentMetrics() {
 	if (PURGE_ENVIROMENT_METRICS_AFTER_SECONDS === 0) return;
+
+	console.log("Purging old environment metrics...");
 
 	// delete all environment metrics that are older than the configured purge time
 	try {
@@ -87,6 +93,8 @@ export async function purgeOldEnvironmentMetrics() {
 export async function purgeOldMapReports() {
 	if (PURGE_MAP_REPORTS_AFTER_SECONDS === 0) return;
 
+	console.log("Purging old map reports...");
+
 	// delete all map reports that are older than the configured purge time
 	try {
 		await prisma.mapReport.deleteMany({
@@ -110,6 +118,8 @@ export async function purgeOldNeighbourInfos() {
 	// make sure seconds provided
 	if (PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS === 0) return;
 
+	console.log("Purging old neighbour infos...");
+
 	// delete all neighbour infos that are older than the configured purge time
 	try {
 		await prisma.neighbourInfo.deleteMany({
@@ -131,6 +141,8 @@ export async function purgeOldNeighbourInfos() {
  */
 export async function purgeOldPowerMetrics() {
 	if (PURGE_POWER_METRICS_AFTER_SECONDS === 0) return;
+
+	console.log("Purging old power metrics...");
 
 	// delete all power metrics that are older than the configured purge time
 	try {
@@ -154,6 +166,8 @@ export async function purgeOldPowerMetrics() {
 export async function purgeOldPositions() {
 	if (PURGE_POSITIONS_AFTER_SECONDS === 0) return;
 
+	console.log("Purging old positions...");
+
 	// delete all positions that are older than the configured purge time
 	try {
 		await prisma.position.deleteMany({
@@ -175,6 +189,8 @@ export async function purgeOldPositions() {
  */
 export async function purgeOldServiceEnvelopes() {
 	if (PURGE_SERVICE_ENVELOPES_AFTER_SECONDS === 0) return;
+
+	console.log("Purging old service envelopes...");
 
 	// delete all envelopes that are older than the configured purge time
 	try {
@@ -200,6 +216,8 @@ export async function purgeOldServiceEnvelopes() {
 export async function purgeOldTextMessages() {
 	if (PURGE_TEXT_MESSAGES_AFTER_SECONDS === 0) return;
 
+	console.log("Purging old text messages...");
+
 	// delete all text messages that are older than the configured purge time
 	try {
 		await prisma.textMessage.deleteMany({
@@ -222,6 +240,8 @@ export async function purgeOldTextMessages() {
 export async function purgeOldTraceroutes() {
 	if (PURGE_TRACEROUTES_AFTER_SECONDS === 0) return;
 
+	console.log("Purging old traceroutes...");
+
 	// delete all traceroutes that are older than the configured purge time
 	try {
 		await prisma.traceRoute.deleteMany({
@@ -243,6 +263,8 @@ export async function purgeOldTraceroutes() {
  */
 export async function purgeOldWaypoints() {
 	if (PURGE_WAYPOINTS_AFTER_SECONDS === 0) return;
+
+	console.log("Purging old waypoints...");
 
 	// delete all waypoints that are older than the configured purge time
 	try {
