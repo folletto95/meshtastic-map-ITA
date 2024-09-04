@@ -259,20 +259,26 @@
 								<template v-if="searchedNodes.length > 0">
 									<div
 										@click="onSearchResultNodeClick(node)"
-										class="p-2 hover:bg-gray-100 cursor-pointer"
+										class="flex space-x-2 p-2 hover:bg-gray-100 cursor-pointer"
 										v-for="node of searchedNodes">
-										<div
-											class="text-gray-900"
-											:class="{ 'text-red-500': node.latitude == null || node.longitude == null }">
-											{{ node.long_name !== '' ? node.long_name : "-" }}
-										</div>
-										<div class="flex space-x-1 text-sm text-gray-700">
-											<div>
-												Short Name: {{ node.short_name !== '' ? node.short_name
-												: "-" }}
+										<div>
+											<div
+												class="flex rounded-full h-12 w-12 text-white shadow"
+												:class="[ `bg-[${getNodeColour(node.node_id)}]` ]">
+												<div class="mx-auto my-auto drop-shadow-sm">
+													{{ node.short_name }}
+												</div>
 											</div>
-											<div class="text-gray-500">/</div>
-											<div>Hex ID: {{ node.node_id_hex }}</div>
+										</div>
+										<div>
+											<div
+												class="text-gray-900"
+												:class="{ 'text-red-500': node.latitude == null || node.longitude == null }">
+												{{ node.long_name !== '' ? node.long_name : "-" }}
+											</div>
+											<div class="flex space-x-1 text-sm text-gray-700">
+												<div>{{ node.node_id_hex }} / {{ node.node_id }}</div>
+											</div>
 										</div>
 									</div>
 								</template>
@@ -947,7 +953,7 @@
 											<div
 												class="flex rounded-full h-12 w-12 text-white shadow"
 												:class="[ `bg-[${getNodeColour(selectedNode.node_id)}]` ]">
-												<div class="mx-auto my-auto">
+												<div class="mx-auto my-auto drop-shadow-sm">
 													{{ selectedNode.short_name }}
 												</div>
 											</div>
