@@ -13,7 +13,7 @@ import { convertHexIdToNumericId, extractMetaData } from "../tools/decrypt.js";
 export async function handleWaypoint(
 	envelope: ServiceEnvelope,
 	packet: MeshPacket,
-	payload: Data
+	payload: Data,
 ): Promise<void> {
 	try {
 		const waypoint: Waypoint = fromBinary(WaypointSchema, payload.payload);
@@ -21,7 +21,7 @@ export async function handleWaypoint(
 		const { envelopeMeta, packetMeta, payloadMeta } = extractMetaData(
 			envelope,
 			packet,
-			payload
+			payload,
 		);
 
 		if (LOG_KNOWN_PACKET_TYPES) {
@@ -39,8 +39,8 @@ export async function handleWaypoint(
 					to: packet.to,
 					from: packet.from,
 					waypoint_id: waypoint.id,
-					latitude: waypoint.latitudeI,
-					longitude: waypoint.longitudeI,
+					latitude: waypoint.latitudeI ?? 0,
+					longitude: waypoint.longitudeI ?? 0,
 					expire: waypoint.expire,
 					locked_to: waypoint.lockedTo,
 					name: waypoint.name,

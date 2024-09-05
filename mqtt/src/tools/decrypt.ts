@@ -45,7 +45,7 @@ export async function decrypt(packet: MeshPacket) {
 			} else {
 				// skip this key, try the next one...
 				console.error(
-					`Skipping decryption key with invalid length: ${key.length}`
+					`Skipping decryption key with invalid length: ${key.length}`,
 				);
 				continue;
 			}
@@ -72,14 +72,14 @@ export async function decrypt(packet: MeshPacket) {
 export function extractMetaData(
 	envelope: ServiceEnvelope,
 	packet: MeshPacket,
-	payload: Data
+	payload: Data,
 ) {
-	const envelopeMeta = {
+	const envelopeMeta: Omit<ServiceEnvelope, "$typeName"> = {
 		channelId: envelope.channelId,
 		gatewayId: envelope.gatewayId,
 	};
 
-	const packetMeta = {
+	const packetMeta: Omit<MeshPacket, "$typeName"> = {
 		from: packet.from,
 		to: packet.to,
 		channel: packet.channel,
@@ -93,9 +93,12 @@ export function extractMetaData(
 		viaMqtt: packet.viaMqtt,
 		hopStart: packet.hopStart,
 		delayed: packet.delayed,
+		pkiEncrypted: packet.pkiEncrypted,
+		payloadVariant: packet.payloadVariant,
+		publicKey: packet.publicKey,
 	};
 
-	const payloadMeta = {
+	const payloadMeta: Omit<Data, "$typeName" | "payload"> = {
 		portnum: payload.portnum,
 		dest: payload.dest,
 		emoji: payload.emoji,
@@ -110,7 +113,7 @@ export function extractMetaData(
 
 export function extractBoolean(
 	value: string | undefined,
-	def: boolean
+	def: boolean,
 ): boolean {
 	if (value === "true") return true;
 	if (value === "false") return false;

@@ -14,7 +14,7 @@ import { convertHexIdToNumericId, extractMetaData } from "../tools/decrypt.js";
 export async function handleTextMessage(
 	envelope: ServiceEnvelope,
 	packet: MeshPacket,
-	payload: Data
+	payload: Data,
 ): Promise<void> {
 	try {
 		const utf8Decoder = new TextDecoder("UTF-8");
@@ -23,7 +23,7 @@ export async function handleTextMessage(
 		const { envelopeMeta, packetMeta, payloadMeta } = extractMetaData(
 			envelope,
 			packet,
-			payload
+			payload,
 		);
 
 		if (LOG_KNOWN_PACKET_TYPES) {
