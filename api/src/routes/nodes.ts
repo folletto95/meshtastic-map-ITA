@@ -5,6 +5,9 @@ import { formatNodeInfo } from "../tools/format.js";
 express.get("/api/v1/nodes", async (req, res) => {
 	try {
 		// get query params
+		const role = req.query.role
+			? Number.parseInt(req.query.role as string)
+			: undefined;
 		const hardwareModel = req.query.hardware_model
 			? Number.parseInt(req.query.hardware_model as string)
 			: undefined;
@@ -12,6 +15,7 @@ express.get("/api/v1/nodes", async (req, res) => {
 		// get nodes from db
 		const nodes = await prisma.node.findMany({
 			where: {
+				role: role,
 				hardware_model: hardwareModel,
 			},
 		});
