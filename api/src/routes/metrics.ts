@@ -55,7 +55,7 @@ express.get("/api/v1/nodes/:nodeId/device-metrics", async (req, res) => {
 	}
 });
 console.log(
-	"API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/device-metrics"
+	"API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/device-metrics",
 );
 
 express.get("/api/v1/nodes/:nodeId/environment-metrics", async (req, res) => {
@@ -63,6 +63,12 @@ express.get("/api/v1/nodes/:nodeId/environment-metrics", async (req, res) => {
 		const nodeId = Number.parseInt(req.params.nodeId);
 		const count = req.query.count
 			? Number.parseInt(req.query.count.toString())
+			: undefined;
+		const timeFrom = req.query.time_from
+			? Number.parseInt(req.query.time_from as string)
+			: undefined;
+		const timeTo = req.query.time_to
+			? Number.parseInt(req.query.time_to as string)
 			: undefined;
 
 		// find node
@@ -84,6 +90,10 @@ express.get("/api/v1/nodes/:nodeId/environment-metrics", async (req, res) => {
 		const environmentMetrics = await prisma.environmentMetric.findMany({
 			where: {
 				node_id: node.node_id,
+				created_at: {
+					gte: timeFrom ? new Date(timeFrom) : undefined,
+					lte: timeTo ? new Date(timeTo) : undefined,
+				},
 			},
 			orderBy: {
 				id: "desc",
@@ -102,7 +112,7 @@ express.get("/api/v1/nodes/:nodeId/environment-metrics", async (req, res) => {
 	}
 });
 console.log(
-	"API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/environment-metrics"
+	"API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/environment-metrics",
 );
 
 express.get("/api/v1/nodes/:nodeId/power-metrics", async (req, res) => {
@@ -159,7 +169,7 @@ express.get("/api/v1/nodes/:nodeId/power-metrics", async (req, res) => {
 	}
 });
 console.log(
-	"API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/power-metrics"
+	"API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/power-metrics",
 );
 
 express.get("/api/v1/nodes/:nodeId/mqtt-metrics", async (req, res) => {
@@ -196,5 +206,5 @@ express.get("/api/v1/nodes/:nodeId/mqtt-metrics", async (req, res) => {
 	}
 });
 console.log(
-	"API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/mqtt-metrics"
+	"API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/mqtt-metrics",
 );
