@@ -13,18 +13,18 @@ import { convertHexIdToNumericId, extractMetaData } from "../tools/decrypt.js";
 export async function handleTraceroute(
 	envelope: ServiceEnvelope,
 	packet: MeshPacket,
-	payload: Data
+	payload: Data,
 ): Promise<void> {
 	try {
 		const traceroute: RouteDiscovery = fromBinary(
 			RouteDiscoverySchema,
-			payload.payload
+			payload.payload,
 		);
 
 		const { envelopeMeta, packetMeta, payloadMeta } = extractMetaData(
 			envelope,
 			packet,
-			payload
+			payload,
 		);
 
 		if (LOG_KNOWN_PACKET_TYPES) {
@@ -43,6 +43,9 @@ export async function handleTraceroute(
 					from: packet.from,
 					want_response: packet.wantAck,
 					route: traceroute.route,
+					snr_towards: routeDiscovery.snrTowards,
+					route_back: routeDiscovery.routeBack,
+					snr_back: routeDiscovery.snrBack,
 					channel: packet.channel,
 					packet_id: packet.id,
 					channel_id: envelope.channelId,
