@@ -1,4 +1,4 @@
-**Created by:** Liam Cottle
+**Created by:** Liam Cottle\
 **Forked by:** Tilen Komel
 
 <h2 align="center">Meshtastic Map</h2>
