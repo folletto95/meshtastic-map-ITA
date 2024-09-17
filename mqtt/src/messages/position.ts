@@ -13,7 +13,7 @@ import { convertHexIdToNumericId, extractMetaData } from "../tools/decrypt.js";
 export async function handlePosition(
 	envelope: ServiceEnvelope,
 	packet: MeshPacket,
-	payload: Data
+	payload: Data,
 ): Promise<void> {
 	try {
 		const position: Position = fromBinary(PositionSchema, payload.payload);
@@ -46,7 +46,7 @@ export async function handlePosition(
 		const { envelopeMeta, packetMeta, payloadMeta } = extractMetaData(
 			envelope,
 			packet,
-			payload
+			payload,
 		);
 
 		if (LOG_KNOWN_PACKET_TYPES) {
@@ -58,18 +58,27 @@ export async function handlePosition(
 			});
 		}
 
+		const data = {
+			latitude: position.latitudeI,
+			longitude: position.longitudeI,
+			altitude: position.altitude !== 0 ? position.altitude : null,
+		};
+
 		// update node position in db
 		if (position.latitudeI && position.longitudeI) {
-			await prisma.node.updateMany({
+			await prisma.node.upsert({
 				where: {
 					node_id: packet.from,
 				},
-				data: {
-					position_updated_at: new Date(),
-					latitude: position.latitudeI,
-					longitude: position.longitudeI,
-					altitude: position.altitude !== 0 ? position.altitude : null,
+				create: {
+					node_id: packet.from,
+					hardware_model: 0,
+					role: 0,
+					long_name: `!${packet.from.toString(16)}`,
+					short_name: packet.from.toString(16).substring(0, 4),
+					...data,
 				},
+				update: data,
 			});
 		}
 
