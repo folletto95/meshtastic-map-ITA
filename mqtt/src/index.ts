@@ -3,26 +3,26 @@ import "./db.js";
 import { mqttClient } from "./mqtt.js";
 
 import {
-	purgeUnheardNodes,
 	purgeOldDeviceMetrics,
 	purgeOldEnvironmentMetrics,
 	purgeOldMapReports,
 	purgeOldNeighbourInfos,
-	purgeOldPowerMetrics,
 	purgeOldPositions,
+	purgeOldPowerMetrics,
 	purgeOldServiceEnvelopes,
 	purgeOldTextMessages,
 	purgeOldTraceroutes,
 	purgeOldWaypoints,
+	purgeUnheardNodes,
 } from "./tools/purging.js";
 
-import { handleStatMessage } from "./messages/stat.js";
-import { handleNodeInfo } from "./messages/nodeinfo.js";
-import { handleTelemetry } from "./messages/telemetry.js";
 import { handleMapReport } from "./messages/map_report.js";
 import { handleNeighbourInfo } from "./messages/neighbour_info.js";
+import { handleNodeInfo } from "./messages/nodeinfo.js";
 import { handlePosition } from "./messages/position.js";
 import { handleServiceEnvelope } from "./messages/service_envelope.js";
+import { handleStatMessage } from "./messages/stat.js";
+import { handleTelemetry } from "./messages/telemetry.js";
 import { handleTextMessage } from "./messages/text_message.js";
 import { handleTraceroute } from "./messages/traceroute.js";
 import { handleWaypoint } from "./messages/waypoint.js";

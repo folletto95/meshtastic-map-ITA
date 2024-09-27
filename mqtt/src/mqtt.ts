@@ -1,11 +1,11 @@
 import mqtt from "mqtt";
 import {
+	MQTT_CLIENT_ID,
+	MQTT_PASSWORD,
+	MQTT_PROTOCOL,
+	MQTT_TOPIC,
 	MQTT_URL,
 	MQTT_USERNAME,
-	MQTT_PASSWORD,
-	MQTT_TOPIC,
-	MQTT_PROTOCOL,
-	MQTT_CLIENT_ID,
 } from "./settings.js";
 
 export const mqttClient = mqtt.connect(MQTT_URL, {

@@ -1,19 +1,19 @@
-import { fromBinary } from "@bufbuild/protobuf";
-import {
-	type ServiceEnvelope,
-	ServiceEnvelopeSchema,
-} from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
-import { prisma } from "../db.js";
-import { COLLECT_SERVICE_ENVELOPES } from "../settings.js";
-import { convertHexIdToNumericId, decrypt } from "../tools/decrypt.js";
 import type {
 	Data,
 	MeshPacket,
 } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
+import {
+	type ServiceEnvelope,
+	ServiceEnvelopeSchema,
+} from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
+import { fromBinary } from "@bufbuild/protobuf";
+import { prisma } from "../db.js";
+import { COLLECT_SERVICE_ENVELOPES } from "../settings.js";
+import { convertHexIdToNumericId, decrypt } from "../tools/decrypt.js";
 
 export async function handleServiceEnvelope(
 	topic: string,
-	message: Buffer
+	message: Buffer,
 ): Promise<
 	| {
 			envelope: ServiceEnvelope;
@@ -25,7 +25,7 @@ export async function handleServiceEnvelope(
 	try {
 		const envelope: ServiceEnvelope = fromBinary(
 			ServiceEnvelopeSchema,
-			message
+			message,
 		);
 
 		const packet = envelope.packet;

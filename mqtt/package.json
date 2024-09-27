@@ -1,35 +1,38 @@
 {
-  "name": "meshtastic-map-mqtt",
-  "version": "1.0.0",
-  "description": "MQTT listener for a map of all Meshtastic nodes heard via MQTT.",
-  "main": "src/index.ts",
-  "type": "module",
-  "scripts": {
-    "start": "npx prisma migrate deploy && node dist/index.js",
-    "build": "npx tsc",
-    "dev": "npx prisma generate && npx prisma migrate deploy && nodemon"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/liamcottle/meshtastic-map.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/liamcottle/meshtastic-map/issues"
-  },
-  "homepage": "https://github.com/liamcottle/meshtastic-map#readme",
-  "devDependencies": {
-    "@types/node": "^22.2.0",
-    "nodemon": "^3.1.4",
-    "prisma": "^5.18.0",
-    "tsx": "^4.17.0",
-    "typescript": "^5.5.4"
-  },
-  "dependencies": {
-    "@buf/meshtastic_protobufs.bufbuild_es": "^2.0.0-20240812161137-bf80cd78054c.2",
-    "@bufbuild/protobuf": "^2.0.0",
-    "@prisma/client": "^5.18.0",
-    "mqtt": "^5.9.1"
-  }
+	"name": "meshtastic-map-mqtt",
+	"version": "1.0.0",
+	"description": "MQTT listener for a map of all Meshtastic nodes heard via MQTT.",
+	"main": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"start": "npx prisma migrate deploy && node dist/index.js",
+		"build": "npm run check && npx tsc",
+		"check": "biome check",
+		"check:fix": "biome check --write --unsafe",
+		"dev": "npx prisma generate && npx prisma migrate deploy && nodemon"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/liamcottle/meshtastic-map.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/liamcottle/meshtastic-map/issues"
+	},
+	"homepage": "https://github.com/liamcottle/meshtastic-map#readme",
+	"devDependencies": {
+		"@biomejs/biome": "1.9.2",
+		"@types/node": "^22.2.0",
+		"nodemon": "^3.1.4",
+		"prisma": "^5.18.0",
+		"tsx": "^4.17.0",
+		"typescript": "^5.5.4"
+	},
+	"dependencies": {
+		"@buf/meshtastic_protobufs.bufbuild_es": "^2.0.0-20240812161137-bf80cd78054c.2",
+		"@bufbuild/protobuf": "^2.0.0",
+		"@prisma/client": "^5.18.0",
+		"mqtt": "^5.9.1"
+	}
 }

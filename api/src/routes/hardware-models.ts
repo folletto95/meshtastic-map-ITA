@@ -1,6 +1,6 @@
+import { HardwareModel } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
 import { prisma } from "../db.js";
 import express from "../express.js";
-import { HardwareModel } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
 
 express.get("/api/v1/stats/hardware-models", async (req, res) => {
 	try {
@@ -21,7 +21,8 @@ express.get("/api/v1/stats/hardware-models", async (req, res) => {
 			return {
 				count: result._count.hardware_model,
 				hardware_model: result.hardware_model,
-				hardware_model_name: HardwareModel[result.hardware_model] ?? "UNKNOWN",
+				hardware_model_name:
+					HardwareModel[result.hardware_model] ?? "UNKNOWN",
 			};
 		});
 

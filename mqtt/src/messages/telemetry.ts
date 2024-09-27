@@ -1,9 +1,8 @@
-import type { MeshPacket, Data } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
+import type {
+	Data,
+	MeshPacket,
+} from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
 import type { ServiceEnvelope } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
-import { fromBinary } from "@bufbuild/protobuf";
-import { prisma } from "../db.js";
-import { LOG_KNOWN_PACKET_TYPES } from "../settings.js";
-import { extractMetaData } from "../tools/decrypt.js";
 import {
 	type DeviceMetrics,
 	type EnvironmentMetrics,
@@ -11,16 +10,27 @@ import {
 	type Telemetry,
 	TelemetrySchema,
 } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/telemetry_pb.js";
+import { fromBinary } from "@bufbuild/protobuf";
+import { prisma } from "../db.js";
+import { LOG_KNOWN_PACKET_TYPES } from "../settings.js";
+import { extractMetaData } from "../tools/decrypt.js";
 
 export async function handleTelemetry(
 	envelope: ServiceEnvelope,
 	packet: MeshPacket,
-	payload: Data
+	payload: Data,
 ): Promise<void> {
 	try {
-		const telemetry: Telemetry = fromBinary(TelemetrySchema, payload.payload);
+		const telemetry: Telemetry = fromBinary(
+			TelemetrySchema,
+			payload.payload,
+		);
 
-		const { envelopeMeta, packetMeta, payloadMeta } = extractMetaData(envelope, packet, payload);
+		const { envelopeMeta, packetMeta, payloadMeta } = extractMetaData(
+			envelope,
+			packet,
+			payload,
+		);
 
 		if (LOG_KNOWN_PACKET_TYPES) {
 			console.log("TELEMETRY_APP", {
@@ -32,6 +42,7 @@ export async function handleTelemetry(
 		}
 
 		let data: object = {};
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		let isDuplicate: any;
 
 		switch (telemetry.variant.case) {

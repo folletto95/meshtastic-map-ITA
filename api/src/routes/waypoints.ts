@@ -18,7 +18,8 @@ express.get("/api/v1/waypoints", async (req, res) => {
 			if (
 				uniqueWaypoints.find(
 					(w) =>
-						w.from === waypoint.from && w.waypoint_id === waypoint.waypoint_id
+						w.from === waypoint.from &&
+						w.waypoint_id === waypoint.waypoint_id,
 				)
 			) {
 				continue;

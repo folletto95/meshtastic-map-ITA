@@ -1,29 +1,32 @@
 import type {
-	MeshPacket,
 	Data,
+	MeshPacket,
 } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
 import {
-	MapReportSchema,
 	type MapReport,
+	MapReportSchema,
 	type ServiceEnvelope,
 } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
-import { COLLECT_MAP_REPORTS, LOG_KNOWN_PACKET_TYPES } from "../settings.js";
 import { fromBinary } from "@bufbuild/protobuf";
 import { prisma } from "../db.js";
+import { COLLECT_MAP_REPORTS, LOG_KNOWN_PACKET_TYPES } from "../settings.js";
 import { extractMetaData } from "../tools/decrypt.js";
 
 export async function handleMapReport(
 	envelope: ServiceEnvelope,
 	packet: MeshPacket,
-	payload: Data
+	payload: Data,
 ): Promise<void> {
 	try {
-		const mapReport: MapReport = fromBinary(MapReportSchema, payload.payload);
+		const mapReport: MapReport = fromBinary(
+			MapReportSchema,
+			payload.payload,
+		);
 
 		const { envelopeMeta, packetMeta, payloadMeta } = extractMetaData(
 			envelope,
 			packet,
-			payload
+			payload,
 		);
 
 		if (LOG_KNOWN_PACKET_TYPES) {
@@ -91,7 +94,8 @@ export async function handleMapReport(
 							longitude: mapReport.longitudeI,
 							altitude: mapReport.altitude,
 							position_precision: mapReport.positionPrecision,
-							num_online_local_nodes: mapReport.numOnlineLocalNodes,
+							num_online_local_nodes:
+								mapReport.numOnlineLocalNodes,
 						},
 					});
 				}

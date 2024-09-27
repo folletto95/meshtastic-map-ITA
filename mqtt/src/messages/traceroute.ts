@@ -1,8 +1,8 @@
 import {
-	type MeshPacket,
 	type Data,
-	RouteDiscoverySchema,
+	type MeshPacket,
 	type RouteDiscovery,
+	RouteDiscoverySchema,
 } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
 import type { ServiceEnvelope } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
 import { fromBinary } from "@bufbuild/protobuf";

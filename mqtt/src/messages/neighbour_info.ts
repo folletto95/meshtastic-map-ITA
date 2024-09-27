@@ -1,8 +1,8 @@
 import {
-	type MeshPacket,
 	type Data,
-	NeighborInfoSchema,
+	type MeshPacket,
 	type NeighborInfo,
+	NeighborInfoSchema,
 } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
 import type { ServiceEnvelope } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
 import { fromBinary } from "@bufbuild/protobuf";
@@ -13,18 +13,18 @@ import { extractMetaData } from "../tools/decrypt.js";
 export async function handleNeighbourInfo(
 	envelope: ServiceEnvelope,
 	packet: MeshPacket,
-	payload: Data
+	payload: Data,
 ): Promise<void> {
 	try {
 		const neighbourInfo: NeighborInfo = fromBinary(
 			NeighborInfoSchema,
-			payload.payload
+			payload.payload,
 		);
 
 		const { envelopeMeta, packetMeta, payloadMeta } = extractMetaData(
 			envelope,
 			packet,
-			payload
+			payload,
 		);
 
 		if (LOG_KNOWN_PACKET_TYPES) {
@@ -57,7 +57,8 @@ export async function handleNeighbourInfo(
 			await prisma.neighbourInfo.create({
 				data: {
 					node_id: packet.from,
-					node_broadcast_interval_secs: neighbourInfo.nodeBroadcastIntervalSecs,
+					node_broadcast_interval_secs:
+						neighbourInfo.nodeBroadcastIntervalSecs,
 					neighbours: neighbourInfo.neighbors.map((neighbour) => {
 						return {
 							node_id: neighbour.nodeId,

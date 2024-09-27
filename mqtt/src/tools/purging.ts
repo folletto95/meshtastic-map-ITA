@@ -2,14 +2,14 @@ import { prisma } from "../db.js";
 import {
 	PURGE_DEVICE_METRICS_AFTER_SECONDS,
 	PURGE_ENVIROMENT_METRICS_AFTER_SECONDS,
-	PURGE_POWER_METRICS_AFTER_SECONDS,
 	PURGE_MAP_REPORTS_AFTER_SECONDS,
 	PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS,
-	PURGE_UNHEARD_NODES_FOR_SECONDS,
 	PURGE_POSITIONS_AFTER_SECONDS,
+	PURGE_POWER_METRICS_AFTER_SECONDS,
 	PURGE_SERVICE_ENVELOPES_AFTER_SECONDS,
 	PURGE_TEXT_MESSAGES_AFTER_SECONDS,
 	PURGE_TRACEROUTES_AFTER_SECONDS,
+	PURGE_UNHEARD_NODES_FOR_SECONDS,
 	PURGE_WAYPOINTS_AFTER_SECONDS,
 } from "../settings.js";
 
@@ -27,7 +27,9 @@ export async function purgeUnheardNodes() {
 			where: {
 				updated_at: {
 					// last updated before x seconds ago
-					lt: new Date(Date.now() - PURGE_UNHEARD_NODES_FOR_SECONDS * 1000),
+					lt: new Date(
+						Date.now() - PURGE_UNHEARD_NODES_FOR_SECONDS * 1000,
+					),
 				},
 			},
 		});
@@ -51,7 +53,9 @@ export async function purgeOldDeviceMetrics() {
 			where: {
 				created_at: {
 					// last updated before x seconds ago
-					lt: new Date(Date.now() - PURGE_DEVICE_METRICS_AFTER_SECONDS * 1000),
+					lt: new Date(
+						Date.now() - PURGE_DEVICE_METRICS_AFTER_SECONDS * 1000,
+					),
 				},
 			},
 		});
@@ -76,7 +80,8 @@ export async function purgeOldEnvironmentMetrics() {
 				created_at: {
 					// last updated before x seconds ago
 					lt: new Date(
-						Date.now() - PURGE_ENVIROMENT_METRICS_AFTER_SECONDS * 1000
+						Date.now() -
+							PURGE_ENVIROMENT_METRICS_AFTER_SECONDS * 1000,
 					),
 				},
 			},
@@ -101,7 +106,9 @@ export async function purgeOldMapReports() {
 			where: {
 				created_at: {
 					// last updated before x seconds ago
-					lt: new Date(Date.now() - PURGE_MAP_REPORTS_AFTER_SECONDS * 1000),
+					lt: new Date(
+						Date.now() - PURGE_MAP_REPORTS_AFTER_SECONDS * 1000,
+					),
 				},
 			},
 		});
@@ -126,7 +133,9 @@ export async function purgeOldNeighbourInfos() {
 			where: {
 				created_at: {
 					// created before x seconds ago
-					lt: new Date(Date.now() - PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS * 1000),
+					lt: new Date(
+						Date.now() - PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS * 1000,
+					),
 				},
 			},
 		});
@@ -150,7 +159,9 @@ export async function purgeOldPowerMetrics() {
 			where: {
 				created_at: {
 					// last updated before x seconds ago
-					lt: new Date(Date.now() - PURGE_POWER_METRICS_AFTER_SECONDS * 1000),
+					lt: new Date(
+						Date.now() - PURGE_POWER_METRICS_AFTER_SECONDS * 1000,
+					),
 				},
 			},
 		});
@@ -174,7 +185,9 @@ export async function purgeOldPositions() {
 			where: {
 				created_at: {
 					// last updated before x seconds ago
-					lt: new Date(Date.now() - PURGE_POSITIONS_AFTER_SECONDS * 1000),
+					lt: new Date(
+						Date.now() - PURGE_POSITIONS_AFTER_SECONDS * 1000,
+					),
 				},
 			},
 		});
@@ -199,7 +212,8 @@ export async function purgeOldServiceEnvelopes() {
 				created_at: {
 					// last updated before x seconds ago
 					lt: new Date(
-						Date.now() - PURGE_SERVICE_ENVELOPES_AFTER_SECONDS * 1000
+						Date.now() -
+							PURGE_SERVICE_ENVELOPES_AFTER_SECONDS * 1000,
 					),
 				},
 			},
@@ -224,7 +238,9 @@ export async function purgeOldTextMessages() {
 			where: {
 				created_at: {
 					// last updated before x seconds ago
-					lt: new Date(Date.now() - PURGE_TEXT_MESSAGES_AFTER_SECONDS * 1000),
+					lt: new Date(
+						Date.now() - PURGE_TEXT_MESSAGES_AFTER_SECONDS * 1000,
+					),
 				},
 			},
 		});
@@ -248,7 +264,9 @@ export async function purgeOldTraceroutes() {
 			where: {
 				created_at: {
 					// last updated before x seconds ago
-					lt: new Date(Date.now() - PURGE_TRACEROUTES_AFTER_SECONDS * 1000),
+					lt: new Date(
+						Date.now() - PURGE_TRACEROUTES_AFTER_SECONDS * 1000,
+					),
 				},
 			},
 		});
@@ -272,7 +290,9 @@ export async function purgeOldWaypoints() {
 			where: {
 				created_at: {
 					// created before x seconds ago
-					lt: new Date(Date.now() - PURGE_WAYPOINTS_AFTER_SECONDS * 1000),
+					lt: new Date(
+						Date.now() - PURGE_WAYPOINTS_AFTER_SECONDS * 1000,
+					),
 				},
 			},
 		});

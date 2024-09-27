@@ -7,7 +7,7 @@ export const http = Http.createServer();
 http.on("request", express);
 
 http.listen(settings.HTTP_PORT, () => {
-  console.log(`
+	console.log(`
     .- - - - - - - - - - - - - - - - - - - -
     |   Started the API http server on port ${settings.HTTP_PORT}
     '- - - - - - - - - - - - - - - - - - - -

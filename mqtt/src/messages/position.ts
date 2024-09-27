@@ -1,13 +1,13 @@
 import {
-	type MeshPacket,
 	type Data,
+	type MeshPacket,
 	type Position,
 	PositionSchema,
 } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
 import type { ServiceEnvelope } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
-import { COLLECT_POSITIONS, LOG_KNOWN_PACKET_TYPES } from "../settings.js";
 import { fromBinary } from "@bufbuild/protobuf";
 import { prisma } from "../db.js";
+import { COLLECT_POSITIONS, LOG_KNOWN_PACKET_TYPES } from "../settings.js";
 import { convertHexIdToNumericId, extractMetaData } from "../tools/decrypt.js";
 
 export async function handlePosition(

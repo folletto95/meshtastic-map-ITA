@@ -2,13 +2,13 @@ import type {
 	Data,
 	MeshPacket,
 } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
+import type { ServiceEnvelope } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
+import { prisma } from "../db.js";
 import {
 	COLLECT_TEXT_MESSAGES,
 	IGNORE_DIRECT_MESSAGES,
 	LOG_KNOWN_PACKET_TYPES,
 } from "../settings.js";
-import { prisma } from "../db.js";
-import type { ServiceEnvelope } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
 import { convertHexIdToNumericId, extractMetaData } from "../tools/decrypt.js";
 
 export async function handleTextMessage(

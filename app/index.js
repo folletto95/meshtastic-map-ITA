@@ -39,11 +39,11 @@ if (options.help) {
 		},
 	]);
 	console.log(usage);
-	return;
+	process.exit(0);
 }
 
 // get options and fallback to default values
-const port = options["port"] ?? 80;
+const port = options.port ?? 80;
 
 const app = express();
 

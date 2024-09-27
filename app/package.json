@@ -1,25 +1,28 @@
 {
-  "name": "meshtastic-map",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js ${MAP_OPTS}",
-    "dev": "nodemon index.js ${MAP_OPTS}"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@prisma/client": "^5.11.0",
-    "command-line-args": "^5.2.1",
-    "command-line-usage": "^7.0.1",
-    "compression": "^1.7.4",
-    "express": "^4.18.3",
-    "mqtt": "^5.3.6",
-    "protobufjs": "^7.2.6"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.4",
-    "prisma": "^5.10.2"
-  }
+	"name": "meshtastic-map",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "npm run check && node index.js ${MAP_OPTS}",
+		"check": "biome check",
+		"check:fix": "biome check --write --unsafe",
+		"dev": "nodemon index.js ${MAP_OPTS}"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@prisma/client": "^5.11.0",
+		"command-line-args": "^5.2.1",
+		"command-line-usage": "^7.0.1",
+		"compression": "^1.7.4",
+		"express": "^4.18.3",
+		"mqtt": "^5.3.6",
+		"protobufjs": "^7.2.6"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.2",
+		"nodemon": "^3.1.4",
+		"prisma": "^5.10.2"
+	}
 }

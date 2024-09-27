@@ -56,17 +56,20 @@ express.get("/api/v1/nodes/:nodeId/neighbours", async (req, res) => {
 				if (!nodeThatHeardUs.neighbours) return;
 				if (!Array.isArray(nodeThatHeardUs.neighbours)) return;
 
-				const neighbourInfo = nodeThatHeardUs.neighbours.find((neighbour) => {
-					if (
-						!neighbour ||
-						typeof neighbour === "string" ||
-						typeof neighbour === "number" ||
-						neighbour === true ||
-						Array.isArray(neighbour)
-					)
-						return false;
-					neighbour.node_id?.toString() === node.node_id.toString();
-				});
+				const neighbourInfo = nodeThatHeardUs.neighbours.find(
+					(neighbour) => {
+						if (
+							!neighbour ||
+							typeof neighbour === "string" ||
+							typeof neighbour === "number" ||
+							neighbour === true ||
+							Array.isArray(neighbour)
+						)
+							return false;
+						neighbour.node_id?.toString() ===
+							node.node_id.toString();
+					},
+				);
 
 				if (
 					!neighbourInfo ||
@@ -91,5 +94,5 @@ express.get("/api/v1/nodes/:nodeId/neighbours", async (req, res) => {
 	}
 });
 console.log(
-	"API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/neighbours"
+	"API:EXPRESS registered route GET:/api/v1/nodes/:nodeId/neighbours",
 );

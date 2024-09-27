@@ -1,6 +1,6 @@
 import {
-	type MeshPacket,
 	type Data,
+	type MeshPacket,
 	type Waypoint,
 	WaypointSchema,
 } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";

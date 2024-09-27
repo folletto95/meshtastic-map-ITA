@@ -1,0 +1,7 @@
+{
+	"recommendations": [
+		"ms-azuretools.vscode-docker",
+		"vue.volar",
+		"biomejs.biome"
+	]
+}

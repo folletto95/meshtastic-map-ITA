@@ -44,10 +44,10 @@ express.get("/api/v1/text-messages", async (req, res) => {
 				order === "asc"
 					? {
 							gt: lastId,
-					  }
+						}
 					: {
 							lt: lastId,
-					  },
+						},
 		};
 
 		// if direct message node ids are provided, we expect exactly 2 node ids

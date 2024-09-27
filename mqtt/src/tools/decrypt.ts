@@ -1,12 +1,12 @@
-import { fromBinary } from "@bufbuild/protobuf";
+import crypto from "node:crypto";
 import {
-	type MeshPacket,
 	type Data,
 	DataSchema,
+	type MeshPacket,
 } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
-import crypto from "node:crypto";
-import { DECRYPTION_KEYS } from "../settings.js";
 import type { ServiceEnvelope } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mqtt_pb.js";
+import { fromBinary } from "@bufbuild/protobuf";
+import { DECRYPTION_KEYS } from "../settings.js";
 
 export function createNonce(packetId: number, fromNode: number) {
 	// Expand packetId to 64 bits
@@ -50,7 +50,11 @@ export async function decrypt(packet: MeshPacket) {
 				continue;
 			}
 
-			const decipher = crypto.createDecipheriv(algorithm, key, nonceBuffer);
+			const decipher = crypto.createDecipheriv(
+				algorithm,
+				key,
+				nonceBuffer,
+			);
 
 			const encryptedPayload = packet.payloadVariant.value as Uint8Array;
 
