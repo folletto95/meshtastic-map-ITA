@@ -108,6 +108,7 @@ export async function handlePosition(
 							: null,
 						latitude: position.latitudeI,
 						longitude: position.longitudeI,
+						ground_speed: position.groundSpeed,
 						altitude: position.altitude,
 					},
 				});

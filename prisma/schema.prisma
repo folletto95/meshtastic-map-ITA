@@ -176,9 +176,10 @@ model Position {
   channel_id String?
   gateway_id BigInt?
 
-  latitude  Int?
-  longitude Int?
-  altitude  Int?
+  latitude     Int?
+  longitude    Int?
+  altitude     Int?
+  ground_speed Int?
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt

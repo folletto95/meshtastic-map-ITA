@@ -59,6 +59,7 @@ express.get("/api/v1/nodes/:nodeId/position-history", async (req, res) => {
 			latitude: number | null;
 			longitude?: number | null;
 			altitude: number | null;
+			ground_speed?: number | null;
 			gateway_id?: bigint | null;
 			channel_id?: string | null;
 			created_at: Date;
@@ -71,6 +72,7 @@ express.get("/api/v1/nodes/:nodeId/position-history", async (req, res) => {
 				type: "position",
 				latitude: position.latitude,
 				longitude: position.longitude,
+				ground_speed: position.ground_speed,
 				altitude: position.altitude,
 				gateway_id: position.gateway_id,
 				channel_id: position.channel_id,
@@ -91,7 +93,7 @@ express.get("/api/v1/nodes/:nodeId/position-history", async (req, res) => {
 
 		// sort oldest to newest
 		positionHistory.sort(
-			(a, b) => a.created_at.getTime() - b.created_at.getTime()
+			(a, b) => a.created_at.getTime() - b.created_at.getTime(),
 		);
 
 		res.json({
