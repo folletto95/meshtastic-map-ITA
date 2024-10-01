@@ -112,6 +112,14 @@ docker compose up
 
 You can just `git pull` or pull new image from Docekr Hub. Migrations will handle DB update.
 
+## Testing
+
+To execute unit tests, run the following;
+
+```
+npm run test
+```
+
 ## Contributing
 
 If you have a feature request, or find a bug, please [open an issue](https://github.com/Komelt/meshtastic-map/issues) here on GitHub.
