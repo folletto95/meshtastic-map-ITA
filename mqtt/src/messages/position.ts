@@ -110,6 +110,7 @@ export async function handlePosition(
 						longitude: position.longitudeI,
 						ground_speed: position.groundSpeed,
 						altitude: position.altitude,
+						position_precision: position.precisionBits,
 					},
 				});
 			}
