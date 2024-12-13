@@ -62,6 +62,7 @@ export async function handlePosition(
 			latitude: position.latitudeI,
 			longitude: position.longitudeI,
 			altitude: position.altitude !== 0 ? position.altitude : null,
+			position_precision: position.precisionBits,
 		};
 
 		// update node position in db
@@ -110,7 +111,6 @@ export async function handlePosition(
 						longitude: position.longitudeI,
 						ground_speed: position.groundSpeed,
 						altitude: position.altitude,
-						position_precision: position.precisionBits,
 					},
 				});
 			}

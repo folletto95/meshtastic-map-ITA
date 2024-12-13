@@ -5,291 +5,291 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+    provider = "mysql"
+    url      = env("DATABASE_URL")
 }
 
 model Node {
-  id             BigInt   @id @default(autoincrement())
-  node_id        BigInt   @unique
-  long_name      String
-  short_name     String
-  hardware_model Int
-  role           Int
-  is_licensed    Boolean?
+    id             BigInt   @id @default(autoincrement())
+    node_id        BigInt   @unique
+    long_name      String
+    short_name     String
+    hardware_model Int
+    role           Int
+    is_licensed    Boolean?
 
-  firmware_version       String?
-  region                 Int?
-  modem_preset           Int?
-  has_default_channel    Boolean?
-  position_precision     Int?
-  num_online_local_nodes Int?
+    firmware_version       String?
+    region                 Int?
+    modem_preset           Int?
+    has_default_channel    Boolean?
+    position_precision     Int?
+    num_online_local_nodes Int?
 
-  latitude            Int?
-  longitude           Int?
-  altitude            Int?
-  position_updated_at DateTime?
+    latitude            Int?
+    longitude           Int?
+    altitude            Int?
+    position_updated_at DateTime?
 
-  battery_level       Int?
-  voltage             Decimal?
-  channel_utilization Decimal?
-  air_util_tx         Decimal?
-  uptime_seconds      BigInt?
+    battery_level       Int?
+    voltage             Decimal?
+    channel_utilization Decimal?
+    air_util_tx         Decimal?
+    uptime_seconds      BigInt?
 
-  temperature         Decimal?
-  relative_humidity   Decimal?
-  barometric_pressure Decimal?
+    temperature         Decimal?
+    relative_humidity   Decimal?
+    barometric_pressure Decimal?
 
-  neighbour_broadcast_interval_secs Int?
-  neighbours                        Json?
-  neighbours_updated_at             DateTime?
+    neighbour_broadcast_interval_secs Int?
+    neighbours                        Json?
+    neighbours_updated_at             DateTime?
 
-  // this column tracks when an mqtt gateway node uplinked a packet
-  mqtt_connection_state_updated_at DateTime?
+    // this column tracks when an mqtt gateway node uplinked a packet
+    mqtt_connection_state_updated_at DateTime?
 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
 
-  @@index(created_at)
-  @@index(updated_at)
-  @@index(position_updated_at)
-  @@index(node_id)
-  @@map("nodes")
+    @@index(created_at)
+    @@index(updated_at)
+    @@index(position_updated_at)
+    @@index(node_id)
+    @@map("nodes")
 }
 
 model MapReport {
-  id               BigInt @id @default(autoincrement())
-  node_id          BigInt
-  long_name        String
-  short_name       String
-  role             Int
-  hardware_model   Int
-  firmware_version String
+    id               BigInt @id @default(autoincrement())
+    node_id          BigInt
+    long_name        String
+    short_name       String
+    role             Int
+    hardware_model   Int
+    firmware_version String
 
-  region                 Int?
-  modem_preset           Int?
-  has_default_channel    Boolean?
-  latitude               Int?
-  longitude              Int?
-  altitude               Int?
-  position_precision     Int?
-  num_online_local_nodes Int?
+    region                 Int?
+    modem_preset           Int?
+    has_default_channel    Boolean?
+    latitude               Int?
+    longitude              Int?
+    altitude               Int?
+    position_precision     Int?
+    num_online_local_nodes Int?
 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
 
-  @@index(created_at)
-  @@index(updated_at)
-  @@index(node_id)
-  @@map("map_reports")
+    @@index(created_at)
+    @@index(updated_at)
+    @@index(node_id)
+    @@map("map_reports")
 }
 
 model NeighbourInfo {
-  id                           BigInt @id @default(autoincrement())
-  node_id                      BigInt
-  node_broadcast_interval_secs Int
-  neighbours                   Json
+    id                           BigInt @id @default(autoincrement())
+    node_id                      BigInt
+    node_broadcast_interval_secs Int
+    neighbours                   Json
 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
 
-  @@index(created_at)
-  @@index(updated_at)
-  @@index(node_id)
-  @@map("neighbour_infos")
+    @@index(created_at)
+    @@index(updated_at)
+    @@index(node_id)
+    @@map("neighbour_infos")
 }
 
 model DeviceMetric {
-  id      BigInt @id @default(autoincrement())
-  node_id BigInt
+    id      BigInt @id @default(autoincrement())
+    node_id BigInt
 
-  battery_level       Int?
-  voltage             Decimal?
-  channel_utilization Decimal?
-  air_util_tx         Decimal?
+    battery_level       Int?
+    voltage             Decimal?
+    channel_utilization Decimal?
+    air_util_tx         Decimal?
 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
 
-  @@index(created_at)
-  @@index(updated_at)
-  @@index(node_id)
-  @@map("device_metrics")
+    @@index(created_at)
+    @@index(updated_at)
+    @@index(node_id)
+    @@map("device_metrics")
 }
 
 model EnvironmentMetric {
-  id        BigInt  @id @default(autoincrement())
-  node_id   BigInt
-  packet_id BigInt?
+    id        BigInt  @id @default(autoincrement())
+    node_id   BigInt
+    packet_id BigInt?
 
-  temperature         Decimal?
-  relative_humidity   Decimal?
-  barometric_pressure Decimal?
-  gas_resistance      Decimal?
-  voltage             Decimal?
-  current             Decimal?
-  iaq                 Int?
+    temperature         Decimal?
+    relative_humidity   Decimal?
+    barometric_pressure Decimal?
+    gas_resistance      Decimal?
+    voltage             Decimal?
+    current             Decimal?
+    iaq                 Int?
 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
 
-  @@index(created_at)
-  @@index(updated_at)
-  @@index(node_id)
-  @@index(packet_id)
-  @@map("environment_metrics")
+    @@index(created_at)
+    @@index(updated_at)
+    @@index(node_id)
+    @@index(packet_id)
+    @@map("environment_metrics")
 }
 
 model PowerMetric {
-  id        BigInt  @id @default(autoincrement())
-  node_id   BigInt
-  packet_id BigInt?
+    id        BigInt  @id @default(autoincrement())
+    node_id   BigInt
+    packet_id BigInt?
 
-  ch1_voltage Decimal?
-  ch1_current Decimal?
-  ch2_voltage Decimal?
-  ch2_current Decimal?
-  ch3_voltage Decimal?
-  ch3_current Decimal?
+    ch1_voltage Decimal?
+    ch1_current Decimal?
+    ch2_voltage Decimal?
+    ch2_current Decimal?
+    ch3_voltage Decimal?
+    ch3_current Decimal?
 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
 
-  @@index(created_at)
-  @@index(updated_at)
-  @@index(node_id)
-  @@index(packet_id)
-  @@map("power_metrics")
+    @@index(created_at)
+    @@index(updated_at)
+    @@index(node_id)
+    @@index(packet_id)
+    @@map("power_metrics")
 }
 
 model Position {
-  id      BigInt @id @default(autoincrement())
-  node_id BigInt
+    id      BigInt @id @default(autoincrement())
+    node_id BigInt
 
-  to         BigInt
-  from       BigInt
-  channel    Int?
-  packet_id  BigInt?
-  channel_id String?
-  gateway_id BigInt?
+    to         BigInt
+    from       BigInt
+    channel    Int?
+    packet_id  BigInt?
+    channel_id String?
+    gateway_id BigInt?
 
-  latitude     Int?
-  longitude    Int?
-  altitude     Int?
-  ground_speed Int?
+    latitude     Int?
+    longitude    Int?
+    altitude     Int?
+    ground_speed Int?
 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
 
-  @@index(created_at)
-  @@index(updated_at)
-  @@index(node_id)
-  @@index(packet_id)
-  @@map("positions")
+    @@index(created_at)
+    @@index(updated_at)
+    @@index(node_id)
+    @@index(packet_id)
+    @@map("positions")
 }
 
 model ServiceEnvelope {
-  id         BigInt  @id @default(autoincrement())
-  mqtt_topic String
-  channel_id String
-  gateway_id BigInt?
-  to         BigInt
-  from       BigInt
-  protobuf   Bytes
+    id         BigInt  @id @default(autoincrement())
+    mqtt_topic String
+    channel_id String
+    gateway_id BigInt?
+    to         BigInt
+    from       BigInt
+    protobuf   Bytes
 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
 
-  @@index(created_at)
-  @@index(updated_at)
-  @@index(gateway_id)
-  @@map("service_envelopes")
+    @@index(created_at)
+    @@index(updated_at)
+    @@index(gateway_id)
+    @@map("service_envelopes")
 }
 
 model TextMessage {
-  id         BigInt  @id @default(autoincrement())
-  to         BigInt
-  from       BigInt
-  channel    Int
-  packet_id  BigInt
-  channel_id String
-  gateway_id BigInt?
+    id         BigInt  @id @default(autoincrement())
+    to         BigInt
+    from       BigInt
+    channel    Int
+    packet_id  BigInt
+    channel_id String
+    gateway_id BigInt?
 
-  text String
+    text String
 
-  rx_time   BigInt?
-  rx_snr    Decimal?
-  rx_rssi   Int?
-  hop_limit Int?
+    rx_time   BigInt?
+    rx_snr    Decimal?
+    rx_rssi   Int?
+    hop_limit Int?
 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
 
-  @@index(created_at)
-  @@index(updated_at)
-  @@index(to)
-  @@index(from)
-  @@index(packet_id)
-  @@index(gateway_id)
-  @@map("text_messages")
+    @@index(created_at)
+    @@index(updated_at)
+    @@index(to)
+    @@index(from)
+    @@index(packet_id)
+    @@index(gateway_id)
+    @@map("text_messages")
 }
 
 model TraceRoute {
-  id            BigInt  @id @default(autoincrement())
-  to            BigInt
-  from          BigInt
-  want_response Boolean
-  route         Json
-  snr_towards   Json?
-  route_back    Json?
-  snr_back      Json?
+    id            BigInt  @id @default(autoincrement())
+    to            BigInt
+    from          BigInt
+    want_response Boolean
+    route         Json
+    snr_towards   Json?
+    route_back    Json?
+    snr_back      Json?
 
-  channel    Int?
-  packet_id  BigInt?
-  channel_id String?
-  gateway_id BigInt?
+    channel    Int?
+    packet_id  BigInt?
+    channel_id String?
+    gateway_id BigInt?
 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
 
-  @@index(created_at)
-  @@index(updated_at)
-  @@index(to)
-  @@index(from)
-  @@map("traceroutes")
+    @@index(created_at)
+    @@index(updated_at)
+    @@index(to)
+    @@index(from)
+    @@map("traceroutes")
 }
 
 model Waypoint {
-  id          BigInt  @id @default(autoincrement())
-  from        BigInt
-  to          BigInt
-  waypoint_id BigInt
-  latitude    Int
-  longitude   Int
-  expire      BigInt?
-  locked_to   BigInt?
-  name        String?
-  description String?
-  icon        Int?
+    id          BigInt  @id @default(autoincrement())
+    from        BigInt
+    to          BigInt
+    waypoint_id BigInt
+    latitude    Int
+    longitude   Int
+    expire      BigInt?
+    locked_to   BigInt?
+    name        String?
+    description String?
+    icon        Int?
 
-  channel    Int
-  packet_id  BigInt
-  channel_id String
-  gateway_id BigInt?
+    channel    Int
+    packet_id  BigInt
+    channel_id String
+    gateway_id BigInt?
 
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
 
-  @@index(created_at)
-  @@index(updated_at)
-  @@index(to)
-  @@index(from)
-  @@index(waypoint_id)
-  @@index(packet_id)
-  @@index(gateway_id)
-  @@map("waypoints")
+    @@index(created_at)
+    @@index(updated_at)
+    @@index(to)
+    @@index(from)
+    @@index(waypoint_id)
+    @@index(packet_id)
+    @@index(gateway_id)
+    @@map("waypoints")
 }
