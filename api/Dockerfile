@@ -6,6 +6,8 @@ COPY ./api/ /app/
 
 COPY ./prisma /app/
 
+RUN apk add --no-cache openssl
+
 RUN npm config set @buf:registry https://buf.build/gen/npm/v1/
 
 RUN npm install --frozen-lockfile
