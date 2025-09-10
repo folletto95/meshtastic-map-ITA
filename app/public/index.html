@@ -17,7 +17,7 @@
 		<meta property="og:title" content="Meshtastic Map" />
 		<meta
 			property="og:description"
-			content="An interactive map of all Meshtastic nodes." />
+			content="An interactive map of Slovenian Meshtastic nodes." />
 
 		<!-- tailwind css -->
 		<script src="assets/js/tailwindcss/tailwind-v3.4.3-forms-v0.5.7.js"></script>
@@ -58,6 +58,23 @@
 		<!-- chart js -->
 		<script src="assets/js/chart.js@4.4.2/dist/chart.umd.js"></script>
 		<script src="assets/js/chartjs-adapter-moment/chartjs-adapter-moment.js"></script>
+
+		<!-- plausible -->
+		<script>
+			(function () {
+			var ALLOWED_HOST = 'map.meshnet.si';
+			if (location.hostname === ALLOWED_HOST) {
+				// queue plausible events until the real script loads
+				window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments) };
+				// inject the Plausible script
+				var s = document.createElement('script');
+				s.defer = true;
+				s.setAttribute('data-domain', 'map.meshnet.si');
+				s.src = 'https://analytics.komelt.dev/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js';
+				document.head.appendChild(s);
+			}
+			})();
+		</script>
 
 		<style>
 			/* used to prevent ui flicker before vuejs loads */
