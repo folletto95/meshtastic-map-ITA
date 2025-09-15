@@ -1,5 +1,5 @@
 **Creato da:** [Liam Cottle](https://liamcottle.com)\
-**Fork di:** [Tilen Komel](https://github.com/KomelT)
+**Fork di:** [Tilen Komel](https://github.com/KomelT)\
 **Fork di:** [Niccolò Malenotti](https://github.com/folletto95)
 
 <h2 align="center">Mappa Meshtastic</h2>
