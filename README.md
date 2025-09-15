@@ -6,7 +6,7 @@
 
 Una mappa di tutti i nodi Meshtastic ricevuti tramite MQTT.
 
-La versione pubblica della mappa è disponibile all'indirizzo https://map.meshnet.si
+La versione pubblica della mappa è disponibile all'indirizzo http://smpisa.ddns:9090
 
 <img src="./screenshot.png" alt="Anteprima della Mappa Meshtastic">
 
