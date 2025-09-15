@@ -13,14 +13,14 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/liamcottle/meshtastic-map.git"
+		"url": "git+https://github.com/meshtastic-map-ITA/meshtastic-map-ITA.git"
 	},
 	"author": "",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/liamcottle/meshtastic-map/issues"
+		"url": "https://github.com/meshtastic-map-ITA/meshtastic-map-ITA/issues"
 	},
-	"homepage": "https://github.com/liamcottle/meshtastic-map#readme",
+	"homepage": "https://github.com/meshtastic-map-ITA/meshtastic-map-ITA#readme",
 	"devDependencies": {
 		"@biomejs/biome": "1.9.2",
 		"@types/node": "^22.2.0",
