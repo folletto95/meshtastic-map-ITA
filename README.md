@@ -1,136 +1,136 @@
-**Created by:** Liam Cottle\
-**Forked by:** Tilen Komel
+**Creato da:** [Liam Cottle](https://liamcottle.com)\
+**Fork di:** [Tilen Komel](https://github.com/KomelT)
 
-<h2 align="center">Meshtastic Map</h2>
+<h2 align="center">Mappa Meshtastic</h2>
 
-A map of all Meshtastic nodes heard via MQTT.
+Una mappa di tutti i nodi Meshtastic ricevuti tramite MQTT.
 
-My version of the map is available at https://map.meshnet.si
+La versione pubblica della mappa è disponibile all'indirizzo https://map.meshnet.si
 
-<img src="./screenshot.png">
+<img src="./screenshot.png" alt="Anteprima della Mappa Meshtastic">
 
-## How does it work?
+## Come funziona?
 
-- An [mqtt client](./src/mqtt.js) is persistently connected to `mqtt.meshnet.si` and subscribed to the `si/#` topic.
-- All messages received are attempted to be decoded as [ServiceEnvelope](https://buf.build/meshtastic/protobufs/docs/main:meshtastic#meshtastic.ServiceEnvelope) packets.
-- If a packet is encrypted, it attempts to decrypt it with the default `AQ==` key.
-- If a packet can't be decoded as a `ServiceEnvelope`, it is ignored.
-- `NODEINFO_APP` packets add a node to the database.
-- `POSITION_APP` packets update the position of a node in the database.
-- `NEIGHBORINFO_APP` packets log neighbours heard by a node to the database.
-- `TELEMETRY_APP` packets update battery and voltage metrics for a node in the database.
-- `TRACEROUTE_APP` packets log all trace routes performed by a node to the database.
-- `MAP_REPORT_APP` packets are stored in the database, but are not widely adopted, so are not used yet.
-- The database is a MySQL server, and a nodejs express server is running an API to serve data to the map interface.
+- Un [client MQTT](./mqtt/src/mqtt.ts) resta connesso a `mqtt.meshnet.si` e sottoscrive il topic `si/#`.
+- Tutti i messaggi ricevuti vengono decodificati come pacchetti [ServiceEnvelope](https://buf.build/meshtastic/protobufs/docs/main:meshtastic#meshtastic.ServiceEnvelope).
+- Se un pacchetto è cifrato, si tenta la decifratura con la chiave predefinita `AQ==`.
+- I pacchetti che non possono essere decodificati come `ServiceEnvelope` vengono ignorati.
+- I pacchetti `NODEINFO_APP` aggiungono un nodo al database.
+- I pacchetti `POSITION_APP` aggiornano la posizione del nodo nel database.
+- I pacchetti `NEIGHBORINFO_APP` registrano i vicini ascoltati da un nodo nel database.
+- I pacchetti `TELEMETRY_APP` aggiornano le metriche di batteria e tensione di un nodo nel database.
+- I pacchetti `TRACEROUTE_APP` memorizzano tutti i traceroute effettuati da un nodo nel database.
+- I pacchetti `MAP_REPORT_APP` vengono salvati nel database ma, poiché poco diffusi, non sono ancora utilizzati.
+- Il database è un server MySQL e un server Express Node.js espone un'API che fornisce i dati all'interfaccia della mappa.
 
-## Features
+## Funzionalità
 
-- [x] Connects to mqtt.meshtastic.org to collect nodes and metrics.
-- [x] Shows nodes on the map if they have reported a valid position.
-- [x] Search bar to find nodes by ID, Hex ID, Short Name and Long Name.
-- [x] Hover over nodes on the map to see basic information and a preview image.
-- [x] Click nodes on the map to show a sidebar with more info such as telemetry graphs and traceroutes.
-- [x] Ability to share a direct link to a node. The map will auto navigate to it.
-- [x] Device list. To see which hardware models are most popular.
-- [x] Mobile optimised layout.
-- [x] Settings available to hide nodes from the map if they haven't been updated in a while.
-- [x] Real-Time message UI to view `TEXT_MESSAGE_APP` packets as they come in.
-- [x] View position history of a node between a selectable time range.
-- [x] "Neighbours" map layer. Shows blue connection lines between nodes that heard the other node.
-  - This information is taken from the `NEIGHBORINFO_APP`.
-  - Some neighbour lines are clearly wrong.
-  - Meshtastic firmware older than [v2.3.2](https://github.com/meshtastic/firmware/releases/tag/v2.3.2.63df972) reports MQTT nodes as Neighbours.
-  - This was fixed in [meshtastic/firmware/#3457](https://github.com/meshtastic/firmware/pull/3457), but adoption will likely be slow...
+- [x] Connessione a mqtt.meshtastic.org per raccogliere nodi e metriche.
+- [x] Visualizzazione dei nodi sulla mappa quando inviano una posizione valida.
+- [x] Barra di ricerca per trovare nodi per ID, ID esadecimale, nome corto o nome lungo.
+- [x] Passa il mouse sui nodi per vedere informazioni di base e un'immagine di anteprima.
+- [x] Clicca sui nodi per aprire una barra laterale con altre informazioni, come grafici di telemetria e traceroute.
+- [x] Possibilità di condividere un link diretto a un nodo. La mappa si posizionerà automaticamente.
+- [x] Elenco dei dispositivi per vedere quali modelli hardware sono più diffusi.
+- [x] Layout ottimizzato per dispositivi mobili.
+- [x] Impostazioni per nascondere i nodi che non vengono aggiornati da tempo.
+- [x] Interfaccia in tempo reale per visualizzare i pacchetti `TEXT_MESSAGE_APP` non appena arrivano.
+- [x] Cronologia delle posizioni di un nodo con intervallo temporale selezionabile.
+- [x] Layer "Neighbours" che mostra linee di connessione blu tra nodi che si sono ascoltati a vicenda.
+  - Le informazioni provengono dai pacchetti `NEIGHBORINFO_APP`.
+  - Alcune linee possono risultare errate.
+  - Le versioni del firmware Meshtastic precedenti alla [v2.3.2](https://github.com/meshtastic/firmware/releases/tag/v2.3.2.63df972) riportano i nodi MQTT come vicini.
+  - Il problema è stato risolto in [meshtastic/firmware#3457](https://github.com/meshtastic/firmware/pull/3457), ma l'adozione potrebbe essere lenta.
 
-## Dev
+## Sviluppo
 
-Clone the project repo:
+Clona il repository:
 
 ```
-git clone https://github.com/KomelT/meshtastic-map
-cd meshtastic-map
+git clone https://github.com/meshtastic-map-ITA/meshtastic-map-ITA
+cd meshtastic-map-ITA
 ```
 
-Build Docker images:
+Compila le immagini Docker:
 
 ```
 docker compose -f docker-compose.dev.yaml build
 ```
 
-Update environment variables:
+Aggiorna le variabili d'ambiente:
 
 ```
 nano docker-compose.yaml
 ```
 
-ENV lists:
+Elenco variabili d'ambiente:
 
 - [MQTT](./mqtt/src/settings.ts)
 - [API](./api/src/settings.ts)
 - [APP](./app/index.js)
 
-Run:
+Avvia i servizi:
 
 ```
 docker compose -f docker-compose.dev.yaml up
 ```
 
-## Run
+## Esecuzione
 
-Clone the project repo:
+Clona il repository:
 
 ```
-git clone https://github.com/KomelT/meshtastic-map
-cd meshtastic-map
+git clone https://github.com/meshtastic-map-ITA/meshtastic-map-ITA
+cd meshtastic-map-ITA
 ```
 
-Build Docker images:
+Compila le immagini Docker:
 
 ```
 docker compose build
 ```
 
-Update environment variables:
+Aggiorna le variabili d'ambiente:
 
 ```
 nano docker-compose.yaml
 ```
 
-ENV lists:
+Elenco variabili d'ambiente:
 
 - [MQTT](./mqtt/src/settings.ts)
 - [API](./api/src/settings.ts)
 - [APP](./app/index.js)
 
-Run:
+Avvia i servizi:
 
 ```
 docker compose up
 ```
 
-## Updating
+## Aggiornamenti
 
-You can just `git pull` or pull new image from Docekr Hub. Migrations will handle DB update.
+È sufficiente eseguire `git pull` o scaricare l'immagine aggiornata da Docker Hub. Le migrazioni gestiranno automaticamente l'aggiornamento del database.
 
-## Testing
+## Test
 
-To execute unit tests, run the following;
+Per eseguire i test unitari:
 
 ```
 npm run test
 ```
 
-## Contributing
+## Contribuire
 
-If you have a feature request, or find a bug, please [open an issue](https://github.com/Komelt/meshtastic-map/issues) here on GitHub.
+Se vuoi proporre una nuova funzionalità o hai trovato un bug, [apri una issue](https://github.com/meshtastic-map-ITA/meshtastic-map-ITA/issues) su GitHub.
 
-## License
+## Licenza
 
 MIT
 
-## Legal
+## Note legali
 
-This project is not affiliated with or endorsed by the Meshtastic project.
-The Meshtastic logo is the trademark of Meshtastic LLC.
+Questo progetto non è affiliato né approvato dal progetto Meshtastic.
+Il logo Meshtastic è un marchio registrato di Meshtastic LLC.
 
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+IL SOFTWARE È FORNITO "COSÌ COM'È", SENZA ALCUN TIPO DI GARANZIA, ESPRESSA O IMPLICITA, INCLUSE MA NON LIMITATE ALLE GARANZIE DI COMMERCIABILITÀ, IDONEITÀ A UNO SCOPO SPECIFICO E NON VIOLAZIONE. IN NESSUN CASO GLI AUTORI O I TITOLARI DEL COPYRIGHT POTRANNO ESSERE RITENUTI RESPONSABILI PER QUALSIASI RECLAMO, DANNO O ALTRA RESPONSABILITÀ, SIA IN UN'AZIONE CONTRATTUALE, CIVILE O DI ALTRO TIPO, DERIVANTE DA, O CONNESSA A, IL SOFTWARE O L'USO O ALTRE OPERAZIONI NEL SOFTWARE.

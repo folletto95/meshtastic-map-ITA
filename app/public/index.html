@@ -55,12 +55,15 @@
 		<!-- axios -->
 		<script src="assets/js/axios@1.6.8/dist/axios.min.js"></script>
 
-		<!-- chart js -->
-		<script src="assets/js/chart.js@4.4.2/dist/chart.umd.js"></script>
-		<script src="assets/js/chartjs-adapter-moment/chartjs-adapter-moment.js"></script>
+                <!-- chart js -->
+                <script src="assets/js/chart.js@4.4.2/dist/chart.umd.js"></script>
+                <script src="assets/js/chartjs-adapter-moment/chartjs-adapter-moment.js"></script>
 
-		<!-- plausible -->
-		<script>
+                <!-- localisation -->
+                <script src="assets/js/i18n.js"></script>
+
+                <!-- plausible -->
+                <script>
 			(function () {
 			var ALLOWED_HOST = 'map.meshnet.si';
 			if (location.hostname === ALLOWED_HOST) {
@@ -265,11 +268,11 @@
 						<div
 							class="mx-3 flex-1 relative"
 							:class="{ 'hidden lg:block': !isShowingMobileSearch }">
-							<input
-								v-model="searchText"
-								type="text"
-								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-								:placeholder="`Search ${nodes.length} nodes...`" />
+                                                        <input
+                                                                v-model="searchText"
+                                                                type="text"
+                                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                                :placeholder="searchPlaceholder" />
 							<div
 								v-if="searchText !== ''"
 								class="absolute z-search bg-white w-full border border-gray-200 rounded-lg shadow-md mt-1 overflow-y-scroll max-h-80 divide-y divide-gray-200">
@@ -577,7 +580,7 @@
 
 												<a
 													target="_blank"
-													href="https://github.com/KomelT/meshtastic-map"
+                                                                                                        href="https://github.com/meshtastic-map-ITA/meshtastic-map-ITA"
 													title="GitHub"
 													class="raise inline-flex items-center p-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-[#333333] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#333333]">
 													<svg
@@ -697,7 +700,7 @@
 														<a
 															class="link"
 															target="_blank"
-															href="https://github.com/Komelt/meshtastic-map/issues"
+                                                                                                                        href="https://github.com/meshtastic-map-ITA/meshtastic-map-ITA/issues"
 															>Open an issue</a
 														>
 														on GitHub.
@@ -1247,9 +1250,12 @@
 													Has Default Channel
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
-													<span v-if="selectedNode.has_default_channel != null"
-														>{{ selectedNode.has_default_channel ? "Yes" : "No"
-														}}</span
+                                                                                                        <span v-if="selectedNode.has_default_channel != null"
+                                                                                                                >{{
+                                                                                                                        selectedNode.has_default_channel
+                                                                                                                                ? translateText("Yes")
+                                                                                                                                : translateText("No")
+                                                                                                                }}</span
 													>
 													<span v-else>???</span>
 												</div>
@@ -2199,10 +2205,31 @@
 									</div>
 								</div>
 
-								<div class="overflow-y-auto divide-y divide-gray-200">
-									<!-- configNodesMaxAgeInSeconds -->
-									<div class="p-2">
-										<label class="block text-sm font-medium text-gray-900"
+                                                                <div class="overflow-y-auto divide-y divide-gray-200">
+                                                                        <!-- language selection -->
+                                                                        <div class="p-2">
+                                                                                <label class="block text-sm font-medium text-gray-900"
+                                                                                        >Language</label
+                                                                                >
+                                                                                <div class="text-xs text-gray-600 mb-2">
+                                                                                        Choose the interface language.
+                                                                                </div>
+                                                                                <select
+                                                                                        v-model="language"
+                                                                                        @change="onLanguageChange"
+                                                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                                                                        <option
+                                                                                                v-for="option in languageOptions"
+                                                                                                :key="option.code"
+                                                                                                :value="option.code">
+                                                                                                {{ option.label }}
+                                                                                        </option>
+                                                                                </select>
+                                                                        </div>
+
+                                                                        <!-- configNodesMaxAgeInSeconds -->
+                                                                        <div class="p-2">
+                                                                                <label class="block text-sm font-medium text-gray-900"
 											>Nodes Max Age</label
 										>
 										<div class="text-xs text-gray-600 mb-2">
@@ -2801,18 +2828,25 @@
 				return localStorage.setItem("config_zoom_level_go_to_node", value);
 			}
 
-			function isMobile() {
-				return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-					navigator.userAgent
-				);
-			}
-		</script>
+                function isMobile() {
+                        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                                navigator.userAgent
+                        );
+                }
+
+                const translate = (english) => window.i18n.translateString(english);
+                const translateTemplate = (template, params) =>
+                        window.i18n.translateTemplate(template, params);
+                </script>
 
 		<script>
 			Vue.createApp({
-				data() {
-					return {
-						isShowingAnnouncement: this.shouldShowAnnouncement(),
+                                data() {
+                                        return {
+                                                language: window.i18n.language,
+                                                languageOptions: window.i18n.getLanguageOptions(),
+
+                                                isShowingAnnouncement: this.shouldShowAnnouncement(),
 
 						configNodesMaxAgeInSeconds: window.getConfigNodesMaxAgeInSeconds(),
 						configNodesDisconnectedAgeInSeconds:
@@ -2866,9 +2900,16 @@
 						moment: window.moment,
 					};
 				},
-				mounted: function () {
-					// load data
-					this.loadHardwareModelStats();
+                                mounted: function () {
+                                        window.i18n.refresh();
+                                        window.addEventListener(
+                                                "i18n:language-changed",
+                                                this.handleLanguageChangeEvent,
+                                        );
+                                        this.languageOptions = window.i18n.getLanguageOptions();
+
+                                        // load data
+                                        this.loadHardwareModelStats();
 
 					// handle map click callback from outside of vue
 					window._onMapClick = () => {
@@ -2900,12 +2941,37 @@
 					};
 
 					// handle nodes updated callback from outside of vue
-					window._onNodesUpdated = (nodes) => {
-						this.nodes = nodes;
-					};
-				},
-				methods: {
-					getAnnouncementId: function () {
+                                        window._onNodesUpdated = (nodes) => {
+                                                this.nodes = nodes;
+                                                window.i18n.refresh();
+                                        };
+                                },
+                                beforeUnmount: function () {
+                                        window.removeEventListener(
+                                                "i18n:language-changed",
+                                                this.handleLanguageChangeEvent,
+                                        );
+                                },
+                                methods: {
+                                        translateText: function (value) {
+                                                return translate(value);
+                                        },
+                                        translateTemplate: function (template, params) {
+                                                return translateTemplate(template, params);
+                                        },
+                                        onLanguageChange: function () {
+                                                window.i18n.setLanguage(this.language);
+                                                this.languageOptions = window.i18n.getLanguageOptions();
+                                        },
+                                        handleLanguageChangeEvent: function (event) {
+                                                const newLanguage = event?.detail?.language;
+                                                if (!newLanguage) {
+                                                        return;
+                                                }
+                                                this.language = newLanguage;
+                                                this.languageOptions = window.i18n.getLanguageOptions();
+                                        },
+                                        getAnnouncementId: function () {
 						// change this when making a new announcement
 						return "1";
 					},
@@ -3159,26 +3225,26 @@
 							data: {
 								labels: labels,
 								datasets: [
-									{
-										label: "Battery Level",
-										borderColor: "#3b82f6",
-										backgroundColor: "#3b82f6",
+                                                                        {
+                                                                                label: translate("Battery Level"),
+                                                                                borderColor: "#3b82f6",
+                                                                                backgroundColor: "#3b82f6",
 										pointStyle: false, // no points
 										fill: false,
 										data: batteryMetrics,
 									},
-									{
-										label: "Channel Util",
-										borderColor: "#22c55e",
-										backgroundColor: "#22c55e",
+                                                                        {
+                                                                                label: translate("Channel Utilization"),
+                                                                                borderColor: "#22c55e",
+                                                                                backgroundColor: "#22c55e",
 										showLine: false, // no lines between points
 										fill: false,
 										data: channelUtilizationMetrics,
 									},
-									{
-										label: "Air Util TX",
-										borderColor: "#f97316",
-										backgroundColor: "#f97316",
+                                                                        {
+                                                                                label: translate("Air Util TX"),
+                                                                                borderColor: "#f97316",
+                                                                                backgroundColor: "#f97316",
 										showLine: false, // no lines between points
 										fill: false,
 										data: airUtilTxMetrics,
@@ -3186,26 +3252,26 @@
 								],
 								labels: labels,
 								datasets: [
-									{
-										label: "Battery Level",
-										borderColor: "#3b82f6",
-										backgroundColor: "#3b82f6",
+                                                                        {
+                                                                                label: translate("Battery Level"),
+                                                                                borderColor: "#3b82f6",
+                                                                                backgroundColor: "#3b82f6",
 										pointStyle: false, // no points
 										fill: false,
 										data: batteryMetrics,
 									},
-									{
-										label: "Channel Util",
-										borderColor: "#22c55e",
-										backgroundColor: "#22c55e",
+                                                                        {
+                                                                                label: translate("Channel Utilization"),
+                                                                                borderColor: "#22c55e",
+                                                                                backgroundColor: "#22c55e",
 										showLine: false, // no lines between points
 										fill: false,
 										data: channelUtilizationMetrics,
 									},
-									{
-										label: "Air Util TX",
-										borderColor: "#f97316",
-										backgroundColor: "#f97316",
+                                                                        {
+                                                                                label: translate("Air Util TX"),
+                                                                                borderColor: "#f97316",
+                                                                                backgroundColor: "#f97316",
 										showLine: false, // no lines between points
 										fill: false,
 										data: airUtilTxMetrics,
@@ -3642,19 +3708,21 @@
 					},
 					copyShareLinkForNode: function (nodeId) {
 						// make sure copy to clipboard is supported
-						if (!navigator.clipboard || !navigator.clipboard.writeText) {
-							alert(
-								"Clipboard not supported. Site must be served via https on iOS."
-							);
-							return;
-						}
+                                                if (!navigator.clipboard || !navigator.clipboard.writeText) {
+                                                        alert(
+                                                                translate(
+                                                                        "Clipboard not supported. Site must be served via https on iOS."
+                                                                ),
+                                                        );
+                                                        return;
+                                                }
 
 						// copy share link to clipboard
 						const url = this.getShareLinkForNode(nodeId);
 						navigator.clipboard.writeText(url);
 
 						// tell use we copied it
-						alert("Link copied to clipboard!");
+                                                alert(translate("Link copied to clipboard!"));
 					},
 					dismissShowingNodeNeighbours: function () {
 						window._onHideNodeNeighboursClick();
@@ -3673,8 +3741,8 @@
 						var hours = Math.floor((secondsToFormat % (3600 * 24)) / 3600);
 						var minutes = Math.floor((secondsToFormat % 3600) / 60);
 						var seconds = Math.floor(secondsToFormat % 60);
-						var daysPlural = days === 1 ? "day" : "days";
-						return `${days} ${daysPlural} ${hours}h ${minutes}m ${seconds}s`;
+                                                var daysLabel = days === 1 ? translate("day") : translate("days");
+                                                return `${days} ${daysLabel} ${hours}h ${minutes}m ${seconds}s`;
 					},
 					formatTemperature: function (celsius) {
 						switch (this.configTemperatureFormat) {
@@ -3725,8 +3793,13 @@
 						return brightness > 0.5 ? "#000000" : "#FFFFFF";
 					},
 				},
-				computed: {
-					searchedNodes() {
+                                computed: {
+                                        searchPlaceholder() {
+                                                return translateTemplate("Search {count} nodes...", {
+                                                        count: this.nodes.length,
+                                                });
+                                        },
+                                        searchedNodes() {
 						// search nodes
 						const nodes = this.nodes.filter((node) => {
 							const matchesId = node.node_id
@@ -4081,7 +4154,7 @@
 				// find node
 				var node = findNodeById(id);
 				if (!node) {
-					alert("Could not find node: " + id);
+                                        alert(`${translate("Could not find node:")} ${id}`);
 					return false;
 				}
 
@@ -5117,142 +5190,126 @@
 				return `±${positionPrecisionInMeters}m`;
 			}
 
-			function getTooltipContentForNode(node) {
-				// determine if node was recently heard uplinking packets to mqtt
-				const nodeHasUplinkedToMqttRecently =
-					hasNodeUplinkedToMqttRecently(node);
-				var mqttStatus = `<span class="text-blue-700">Disconnected</span>`;
-				if (node.mqtt_connection_state_updated_at) {
-					var mqttStatusUpdatedAt = moment(
-						new Date(node.mqtt_connection_state_updated_at)
-					).fromNow();
-					if (nodeHasUplinkedToMqttRecently) {
-						mqttStatus = `<span><span class="text-green-700">Connected</span> (${mqttStatusUpdatedAt})</span>`;
-					} else {
-						mqttStatus = `<span><span class="text-blue-700">Disconnected</span> (${mqttStatusUpdatedAt})</span>`;
-					}
-				}
+                        function getTooltipContentForNode(node) {
+                                const nodeHasUplinkedToMqttRecently = hasNodeUplinkedToMqttRecently(node);
+                                let mqttStatus = `<span class="text-blue-700">${translate("Disconnected")}</span>`;
+                                if (node.mqtt_connection_state_updated_at) {
+                                        const mqttStatusUpdatedAt = moment(
+                                                new Date(node.mqtt_connection_state_updated_at)
+                                        ).fromNow();
+                                        if (nodeHasUplinkedToMqttRecently) {
+                                                mqttStatus = `<span><span class="text-green-700">${translate("Connected")}</span> (${mqttStatusUpdatedAt})</span>`;
+                                        } else {
+                                                mqttStatus = `<span><span class="text-blue-700">${translate("Disconnected")}</span> (${mqttStatusUpdatedAt})</span>`;
+                                        }
+                                }
 
-				var loraFrequencyRange = getRegionFrequencyRange(node.region_name);
+                                const loraFrequencyRange = getRegionFrequencyRange(node.region_name);
 
-				var tooltip =
-					`<img class="mb-4 w-40 mx-auto" src="/images/devices/${node.hardware_model_name}.png" onerror="this.classList.add('hidden')"/>` +
-					`<b>${escapeString(node.long_name)}</b>` +
-					`<br/>Short Name: ${escapeString(node.short_name)}` +
-					`<br/>MQTT: ${mqttStatus}` +
-					(node.num_online_local_nodes != null
-						? `<br/>Local Nodes Online: ${node.num_online_local_nodes}`
-						: "") +
-					(node.position_precision != null && node.position_precision !== 32
-						? `<br/>Position Precision: ${formatPositionPrecision(
-								node.position_precision
-						  )}`
-						: "") +
-					`<br/><br/>Role: ${node.role_name}` +
-					`<br/>Hardware: ${node.hardware_model_name}` +
-					(node.firmware_version != null
-						? `<br/>Firmware: ${node.firmware_version}`
-						: "") +
-					(node.region_name != null
-						? `<br/>LoRa Region: ${node.region_name} (${loraFrequencyRange})`
-						: "") +
-					(node.modem_preset_name != null
-						? `<br/>Modem Preset: ${node.modem_preset_name}`
-						: "") +
-					(node.has_default_channel != null
-						? `<br/>Has Default Channel: ${
-								node.has_default_channel ? "Yes" : "No"
-						  }`
-						: "");
+                                let tooltip =
+                                        `<img class="mb-4 w-40 mx-auto" src="/images/devices/${node.hardware_model_name}.png" onerror="this.classList.add('hidden')"/>` +
+                                        `<b>${escapeString(node.long_name)}</b>` +
+                                        `<br/>${translate("Short Name:")} ${escapeString(node.short_name)}` +
+                                        `<br/>${translate("MQTT:")} ${mqttStatus}` +
+                                        (node.num_online_local_nodes != null
+                                                ? `<br/>${translate("Local Nodes Online:")} ${node.num_online_local_nodes}`
+                                                : "") +
+                                        (node.position_precision != null && node.position_precision !== 32
+                                                ? `<br/>${translate("Position Precision:")} ${formatPositionPrecision(
+                                                                node.position_precision
+                                                  )}`
+                                                : "") +
+                                        `<br/><br/>${translate("Role:")} ${node.role_name}` +
+                                        `<br/>${translate("Hardware:")} ${node.hardware_model_name}` +
+                                        (node.firmware_version != null
+                                                ? `<br/>${translate("Firmware:")} ${node.firmware_version}`
+                                                : "") +
+                                        (node.region_name != null
+                                                ? `<br/>${translate("LoRa Region:")} ${node.region_name} (${loraFrequencyRange})`
+                                                : "") +
+                                        (node.modem_preset_name != null
+                                                ? `<br/>${translate("Modem Preset:")} ${node.modem_preset_name}`
+                                                : "") +
+                                        (node.has_default_channel != null
+                                                ? `<br/>${translate("Has Default Channel:")} ${
+                                                                node.has_default_channel ? translate("Yes") : translate("No")
+                                                        }`
+                                                : "");
 
-				if (node.battery_level) {
-					if (node.battery_level > 100) {
-						tooltip += `<br/>Battery: ${
-							node.battery_level > 100 ? "Plugged In" : node.battery_level
-						}`;
-					} else {
-						tooltip += `<br/>Battery: ${node.battery_level}%`;
-					}
-				}
+                                if (node.battery_level) {
+                                        if (node.battery_level > 100) {
+                                                tooltip += `<br/>${translate("Battery:")} ${translate("Plugged In")}`;
+                                        } else {
+                                                tooltip += `<br/>${translate("Battery:")} ${node.battery_level}%`;
+                                        }
+                                }
 
-				if (node.voltage) {
-					tooltip += `<br/>Voltage: ${Number(node.voltage).toFixed(2)}V`;
-				}
+                                if (node.voltage) {
+                                        tooltip += `<br/>${translate("Voltage:")} ${Number(node.voltage).toFixed(2)}V`;
+                                }
 
-				if (node.channel_utilization) {
-					tooltip += `<br/>Ch Util: ${Number(node.channel_utilization).toFixed(
-						2
-					)}%`;
-				}
+                                if (node.channel_utilization) {
+                                        tooltip += `<br/>${translate("Ch Util:")} ${Number(node.channel_utilization).toFixed(2)}%`;
+                                }
 
-				if (node.air_util_tx) {
-					tooltip += `<br/>Air Util: ${Number(node.air_util_tx).toFixed(2)}%`;
-				}
+                                if (node.air_util_tx) {
+                                        tooltip += `<br/>${translate("Air Util:")} ${Number(node.air_util_tx).toFixed(2)}%`;
+                                }
 
-				// ignore alt above 42949000 due to https://github.com/meshtastic/firmware/issues/3109
-				if (node.altitude && node.altitude < 42949000) {
-					tooltip += `<br/>Altitude: ${node.altitude}m`;
-				}
+                                if (node.altitude && node.altitude < 42949000) {
+                                        tooltip += `<br/>${translate("Altitude:")} ${node.altitude}m`;
+                                }
 
-				// bottom info
-				tooltip += `<br/><br/>ID: ${node.node_id}`;
-				tooltip += `<br/>Hex ID: ${node.node_id_hex}`;
-				tooltip += `<br/>Updated: ${moment(
-					new Date(node.updated_at)
-				).fromNow()}`;
-				tooltip += node.neighbours_updated_at
-					? `<br/>Neighbours Updated: ${moment(
-							new Date(node.neighbours_updated_at)
-					  ).fromNow()}`
-					: "";
-				tooltip += node.position_updated_at
-					? `<br/>Position Updated: ${moment(
-							new Date(node.position_updated_at)
-					  ).fromNow()}`
-					: "";
+                                tooltip += `<br/><br/>${translate("ID:")} ${node.node_id}`;
+                                tooltip += `<br/>${translate("Hex ID:")} ${node.node_id_hex}`;
+                                tooltip += `<br/>${translate("Updated:")} ${moment(new Date(node.updated_at)).fromNow()}`;
+                                tooltip += node.neighbours_updated_at
+                                        ? `<br/>${translate("Neighbours Updated:")} ${moment(
+                                                        new Date(node.neighbours_updated_at)
+                                          ).fromNow()}`
+                                        : "";
+                                tooltip += node.position_updated_at
+                                        ? `<br/>${translate("Position Updated:")} ${moment(
+                                                        new Date(node.position_updated_at)
+                                          ).fromNow()}`
+                                        : "";
 
-				// show details button
-				tooltip += `<br/><br/><button onclick="showNodeDetails(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200 mb-1">Show Full Details</button>`;
-				tooltip += `<br/><button onclick="showNodeNeighboursThatHeardUs(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200 mb-1">Show Neighbours (Heard Us)</button>`;
-				tooltip += `<br/><button onclick="showNodeNeighboursThatWeHeard(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200">Show Neighbours (We Heard)</button>`;
-				tooltip += `</div>`;
+                                tooltip += `<br/><br/><button onclick="showNodeDetails(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200 mb-1">${translate("Show Full Details")}</button>`;
+                                tooltip += `<br/><button onclick="showNodeNeighboursThatHeardUs(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200 mb-1">${translate("Show Neighbours (Heard Us)")}</button>`;
+                                tooltip += `<br/><button onclick="showNodeNeighboursThatWeHeard(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200">${translate("Show Neighbours (We Heard)")}</button>`;
+                                tooltip += `</div>`;
 
-				return tooltip;
-			}
+                                return tooltip;
+                        }
 
 			function getTooltipContentForWaypoint(waypoint) {
-				// get from node name
-				var fromNode = findNodeById(waypoint.from);
+                                const fromNode = findNodeById(waypoint.from);
 
-				var tooltip =
-					`<b>${escapeString(waypoint.name)}</b>` +
-					(waypoint.description
-						? `<br/>${escapeString(waypoint.description)}`
-						: "") +
-					`<br/><br/>Expires: ${moment(
-						new Date(waypoint.expire * 1000)
-					).fromNow()}` +
-					`<br/>Lat/Lng: ${waypoint.latitude}, ${waypoint.longitude}` +
-					`<br/><br/>From ID: ${waypoint.from}` +
-					`<br/>From Hex ID: !${Number(waypoint.from).toString(16)}`;
+                                let tooltip =
+                                        `<b>${escapeString(waypoint.name)}</b>` +
+                                        (waypoint.description
+                                                ? `<br/>${escapeString(waypoint.description)}`
+                                                : "") +
+                                        `<br/><br/>${translate("Expires:")} ${moment(
+                                                new Date(waypoint.expire * 1000)
+                                        ).fromNow()}` +
+                                        `<br/>${translate("Lat/Lng:")} ${waypoint.latitude}, ${waypoint.longitude}` +
+                                        `<br/><br/>${translate("From ID:")} ${waypoint.from}` +
+                                        `<br/>${translate("From Hex ID:")} !${Number(waypoint.from).toString(16)}`;
 
-				// show node name this waypoint is from, if possible
-				if (fromNode != null) {
-					tooltip += `<br/>From Node: <a href="#" onclick="goToNode(${
-						waypoint.from
-					})">${escapeString(fromNode.long_name) || "Unnamed Node"}</a>`;
-				} else {
-					tooltip += `<br/>From Node: ???`;
-				}
+                                if (fromNode != null) {
+                                        const nodeName = escapeString(fromNode.long_name) || translate("Unnamed Node");
+                                        tooltip += `<br/>${translate("From Node:")} <a href="#" onclick="goToNode(${waypoint.from})">${nodeName}</a>`;
+                                } else {
+                                        tooltip += `<br/>${translate("From Node: ???")}`;
+                                }
 
-				// bottom info
-				tooltip += `<br/><br/>ID: ${waypoint.waypoint_id}`;
-				tooltip += `<br/>Updated: ${moment(
-					new Date(waypoint.updated_at)
-				).fromNow()}`;
+                                tooltip += `<br/><br/>${translate("ID:")} ${waypoint.waypoint_id}`;
+                                tooltip += `<br/>${translate("Updated:")} ${moment(new Date(waypoint.updated_at)).fromNow()}`;
 
-				return tooltip;
-			}
+                                return tooltip;
+                        }
+
 
 			window._onHideNodeNeighboursClick = function () {
 				cleanUpNodeNeighbours();

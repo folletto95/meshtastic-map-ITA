@@ -1,9 +1,9 @@
-# Donate
+# Donazioni
 
-Thank you for considering donating, this helps support my work on this project 😁
+Grazie per aver pensato a una donazione: ci aiuta a sostenere il lavoro su questo progetto 😁
 
-## How can I donate?
+## Come posso donare?
 
 - Bitcoin: 3FPBfiEwioWHFix3kZqe5bdU9F5o8mG8dh
 - Buy me a Coffee: [https://ko-fi.com/liamcottle](https://ko-fi.com/liamcottle)
-- Sponsor on GitHub: [https://github.com/sponsors/liamcottle](https://github.com/sponsors/liamcottle)
+- Sponsorizza su GitHub: [https://github.com/sponsors/liamcottle](https://github.com/sponsors/liamcottle)
