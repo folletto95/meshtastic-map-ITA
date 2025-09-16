@@ -2,11 +2,13 @@
 **Fork di:** [Tilen Komel](https://github.com/KomelT)\
 **Fork di:** [Niccolò Malenotti](https://github.com/folletto95)
 
+
 <h2 align="center">Mappa Meshtastic</h2>
 
 Una mappa di tutti i nodi Meshtastic ricevuti tramite MQTT.
 
 La versione pubblica della mappa è disponibile all'indirizzo http://smpisa.ddns:9090
+
 
 <img src="./screenshot.png" alt="Anteprima della Mappa Meshtastic">
 
@@ -85,6 +87,7 @@ Clona il repository:
 
 ```
 git clone https://github.com/folletto95/meshtastic-map-ITA.git
+
 cd meshtastic-map-ITA
 ```
 
@@ -96,11 +99,11 @@ docker compose build
 
 Configura le variabili d'ambiente copiando il file di esempio e modificandolo se necessario:
 
+
 ```
 cp .env.example .env
 nano .env
 ```
-
 Il file `.env.example` elenca tutte le variabili supportate; Docker Compose leggerà automaticamente i valori definiti in `.env`.
 
 Elenco variabili d'ambiente:
