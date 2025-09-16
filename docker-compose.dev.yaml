@@ -27,7 +27,8 @@ services:
     ports:
       - 8081:80
     environment:
-      DATABASE_URL: "mysql://root:password@database:3306/meshtastic-map?connection_limit=100"
+      DATABASE_URL: "${DATABASE_URL:-mysql://root:password@database:3306/meshtastic-map?connection_limit=100}"
+      HTTP_PORT: "${API_HTTP_PORT:-80}"
     volumes:
       - ./api:/app
       - ./prisma:/app/prisma
@@ -42,7 +43,13 @@ services:
       database:
         condition: service_healthy
     environment:
-      DATABASE_URL: "mysql://root:password@database:3306/meshtastic-map?connection_limit=100"
+      DATABASE_URL: "${DATABASE_URL:-mysql://root:password@database:3306/meshtastic-map?connection_limit=100}"
+      MQTT_URL: "${MQTT_URL:-mqtt://mqtt.meshnet.si}"
+      MQTT_PROTOCOL: "${MQTT_PROTOCOL:-mqtt}"
+      MQTT_USERNAME: "${MQTT_USERNAME:-slovenia}"
+      MQTT_PASSWORD: "${MQTT_PASSWORD:-meshnet-si-slovenia}"
+      MQTT_CLIENT_ID: "${MQTT_CLIENT_ID:-map.meshnet.si}"
+      MQTT_TOPIC: "${MQTT_TOPIC:-si/#}"
     volumes:
       - ./mqtt:/app
       - ./prisma:/app/prisma
@@ -52,8 +59,8 @@ services:
     container_name: database
     image: bitnami/mariadb
     environment:
-      MARIADB_DATABASE: "meshtastic-map"
-      MARIADB_ROOT_PASSWORD: "password"
+      MARIADB_DATABASE: "${MARIADB_DATABASE:-meshtastic-map}"
+      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD:-password}"
     ports:
       - 3306:3306/tcp
     volumes:

@@ -58,11 +58,14 @@ Compila le immagini Docker:
 docker compose -f docker-compose.dev.yaml build
 ```
 
-Aggiorna le variabili d'ambiente:
+Configura le variabili d'ambiente copiando il file di esempio e modificandolo se necessario:
 
 ```
-nano docker-compose.yaml
+cp .env.example .env
+nano .env
 ```
+
+Il file `.env.example` elenca tutte le variabili supportate; Docker Compose leggerà automaticamente i valori definiti in `.env`.
 
 Elenco variabili d'ambiente:
 
@@ -91,11 +94,14 @@ Compila le immagini Docker:
 docker compose build
 ```
 
-Aggiorna le variabili d'ambiente:
+Configura le variabili d'ambiente copiando il file di esempio e modificandolo se necessario:
 
 ```
-nano docker-compose.yaml
+cp .env.example .env
+nano .env
 ```
+
+Il file `.env.example` elenca tutte le variabili supportate; Docker Compose leggerà automaticamente i valori definiti in `.env`.
 
 Elenco variabili d'ambiente:
 
