@@ -2857,7 +2857,14 @@
                         window.i18n.translateTemplate(template, params);
                 </script>
 
+		<script>
+			Vue.createApp({
+                                data() {
+                                        return {
+                                                language: window.i18n.language,
+                                                languageOptions: window.i18n.getLanguageOptions(),
 
+                                                isShowingAnnouncement: this.shouldShowAnnouncement(),
                 <script>
                         const METRIC_TIME_RANGE_DAYS = {
                                 "1d": 1,
@@ -2873,12 +2880,9 @@
                         const MILLISECONDS_PER_DAY = 86400 * 1000;
 
                         Vue.createApp({
-                                data() {
-                                        return {
-                                                language: window.i18n.language,
-                                                languageOptions: window.i18n.getLanguageOptions(),
-
-                                                isShowingAnnouncement: this.shouldShowAnnouncement(),
+				data() {
+					return {
+						isShowingAnnouncement: this.shouldShowAnnouncement(),
 
 						configNodesMaxAgeInSeconds: window.getConfigNodesMaxAgeInSeconds(),
 						configNodesDisconnectedAgeInSeconds:
