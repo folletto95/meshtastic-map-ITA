@@ -6,10 +6,8 @@ export const MQTT_URL: string =
 export const MQTT_PROTOCOL: MqttProtocol =
 	process.env.MQTT_PROTOCOL === "mqtts" ? "mqtts" : "mqtt";
 export const MQTT_USERNAME: string = process.env.MQTT_USERNAME || "Test";
-export const MQTT_PASSWORD: string =
-	process.env.MQTT_PASSWORD || "test";
-export const MQTT_CLIENT_ID: string =
-	process.env.MQTT_CLIENT_ID || "test";
+export const MQTT_PASSWORD: string = process.env.MQTT_PASSWORD || "test";
+export const MQTT_CLIENT_ID: string = process.env.MQTT_CLIENT_ID || "test";
 export const MQTT_TOPIC: string = process.env.MQTT_TOPIC || "msh/#";
 
 export const PURGE_INTERVAL_SECONDS: number = Number.parseInt(
@@ -22,7 +20,7 @@ export const PURGE_ENVIROMENT_METRICS_AFTER_SECONDS: number = Number.parseInt(
 	process.env.PURGE_ENVIROMENT_METRICS_AFTER_SECONDS || "604800",
 );
 export const PURGE_POWER_METRICS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_POWER_METRICS_AFTER_SECONDS || "604800",
+	process.env.PURGE_POWER_METRICS_AFTER_SECONDS || "0",
 );
 export const PURGE_MAP_REPORTS_AFTER_SECONDS: number = Number.parseInt(
 	process.env.PURGE_MAP_REPORTS_AFTER_SECONDS || "604800",
