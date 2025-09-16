@@ -2852,19 +2852,54 @@
                         );
                 }
 
-                const translate = (english) => window.i18n.translateString(english);
+                const FALLBACK_LANGUAGE_OPTIONS = [
+                        { code: "it", label: "Italiano" },
+                        { code: "en", label: "English" },
+                ];
+
+                const FALLBACK_I18N = {
+                        _language: FALLBACK_LANGUAGE_OPTIONS[0].code,
+                        get language() {
+                                return this._language;
+                        },
+                        setLanguage(language) {
+                                this._language = language;
+                        },
+                        refresh() {},
+                        translateString(value) {
+                                return value;
+                        },
+                        translateTemplate(template, params) {
+                                if (!params) {
+                                        return template;
+                                }
+
+                                return template.replace(/\{(\w+)\}/g, (match, key) => {
+                                        if (Object.prototype.hasOwnProperty.call(params, key)) {
+                                                return params[key];
+                                        }
+
+                                        return match;
+                                });
+                        },
+                        getLanguageOptions() {
+                                return FALLBACK_LANGUAGE_OPTIONS.map((option) => ({
+                                        code: option.code,
+                                        label: option.label,
+                                }));
+                        },
+                };
+
+                function getI18n() {
+                        return window.i18n ?? FALLBACK_I18N;
+                }
+
+                const translate = (english) => getI18n().translateString(english);
                 const translateTemplate = (template, params) =>
-                        window.i18n.translateTemplate(template, params);
+                        getI18n().translateTemplate(template, params);
                 </script>
 
-		<script>
-			Vue.createApp({
-                                data() {
-                                        return {
-                                                language: window.i18n.language,
-                                                languageOptions: window.i18n.getLanguageOptions(),
 
-                                                isShowingAnnouncement: this.shouldShowAnnouncement(),
                 <script>
                         const METRIC_TIME_RANGE_DAYS = {
                                 "1d": 1,
@@ -2880,9 +2915,14 @@
                         const MILLISECONDS_PER_DAY = 86400 * 1000;
 
                         Vue.createApp({
-				data() {
-					return {
-						isShowingAnnouncement: this.shouldShowAnnouncement(),
+                                data() {
+                                        const i18n = getI18n();
+
+                                        return {
+                                                language: i18n.language,
+                                                languageOptions: i18n.getLanguageOptions(),
+
+                                                isShowingAnnouncement: this.shouldShowAnnouncement(),
 
 						configNodesMaxAgeInSeconds: window.getConfigNodesMaxAgeInSeconds(),
 						configNodesDisconnectedAgeInSeconds:
@@ -2937,12 +2977,13 @@
 					};
 				},
                                 mounted: function () {
-                                        window.i18n.refresh();
+                                        const i18n = getI18n();
+                                        i18n.refresh();
                                         window.addEventListener(
                                                 "i18n:language-changed",
                                                 this.handleLanguageChangeEvent,
                                         );
-                                        this.languageOptions = window.i18n.getLanguageOptions();
+                                        this.languageOptions = i18n.getLanguageOptions();
 
                                         // load data
                                         this.loadHardwareModelStats();
@@ -2979,7 +3020,7 @@
 					// handle nodes updated callback from outside of vue
                                         window._onNodesUpdated = (nodes) => {
                                                 this.nodes = nodes;
-                                                window.i18n.refresh();
+                                                getI18n().refresh();
                                         };
                                 },
                                 beforeUnmount: function () {
@@ -2996,8 +3037,9 @@
                                                 return translateTemplate(template, params);
                                         },
                                         onLanguageChange: function () {
-                                                window.i18n.setLanguage(this.language);
-                                                this.languageOptions = window.i18n.getLanguageOptions();
+                                                const i18n = getI18n();
+                                                i18n.setLanguage(this.language);
+                                                this.languageOptions = i18n.getLanguageOptions();
                                         },
                                         handleLanguageChangeEvent: function (event) {
                                                 const newLanguage = event?.detail?.language;
@@ -3005,7 +3047,7 @@
                                                         return;
                                                 }
                                                 this.language = newLanguage;
-                                                this.languageOptions = window.i18n.getLanguageOptions();
+                                                this.languageOptions = getI18n().getLanguageOptions();
                                         },
                                         getAnnouncementId: function () {
 						// change this when making a new announcement
