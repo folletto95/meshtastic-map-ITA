@@ -55,12 +55,9 @@
 		<!-- axios -->
 		<script src="assets/js/axios@1.6.8/dist/axios.min.js"></script>
 
-                <!-- chart js -->
-                <script src="assets/js/chart.js@4.4.2/dist/chart.umd.js"></script>
-                <script src="assets/js/chartjs-adapter-moment/chartjs-adapter-moment.js"></script>
-
-                <!-- localisation -->
-                <script src="assets/js/i18n.js"></script>
+	<!-- chart js -->
+    <script src="assets/js/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <script src="assets/js/chartjs-adapter-moment/chartjs-adapter-moment.js"></script>
 
                 <!-- plausible -->
                 <script>
@@ -267,12 +264,13 @@
 						<!-- search bar -->
 						<div
 							class="mx-3 flex-1 relative"
-							:class="{ 'hidden lg:block': !isShowingMobileSearch }">
-                                                        <input
-                                                                v-model="searchText"
-                                                                type="text"
-                                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                                :placeholder="searchPlaceholder" />
+							:class="{ 'hidden lg:block': !isShowingMobileSearch 
+							}">
+                             <input
+                                 v-model="searchText"
+                                 type="text"
+                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                 :placeholder="`Search ${nodes.length} nodes...`" />
 							<div
 								v-if="searchText !== ''"
 								class="absolute z-search bg-white w-full border border-gray-200 rounded-lg shadow-md mt-1 overflow-y-scroll max-h-80 divide-y divide-gray-200">
@@ -1250,12 +1248,9 @@
 													Has Default Channel
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
-                                                                                                        <span v-if="selectedNode.has_default_channel != null"
-                                                                                                                >{{
-                                                                                                                        selectedNode.has_default_channel
-                                                                                                                                ? translateText("Yes")
-                                                                                                                                : translateText("No")
-                                                                                                                }}</span
+													<span v-if="selectedNode.has_default_channel != null"
+														>{{ selectedNode.has_default_channel ? "Yes" : "No"
+														}}</span
 													>
 													<span v-else>???</span>
 												</div>
