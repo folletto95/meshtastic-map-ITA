@@ -12,7 +12,7 @@ La versione pubblica della mappa è disponibile all'indirizzo http://smpisa.ddns
 
 ## Come funziona?
 
-- Un [client MQTT](./mqtt/src/mqtt.ts) resta connesso a `smpisa.ddns:9090` e sottoscrive il topic `msh/#`.
+- Un [client MQTT](./mqtt/src/mqtt.ts) resta connesso a `smpisa.ddns:1883` e sottoscrive il topic `msh/#`.
 - Tutti i messaggi ricevuti vengono decodificati come pacchetti [ServiceEnvelope](https://buf.build/meshtastic/protobufs/docs/main:meshtastic#meshtastic.ServiceEnvelope).
 - Se un pacchetto è cifrato, si tenta la decifratura con la chiave predefinita `AQ==`.
 - I pacchetti che non possono essere decodificati come `ServiceEnvelope` vengono ignorati.
