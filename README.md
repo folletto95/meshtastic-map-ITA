@@ -1,17 +1,20 @@
 **Creato da:** [Liam Cottle](https://liamcottle.com)\
-**Fork di:** [Tilen Komel](https://github.com/KomelT)
+**Fork di:** [Tilen Komel](https://github.com/KomelT)\
+**Fork di:** [Niccolò Malenotti](https://github.com/folletto95)
+
 
 <h2 align="center">Mappa Meshtastic</h2>
 
 Una mappa di tutti i nodi Meshtastic ricevuti tramite MQTT.
 
-La versione pubblica della mappa è disponibile all'indirizzo https://map.meshnet.si
+La versione pubblica della mappa è disponibile all'indirizzo http://smpisa.ddns:9090
+
 
 <img src="./screenshot.png" alt="Anteprima della Mappa Meshtastic">
 
 ## Come funziona?
 
-- Un [client MQTT](./mqtt/src/mqtt.ts) resta connesso a `mqtt.meshnet.si` e sottoscrive il topic `si/#`.
+- Un [client MQTT](./mqtt/src/mqtt.ts) resta connesso a `smpisa.ddns:1883` e sottoscrive il topic `msh/#`.
 - Tutti i messaggi ricevuti vengono decodificati come pacchetti [ServiceEnvelope](https://buf.build/meshtastic/protobufs/docs/main:meshtastic#meshtastic.ServiceEnvelope).
 - Se un pacchetto è cifrato, si tenta la decifratura con la chiave predefinita `AQ==`.
 - I pacchetti che non possono essere decodificati come `ServiceEnvelope` vengono ignorati.
@@ -47,7 +50,7 @@ La versione pubblica della mappa è disponibile all'indirizzo https://map.meshne
 Clona il repository:
 
 ```
-git clone https://github.com/meshtastic-map-ITA/meshtastic-map-ITA
+git clone https://github.com/folletto95/meshtastic-map-ITA.git
 cd meshtastic-map-ITA
 ```
 
@@ -57,11 +60,14 @@ Compila le immagini Docker:
 docker compose -f docker-compose.dev.yaml build
 ```
 
-Aggiorna le variabili d'ambiente:
+Configura le variabili d'ambiente copiando il file di esempio e modificandolo se necessario:
 
 ```
-nano docker-compose.yaml
+cp .env.example .env
+nano .env
 ```
+
+Il file `.env.example` elenca tutte le variabili supportate; Docker Compose leggerà automaticamente i valori definiti in `.env`.
 
 Elenco variabili d'ambiente:
 
@@ -80,7 +86,8 @@ docker compose -f docker-compose.dev.yaml up
 Clona il repository:
 
 ```
-git clone https://github.com/meshtastic-map-ITA/meshtastic-map-ITA
+git clone https://github.com/folletto95/meshtastic-map-ITA.git
+
 cd meshtastic-map-ITA
 ```
 
@@ -90,11 +97,14 @@ Compila le immagini Docker:
 docker compose build
 ```
 
-Aggiorna le variabili d'ambiente:
+Configura le variabili d'ambiente copiando il file di esempio e modificandolo se necessario:
+
 
 ```
-nano docker-compose.yaml
+cp .env.example .env
+nano .env
 ```
+Il file `.env.example` elenca tutte le variabili supportate; Docker Compose leggerà automaticamente i valori definiti in `.env`.
 
 Elenco variabili d'ambiente:
 
@@ -122,7 +132,7 @@ npm run test
 
 ## Contribuire
 
-Se vuoi proporre una nuova funzionalità o hai trovato un bug, [apri una issue](https://github.com/meshtastic-map-ITA/meshtastic-map-ITA/issues) su GitHub.
+Se vuoi proporre una nuova funzionalità o hai trovato un bug, [apri una issue](https://github.com/folletto95/meshtastic-map-ITA.git/issues) su GitHub.
 
 ## Licenza
 

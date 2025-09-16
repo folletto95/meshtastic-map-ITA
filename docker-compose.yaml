@@ -20,7 +20,8 @@ services:
       database:
         condition: service_healthy
     environment:
-      DATABASE_URL: "mysql://root:password@database:3306/meshtastic-map?connection_limit=100"
+      DATABASE_URL: "${DATABASE_URL:-mysql://root:password@database:3306/meshtastic-map?connection_limit=100}"
+      HTTP_PORT: "${API_HTTP_PORT:-80}"
 
   # listens to mqtt packets and saves to database
   mqtt:
@@ -32,15 +33,21 @@ services:
       database:
         condition: service_healthy
     environment:
-      DATABASE_URL: "mysql://root:password@database:3306/meshtastic-map?connection_limit=100"
+      DATABASE_URL: "${DATABASE_URL:-mysql://root:password@database:3306/meshtastic-map?connection_limit=100}"
+      MQTT_URL: "${MQTT_URL:-mqtt://mqtt.meshnet.si}"
+      MQTT_PROTOCOL: "${MQTT_PROTOCOL:-mqtt}"
+      MQTT_USERNAME: "${MQTT_USERNAME:-slovenia}"
+      MQTT_PASSWORD: "${MQTT_PASSWORD:-meshnet-si-slovenia}"
+      MQTT_CLIENT_ID: "${MQTT_CLIENT_ID:-map.meshnet.si}"
+      MQTT_TOPIC: "${MQTT_TOPIC:-si/#}"
 
   # runs the database to store everything from mqtt
   database:
     container_name: database
     image: bitnami/mariadb
     environment:
-      MARIADB_DATABASE: "meshtastic-map"
-      MARIADB_ROOT_PASSWORD: "password"
+      MARIADB_DATABASE: "${MARIADB_DATABASE:-meshtastic-map}"
+      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD:-password}"
     volumes:
       - database_data:/bitnami/mariadb
     healthcheck:

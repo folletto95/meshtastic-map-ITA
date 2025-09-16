@@ -1336,13 +1336,19 @@
 										<div class="flex bg-gray-200 p-2 font-semibold">
 											<div class="my-auto">Device Metrics</div>
 											<div class="my-auto ml-auto">
-												<select
-													v-model="deviceMetricsTimeRange"
-													class="block w-full rounded-md border-0 py-0.5 pl-2 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
-													<option value="1d">1 Day</option>
-													<option value="3d">3 Days</option>
-													<option value="7d">7 Days</option>
-												</select>
+                                                                                                <select
+                                                                                                        v-model="deviceMetricsTimeRange"
+                                                                                                        class="block w-full rounded-md border-0 py-0.5 pl-2 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
+                                                                                                        <option value="1d">1 Day</option>
+                                                                                                        <option value="3d">3 Days</option>
+                                                                                                        <option value="7d">7 Days</option>
+                                                                                                        <option value="14d">14 Days</option>
+                                                                                                        <option value="30d">30 Days</option>
+                                                                                                        <option value="90d">90 Days</option>
+                                                                                                        <option value="180d">180 Days</option>
+                                                                                                        <option value="365d">365 Days</option>
+                                                                                                        <option value="all">All Data</option>
+                                                                                                </select>
 											</div>
 										</div>
 										<ul role="list" class="flex-1 divide-y divide-gray-200">
@@ -1467,13 +1473,19 @@
 										<div class="flex bg-gray-200 p-2 font-semibold">
 											<div class="my-auto">Environment Metrics</div>
 											<div class="my-auto ml-auto">
-												<select
-													v-model="environmentMetricsTimeRange"
-													class="block w-full rounded-md border-0 py-0.5 pl-2 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
-													<option value="1d">1 Day</option>
-													<option value="3d">3 Days</option>
-													<option value="7d">7 Days</option>
-												</select>
+                                                                                                <select
+                                                                                                        v-model="environmentMetricsTimeRange"
+                                                                                                        class="block w-full rounded-md border-0 py-0.5 pl-2 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
+                                                                                                        <option value="1d">1 Day</option>
+                                                                                                        <option value="3d">3 Days</option>
+                                                                                                        <option value="7d">7 Days</option>
+                                                                                                        <option value="14d">14 Days</option>
+                                                                                                        <option value="30d">30 Days</option>
+                                                                                                        <option value="90d">90 Days</option>
+                                                                                                        <option value="180d">180 Days</option>
+                                                                                                        <option value="365d">365 Days</option>
+                                                                                                        <option value="all">All Data</option>
+                                                                                                </select>
 											</div>
 										</div>
 										<ul role="list" class="flex-1 divide-y divide-gray-200">
@@ -1567,13 +1579,19 @@
 										<div class="flex bg-gray-200 p-2 font-semibold">
 											<div class="my-auto">Power Metrics</div>
 											<div class="my-auto ml-auto">
-												<select
-													v-model="powerMetricsTimeRange"
-													class="block w-full rounded-md border-0 py-0.5 pl-2 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
-													<option value="1d">1 Day</option>
-													<option value="3d">3 Days</option>
-													<option value="7d">7 Days</option>
-												</select>
+                                                                                                <select
+                                                                                                        v-model="powerMetricsTimeRange"
+                                                                                                        class="block w-full rounded-md border-0 py-0.5 pl-2 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
+                                                                                                        <option value="1d">1 Day</option>
+                                                                                                        <option value="3d">3 Days</option>
+                                                                                                        <option value="7d">7 Days</option>
+                                                                                                        <option value="14d">14 Days</option>
+                                                                                                        <option value="30d">30 Days</option>
+                                                                                                        <option value="90d">90 Days</option>
+                                                                                                        <option value="180d">180 Days</option>
+                                                                                                        <option value="365d">365 Days</option>
+                                                                                                        <option value="all">All Data</option>
+                                                                                                </select>
 											</div>
 										</div>
 										<ul role="list" class="flex-1 divide-y divide-gray-200">
@@ -2847,6 +2865,24 @@
                                                 languageOptions: window.i18n.getLanguageOptions(),
 
                                                 isShowingAnnouncement: this.shouldShowAnnouncement(),
+                <script>
+                        const METRIC_TIME_RANGE_DAYS = {
+                                "1d": 1,
+                                "3d": 3,
+                                "7d": 7,
+                                "14d": 14,
+                                "30d": 30,
+                                "90d": 90,
+                                "180d": 180,
+                                "365d": 365,
+                        };
+                        const DEFAULT_METRIC_TIME_RANGE = "3d";
+                        const MILLISECONDS_PER_DAY = 86400 * 1000;
+
+                        Vue.createApp({
+				data() {
+					return {
+						isShowingAnnouncement: this.shouldShowAnnouncement(),
 
 						configNodesMaxAgeInSeconds: window.getConfigNodesMaxAgeInSeconds(),
 						configNodesDisconnectedAgeInSeconds:
@@ -3003,37 +3039,34 @@
 								// do nothing
 							});
 					},
-					loadNodeDeviceMetrics: function (nodeId) {
-						// calculate unix timestamps in milliseconds for supported time ranges
-						const oneDayAgoInMilliseconds = new Date().getTime() - 86400 * 1000;
-						const threeDaysAgoInMilliseconds =
-							new Date().getTime() - 259200 * 1000;
-						const sevenDaysAgoInMilliseconds =
-							new Date().getTime() - 604800 * 1000;
+                                        loadNodeDeviceMetrics: function (nodeId) {
+                                                if (nodeId == null) {
+                                                        return;
+                                                }
 
-						// determine how long back to load device metrics from
-						var timeFrom = threeDaysAgoInMilliseconds;
-						switch (this.deviceMetricsTimeRange) {
-							case "1d": {
-								timeFrom = oneDayAgoInMilliseconds;
-								break;
-							}
-							case "3d": {
-								timeFrom = threeDaysAgoInMilliseconds;
-								break;
-							}
-							case "7d": {
-								timeFrom = sevenDaysAgoInMilliseconds;
-								break;
-							}
-						}
+                                                const selectedRange =
+                                                        this.deviceMetricsTimeRange ||
+                                                        DEFAULT_METRIC_TIME_RANGE;
+                                                let timeFrom = null;
 
-						window.axios
-							.get(`/api/v1/nodes/${nodeId}/device-metrics`, {
-								params: {
-									time_from: timeFrom,
-								},
-							})
+                                                if (selectedRange !== "all") {
+                                                        const selectedDays =
+                                                                METRIC_TIME_RANGE_DAYS[selectedRange] ??
+                                                                METRIC_TIME_RANGE_DAYS[DEFAULT_METRIC_TIME_RANGE];
+                                                        timeFrom =
+                                                                Date.now() -
+                                                                selectedDays * MILLISECONDS_PER_DAY;
+                                                }
+
+                                                const params = {};
+                                                if (timeFrom != null) {
+                                                        params.time_from = timeFrom;
+                                                }
+
+                                                window.axios
+                                                        .get(`/api/v1/nodes/${nodeId}/device-metrics`, {
+                                                                params,
+                                                        })
 							.then((response) => {
 								// reverse response, as it's newest to oldest, but we want oldest to newest
 								this.selectedNodeDeviceMetrics =
@@ -3045,37 +3078,34 @@
 								this.renderDeviceMetricCharts();
 							});
 					},
-					loadNodeEnvironmentMetrics: function (nodeId) {
-						// calculate unix timestamps in milliseconds for supported time ranges
-						const oneDayAgoInMilliseconds = new Date().getTime() - 86400 * 1000;
-						const threeDaysAgoInMilliseconds =
-							new Date().getTime() - 259200 * 1000;
-						const sevenDaysAgoInMilliseconds =
-							new Date().getTime() - 604800 * 1000;
+                                        loadNodeEnvironmentMetrics: function (nodeId) {
+                                                if (nodeId == null) {
+                                                        return;
+                                                }
 
-						// determine how long back to load environment metrics from
-						var timeFrom = threeDaysAgoInMilliseconds;
-						switch (this.environmentMetricsTimeRange) {
-							case "1d": {
-								timeFrom = oneDayAgoInMilliseconds;
-								break;
-							}
-							case "3d": {
-								timeFrom = threeDaysAgoInMilliseconds;
-								break;
-							}
-							case "7d": {
-								timeFrom = sevenDaysAgoInMilliseconds;
-								break;
-							}
-						}
+                                                const selectedRange =
+                                                        this.environmentMetricsTimeRange ||
+                                                        DEFAULT_METRIC_TIME_RANGE;
+                                                let timeFrom = null;
 
-						window.axios
-							.get(`/api/v1/nodes/${nodeId}/environment-metrics`, {
-								params: {
-									time_from: timeFrom,
-								},
-							})
+                                                if (selectedRange !== "all") {
+                                                        const selectedDays =
+                                                                METRIC_TIME_RANGE_DAYS[selectedRange] ??
+                                                                METRIC_TIME_RANGE_DAYS[DEFAULT_METRIC_TIME_RANGE];
+                                                        timeFrom =
+                                                                Date.now() -
+                                                                selectedDays * MILLISECONDS_PER_DAY;
+                                                }
+
+                                                const params = {};
+                                                if (timeFrom != null) {
+                                                        params.time_from = timeFrom;
+                                                }
+
+                                                window.axios
+                                                        .get(`/api/v1/nodes/${nodeId}/environment-metrics`, {
+                                                                params,
+                                                        })
 							.then((response) => {
 								// reverse response, as it's newest to oldest, but we want oldest to newest
 								this.selectedNodeEnvironmentMetrics =
@@ -3087,37 +3117,33 @@
 								this.renderEnvironmentMetricCharts();
 							});
 					},
-					loadNodePowerMetrics: function (nodeId) {
-						// calculate unix timestamps in milliseconds for supported time ranges
-						const oneDayAgoInMilliseconds = new Date().getTime() - 86400 * 1000;
-						const threeDaysAgoInMilliseconds =
-							new Date().getTime() - 259200 * 1000;
-						const sevenDaysAgoInMilliseconds =
-							new Date().getTime() - 604800 * 1000;
+                                        loadNodePowerMetrics: function (nodeId) {
+                                                if (nodeId == null) {
+                                                        return;
+                                                }
 
-						// determine how long back to load power metrics from
-						var timeFrom = threeDaysAgoInMilliseconds;
-						switch (this.powerMetricsTimeRange) {
-							case "1d": {
-								timeFrom = oneDayAgoInMilliseconds;
-								break;
-							}
-							case "3d": {
-								timeFrom = threeDaysAgoInMilliseconds;
-								break;
-							}
-							case "7d": {
-								timeFrom = sevenDaysAgoInMilliseconds;
-								break;
-							}
-						}
+                                                const selectedRange =
+                                                        this.powerMetricsTimeRange || DEFAULT_METRIC_TIME_RANGE;
+                                                let timeFrom = null;
 
-						window.axios
-							.get(`/api/v1/nodes/${nodeId}/power-metrics`, {
-								params: {
-									time_from: timeFrom,
-								},
-							})
+                                                if (selectedRange !== "all") {
+                                                        const selectedDays =
+                                                                METRIC_TIME_RANGE_DAYS[selectedRange] ??
+                                                                METRIC_TIME_RANGE_DAYS[DEFAULT_METRIC_TIME_RANGE];
+                                                        timeFrom =
+                                                                Date.now() -
+                                                                selectedDays * MILLISECONDS_PER_DAY;
+                                                }
+
+                                                const params = {};
+                                                if (timeFrom != null) {
+                                                        params.time_from = timeFrom;
+                                                }
+
+                                                window.axios
+                                                        .get(`/api/v1/nodes/${nodeId}/power-metrics`, {
+                                                                params,
+                                                        })
 							.then((response) => {
 								// reverse response, as it's newest to oldest, but we want oldest to newest
 								this.selectedNodePowerMetrics =
@@ -3874,15 +3900,29 @@
 					configTemperatureFormat() {
 						window.setConfigTemperatureFormat(this.configTemperatureFormat);
 					},
-					deviceMetricsTimeRange() {
-						this.loadNodeDeviceMetrics(this.selectedNode.node_id);
-					},
-					environmentMetricsTimeRange() {
-						this.loadNodeEnvironmentMetrics(this.selectedNode.node_id);
-					},
-					powerMetricsTimeRange() {
-						this.loadNodePowerMetrics(this.selectedNode.node_id);
-					},
+                                        deviceMetricsTimeRange() {
+                                                if (!this.selectedNode) {
+                                                        return;
+                                                }
+
+                                                this.loadNodeDeviceMetrics(this.selectedNode.node_id);
+                                        },
+                                        environmentMetricsTimeRange() {
+                                                if (!this.selectedNode) {
+                                                        return;
+                                                }
+
+                                                this.loadNodeEnvironmentMetrics(
+                                                        this.selectedNode.node_id,
+                                                );
+                                        },
+                                        powerMetricsTimeRange() {
+                                                if (!this.selectedNode) {
+                                                        return;
+                                                }
+
+                                                this.loadNodePowerMetrics(this.selectedNode.node_id);
+                                        },
 				},
 			}).mount("#app");
 		</script>
