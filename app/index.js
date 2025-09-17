@@ -14,12 +14,12 @@ const optionsList = [
 		name: "help",
 		alias: "h",
 		type: Boolean,
-		description: "Display this usage guide.",
+		description: "Mostra questa guida all'uso.",
 	},
 	{
 		name: "port",
 		type: Number,
-		description: "Port to serve web ui and api from.",
+		description: "Porta da cui servire l'interfaccia web e le API.",
 	},
 ];
 
@@ -30,11 +30,11 @@ const options = commandLineArgs(optionsList);
 if (options.help) {
 	const usage = commandLineUsage([
 		{
-			header: "Meshtastic Map",
-			content: "A map of all Meshtastic nodes heard via MQTT.",
+			header: "Mappa Meshtastic",
+			content: "Una mappa di tutti i nodi Meshtastic rilevati via MQTT.",
 		},
 		{
-			header: "Options",
+			header: "Opzioni",
 			optionList: optionsList,
 		},
 	]);
@@ -64,5 +64,5 @@ app.get("/text-messages/embed", async (req, res) => {
 // start express server
 const listener = app.listen(port, () => {
 	const port = listener.address().port;
-	console.log(`Server running at http://127.0.0.1:${port}`);
+	console.log(`Server in esecuzione su http://127.0.0.1:${port}`);
 });
