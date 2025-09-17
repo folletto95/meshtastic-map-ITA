@@ -29,11 +29,21 @@ import { handleWaypoint } from "./messages/waypoint.js";
 
 import {
 	LOG_UNKNOWN_PACKET_TYPES,
+	MAX_SAFE_PURGE_INTERVAL_SECONDS,
 	PURGE_INTERVAL_SECONDS,
+	PURGE_INTERVAL_SECONDS_WAS_NORMALISED,
 } from "./settings.js";
 
+const PURGE_TIMER_SECONDS = PURGE_INTERVAL_SECONDS;
+
+if (PURGE_INTERVAL_SECONDS_WAS_NORMALISED) {
+	console.warn(
+		`PURGE_INTERVAL_SECONDS must be between 0 and ${MAX_SAFE_PURGE_INTERVAL_SECONDS} seconds. Using ${PURGE_TIMER_SECONDS} seconds.`,
+	);
+}
+
 // run automatic purge if configured
-if (PURGE_INTERVAL_SECONDS !== 0) {
+if (PURGE_TIMER_SECONDS !== 0) {
 	setInterval(async () => {
 		console.log("Running automatic purge...");
 		await purgeUnheardNodes();
@@ -47,7 +57,7 @@ if (PURGE_INTERVAL_SECONDS !== 0) {
 		await purgeOldTextMessages();
 		await purgeOldTraceroutes();
 		await purgeOldWaypoints();
-	}, PURGE_INTERVAL_SECONDS * 1000);
+	}, PURGE_TIMER_SECONDS * 1000);
 }
 
 // handle message received
