@@ -5,10 +5,9 @@ export const MQTT_URL: string =
 	process.env.MQTT_URL || "mqtt://192.168.10.202:1883";
 export const MQTT_PROTOCOL: MqttProtocol =
 	process.env.MQTT_PROTOCOL === "mqtts" ? "mqtts" : "mqtt";
-export const MQTT_USERNAME: string = process.env.MQTT_USERNAME || "test";
-export const MQTT_PASSWORD: string = process.env.MQTT_PASSWORD || "test";
-export const MQTT_CLIENT_ID: string =
-	process.env.MQTT_CLIENT_ID || "Test";
+export const MQTT_USERNAME: string = process.env.MQTT_USERNAME || "tette2";
+export const MQTT_PASSWORD: string = process.env.MQTT_PASSWORD || "tettebelle2";
+export const MQTT_CLIENT_ID: string = process.env.MQTT_CLIENT_ID || "Test";
 export const MQTT_TOPIC: string = process.env.MQTT_TOPIC || "msh/#";
 
 export const PURGE_INTERVAL_SECONDS: number = Number.parseInt(
