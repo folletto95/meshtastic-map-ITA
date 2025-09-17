@@ -159,9 +159,13 @@
 				z-index: 1001;
 			}
 
-			.z-sidebar {
-				z-index: 1002;
-			}
+                        .z-sidebar {
+                                z-index: 1002;
+                        }
+
+                        .header-bar {
+                                min-height: 4rem;
+                        }
 		</style>
 	</head>
 	<body class="h-full bg-gray-200">
@@ -213,7 +217,7 @@
 						</div>
 					</div>
 					<!-- header -->
-					<div class="flex bg-white p-2 border-gray-300 border-b h-16">
+                                        <div class="flex bg-white p-2 border-gray-300 border-b header-bar">
 						<!-- close mobile search button -->
 						<div v-if="isShowingMobileSearch" class="my-auto">
 							<a
@@ -2624,10 +2628,24 @@
 			</div>
 		</div>
 
-		<script>
-			function getConfigHasSeenInfoModal() {
-				return localStorage.getItem("config_has_seen_info_modal") === "true";
-			}
+                <script>
+                        const nodesGroupLabel = "Nodi";
+                        const nodesAllLabel = "Tutti";
+                        const nodesRoutersLabel = "Router";
+                        const nodesClusteredLabel = "Raggruppati";
+                        const nodesNoneLabel = "Nessuno";
+                        const overlaysGroupLabel = "Sovrapposizioni";
+                        const legendOverlayLabel = "Legenda";
+                        const neighboursOverlayLabel = "Vicini";
+                        const waypointsOverlayLabel = "Punti di passaggio";
+                        const positionHistoryOverlayLabel = "Cronologia posizioni";
+                        const legendMqttConnectedLabel = "MQTT connesso";
+                        const legendMqttDisconnectedLabel = "MQTT disconnesso";
+                        const legendOfflineLabel = "Offline troppo a lungo";
+
+                        function getConfigHasSeenInfoModal() {
+                                return localStorage.getItem("config_has_seen_info_modal") === "true";
+                        }
 
 			function setConfigHasSeenInfoModal(value) {
 				return localStorage.setItem("config_has_seen_info_modal", value);
@@ -2694,9 +2712,9 @@
 					console.error(e);
 				}
 
-				// overlays enabled by default
-				return ["Legend", "Position History"];
-			}
+                                // overlays enabled by default
+                                return [legendOverlayLabel, positionHistoryOverlayLabel];
+                        }
 
 			function setConfigMapEnabledOverlayLayers(layers) {
 				return localStorage.setItem(
@@ -3955,18 +3973,18 @@
 
 			// create legend
 			var legendLayerGroup = new L.LayerGroup();
-			var legend = L.control({ position: "bottomleft" });
-			legend.onAdd = function (map) {
-				var div = L.DomUtil.create("div", "leaflet-control-layers");
-				div.style.backgroundColor = "white";
-				div.style.padding = "12px";
-				div.innerHTML =
-					`<div style="margin-bottom:6px;"><strong>Legenda</strong></div>` +
-					`<div style="display:flex"><div class="icon-mqtt-connected" style="width:12px;height:12px;margin-right:4px;margin-top:auto;margin-bottom:auto;"></div> MQTT Connected</div>` +
-					`<div style="display:flex"><div class="icon-mqtt-disconnected" style="width:12px;height:12px;margin-right:4px;margin-top:auto;margin-bottom:auto;"></div> MQTT Disconnected</div>` +
-					`<div style="display:flex"><div class="icon-offline" style="width:12px;height:12px;margin-right:4px;margin-top:auto;margin-bottom:auto;"></div> Offline Too Long</div>`;
-				return div;
-			};
+                        var legend = L.control({ position: "bottomleft" });
+                        legend.onAdd = function (map) {
+                                var div = L.DomUtil.create("div", "leaflet-control-layers");
+                                div.style.backgroundColor = "white";
+                                div.style.padding = "12px";
+                                div.innerHTML =
+                                        `<div style="margin-bottom:6px;"><strong>${legendOverlayLabel}</strong></div>` +
+                                        `<div style="display:flex"><div class="icon-mqtt-connected" style="width:12px;height:12px;margin-right:4px;margin-top:auto;margin-bottom:auto;"></div> ${legendMqttConnectedLabel}</div>` +
+                                        `<div style="display:flex"><div class="icon-mqtt-disconnected" style="width:12px;height:12px;margin-right:4px;margin-top:auto;margin-bottom:auto;"></div> ${legendMqttDisconnectedLabel}</div>` +
+                                        `<div style="display:flex"><div class="icon-offline" style="width:12px;height:12px;margin-right:4px;margin-top:auto;margin-bottom:auto;"></div> ${legendOfflineLabel}</div>`;
+                                return div;
+                        };
 
 			// handle baselayerchange to update tile layer preference
 			map.on("baselayerchange", function (event) {
@@ -3975,10 +3993,10 @@
 
 			// handle adding/remove legend on map (can't use L.Control as an overlay, so we toggle an empty L.LayerGroup)
 			map.on("overlayadd overlayremove", function (event) {
-				if (event.name === "Legend") {
-					if (event.type === "overlayadd") {
-						map.addControl(legend);
-					} else if (event.type === "overlayremove") {
+                                if (event.name === legendOverlayLabel) {
+                                        if (event.type === "overlayadd") {
+                                                map.addControl(legend);
+                                        } else if (event.type === "overlayremove") {
 						map.removeControl(legend);
 					}
 				}
@@ -3988,44 +4006,44 @@
 			L.control
 				.groupedLayers(
 					tileLayers,
-					{
-						Nodes: {
-							All: nodesLayerGroup,
-							Routers: nodesRouterLayerGroup,
-							Clustered: nodesClusteredLayerGroup,
-							None: new L.LayerGroup(),
-						},
-						Overlays: {
-							Legend: legendLayerGroup,
-							Neighbours: neighboursLayerGroup,
-							Waypoints: waypointsLayerGroup,
-							"Position History": nodePositionHistoryLayerGroup,
-						},
-					},
-					{
-						// make the "Nodes" group exclusive (use radio inputs instead of checkbox)
-						exclusiveGroups: ["Nodes"],
-					}
-				)
-				.addTo(map);
+                                        {
+                                                [nodesGroupLabel]: {
+                                                        [nodesAllLabel]: nodesLayerGroup,
+                                                        [nodesRoutersLabel]: nodesRouterLayerGroup,
+                                                        [nodesClusteredLabel]: nodesClusteredLayerGroup,
+                                                        [nodesNoneLabel]: new L.LayerGroup(),
+                                                },
+                                                [overlaysGroupLabel]: {
+                                                        [legendOverlayLabel]: legendLayerGroup,
+                                                        [neighboursOverlayLabel]: neighboursLayerGroup,
+                                                        [waypointsOverlayLabel]: waypointsLayerGroup,
+                                                        [positionHistoryOverlayLabel]: nodePositionHistoryLayerGroup,
+                                                },
+                                        },
+                                        {
+                                                // make the nodes group exclusive (use radio inputs instead of checkbox)
+                                                exclusiveGroups: [nodesGroupLabel],
+                                        }
+                                )
+                                .addTo(map);
 
-			// enable base layers
-			nodesClusteredLayerGroup.addTo(map);
+                        // enable base layers
+                        nodesClusteredLayerGroup.addTo(map);
 
-			// enable overlay layers based on config
-			const enabledOverlayLayers = getConfigMapEnabledOverlayLayers();
-			if (enabledOverlayLayers.includes("Legend")) {
-				legendLayerGroup.addTo(map);
-			}
-			if (enabledOverlayLayers.includes("Neighbours")) {
-				neighboursLayerGroup.addTo(map);
-			}
-			if (enabledOverlayLayers.includes("Waypoints")) {
-				waypointsLayerGroup.addTo(map);
-			}
-			if (enabledOverlayLayers.includes("Position History")) {
-				nodePositionHistoryLayerGroup.addTo(map);
-			}
+                        // enable overlay layers based on config
+                        const enabledOverlayLayers = getConfigMapEnabledOverlayLayers();
+                        if (enabledOverlayLayers.includes(legendOverlayLabel)) {
+                                legendLayerGroup.addTo(map);
+                        }
+                        if (enabledOverlayLayers.includes(neighboursOverlayLabel)) {
+                                neighboursLayerGroup.addTo(map);
+                        }
+                        if (enabledOverlayLayers.includes(waypointsOverlayLabel)) {
+                                waypointsLayerGroup.addTo(map);
+                        }
+                        if (enabledOverlayLayers.includes(positionHistoryOverlayLabel)) {
+                                nodePositionHistoryLayerGroup.addTo(map);
+                        }
 
 			// update config when map overlay is added
 			map.on("overlayadd", function (event) {
