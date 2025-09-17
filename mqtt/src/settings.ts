@@ -1,6 +1,11 @@
 import type { MqttProtocol } from "mqtt";
 import { extractBoolean } from "./tools/decrypt.js";
 
+const MAX_SET_INTERVAL_MILLISECONDS = 2147483647;
+export const MAX_SAFE_PURGE_INTERVAL_SECONDS = Math.floor(
+	MAX_SET_INTERVAL_MILLISECONDS / 1000,
+);
+
 function parseNumberEnv(
 	value: string | undefined,
 	defaultValue: number,
@@ -29,10 +34,29 @@ export const MQTT_PASSWORD: string = process.env.MQTT_PASSWORD || "tettebelle2";
 export const MQTT_CLIENT_ID: string = process.env.MQTT_CLIENT_ID || "Test";
 export const MQTT_TOPIC: string = process.env.MQTT_TOPIC || "msh/#";
 
-export const PURGE_INTERVAL_SECONDS: number = parseNumberEnv(
-	process.env.PURGE_INTERVAL_SECONDS,
+const SAFE_DEFAULT_PURGE_INTERVAL_SECONDS = Math.min(
 	2592000,
+	MAX_SAFE_PURGE_INTERVAL_SECONDS,
 );
+
+const RAW_PURGE_INTERVAL_SECONDS = parseNumberEnv(
+	process.env.PURGE_INTERVAL_SECONDS,
+	SAFE_DEFAULT_PURGE_INTERVAL_SECONDS,
+);
+
+const NORMALISED_PURGE_INTERVAL_SECONDS = Math.max(
+	0,
+	RAW_PURGE_INTERVAL_SECONDS,
+);
+
+export const PURGE_INTERVAL_SECONDS: number = Math.min(
+	NORMALISED_PURGE_INTERVAL_SECONDS,
+	MAX_SAFE_PURGE_INTERVAL_SECONDS,
+);
+
+export const PURGE_INTERVAL_SECONDS_WAS_NORMALISED: boolean =
+	PURGE_INTERVAL_SECONDS !== RAW_PURGE_INTERVAL_SECONDS;
+
 export const PURGE_DEVICE_METRICS_AFTER_SECONDS: number = parseNumberEnv(
 	process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS,
 	2592000,
