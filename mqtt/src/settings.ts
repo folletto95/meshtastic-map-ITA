@@ -2,7 +2,7 @@ import type { MqttProtocol } from "mqtt";
 import { extractBoolean } from "./tools/decrypt.js";
 
 export const MQTT_URL: string =
-	process.env.MQTT_URL || "mqtt://mqtt.si";
+	process.env.MQTT_URL || "mqtt://192.168.10.202:1883";
 export const MQTT_PROTOCOL: MqttProtocol =
 	process.env.MQTT_PROTOCOL === "mqtts" ? "mqtts" : "mqtt";
 export const MQTT_USERNAME: string = process.env.MQTT_USERNAME || "test";
