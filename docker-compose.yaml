@@ -48,7 +48,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
-      start_interval: 5s
 
   proxy:
     container_name: proxy
@@ -68,7 +67,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
-      start_interval: 5s
 
 volumes:
   database_data:

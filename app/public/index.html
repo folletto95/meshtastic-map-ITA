@@ -4,20 +4,20 @@
 		<meta
 			name="viewport"
 			content="width=device-width, initial-scale=1, maximum-scale=1" />
-		<title>Meshtastic Map</title>
-		<meta name="title" content="Meshtastic Map" />
-		<meta
-			name="description"
-			content="An interactive map of all Meshtastic nodes." />
+                <title>Mappa Meshtastic</title>
+                <meta name="title" content="Mappa Meshtastic" />
+                <meta
+                        name="description"
+                        content="Una mappa interattiva di tutti i nodi Meshtastic." />
 		<link rel="icon" type="image/png" href="/icon.png" />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content="https://map.meshnet.si" />
-		<meta property="og:title" content="Meshtastic Map" />
-		<meta
-			property="og:description"
-			content="An interactive map of Slovenian Meshtastic nodes." />
+                <meta property="og:title" content="Mappa Meshtastic" />
+                <meta
+                        property="og:description"
+                        content="Una mappa interattiva dei nodi Meshtastic sloveni." />
 
 		<!-- tailwind css -->
 		<script src="assets/js/tailwindcss/tailwind-v3.4.3-forms-v0.5.7.js"></script>
@@ -173,21 +173,21 @@
 						v-if="isShowingAnnouncement"
 						class="flex bg-yellow-300 p-2 border-gray-300 border-b">
 						<!-- info -->
-						<div class="my-auto leading-tight">
-							<div class="font-bold">Service Announcement</div>
-							<div class="text-sm">
-								<span
-									>Changes were made to mqtt.meshnet.si. Uplink your nodes to
-									<button
-										@click="isShowingInfoModal = true"
-										type="button"
-										class="link">
-										our MQTT server
-									</button>
-									to continue showing on this map.</span
-								>
-							</div>
-						</div>
+                                                <div class="my-auto leading-tight">
+                                                        <div class="font-bold">Avviso di servizio</div>
+                                                        <div class="text-sm">
+                                                                <span
+                                                                        >Sono state apportate modifiche a mqtt.meshnet.si. Collega i tuoi nodi
+                                                                        <button
+                                                                                @click="isShowingInfoModal = true"
+                                                                                type="button"
+                                                                                class="link">
+                                                                                al nostro server MQTT
+                                                                        </button>
+                                                                        per continuare a visualizzarli su questa mappa.</span
+                                                                >
+                                                        </div>
+                                                </div>
 
 						<!-- action buttons -->
 						<div class="flex my-auto ml-auto mr-0 sm:mr-2">
@@ -245,21 +245,27 @@
 						</div>
 
 						<!-- app info -->
-						<div v-if="!isShowingMobileSearch" class="my-auto leading-tight">
-							<div class="font-bold">Meshtastic Map</div>
-							<div class="text-xs">
-								Created by
-								<a class="link" target="_blank" href="https://liamcottle.com"
-									>Liam Cottle</a
-								>
-							</div>
-							<div class="text-xs">
-								Forked by
-								<a class="link" target="_blank" href="https://github.com/KomelT"
-									>Tilen Komel</a
-								>
-							</div>
-						</div>
+                                                <div v-if="!isShowingMobileSearch" class="my-auto leading-tight">
+                                                        <div class="font-bold">Mappa Meshtastic</div>
+                                                        <div class="text-xs">
+                                                                Creato da
+                                                                <a class="link" target="_blank" href="https://liamcottle.com"
+                                                                        >Liam Cottle</a
+                                                                >
+                                                        </div>
+                                                        <div class="text-xs">
+                                                                Fork di
+                                                                <a class="link" target="_blank" href="https://github.com/KomelT"
+                                                                        >Tilen Komel</a
+                                                                >
+                                                        </div>
+														 <div class="text-xs">
+                                                                Fork di
+                                                                <a class="link" target="_blank" href="https://github.com/folletto95"
+                                                                        >Niccolò Malenotti</a
+                                                                >
+                                                        </div>
+                                                </div>
 
 						<!-- search bar -->
 						<div
@@ -269,7 +275,7 @@
 								v-model="searchText"
 								type="text"
 								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-								:placeholder="`Search ${nodes.length} nodes...`" />
+                                                                :placeholder="`Cerca tra ${nodes.length} nodi...`" />
 							<div
 								v-if="searchText !== ''"
 								class="absolute z-search bg-white w-full border border-gray-200 rounded-lg shadow-md mt-1 overflow-y-scroll max-h-80 divide-y divide-gray-200">
@@ -300,13 +306,13 @@
 									</div>
 									<div
 										v-if="searchedNodes.length === 500"
-										class="text-gray-500 text-sm px-2 py-1">
-										Only the first 500 results are shown.
+                                                                                class="text-gray-500 text-sm px-2 py-1">
+                                                                                Sono mostrati solo i primi 500 risultati.
 									</div>
 								</template>
 
 								<template v-else>
-									<div class="p-2">No results found...</div>
+                                                                        <div class="p-2">Nessun risultato trovato...</div>
 								</template>
 							</div>
 						</div>
@@ -334,7 +340,7 @@
 									</svg>
 								</div>
 								<div class="hidden sm:block">
-									<span class="tooltip-text">About</span>
+                                                                        <span class="tooltip-text">Informazioni</span>
 								</div>
 							</a>
 							<a
@@ -359,7 +365,7 @@
 									</svg>
 								</div>
 								<div class="hidden sm:block">
-									<span class="tooltip-text">Search</span>
+                                                                        <span class="tooltip-text">Cerca</span>
 								</div>
 							</a>
 							<a
@@ -381,7 +387,7 @@
 									</svg>
 								</div>
 								<div class="hidden sm:block">
-									<span class="tooltip-text">Devices</span>
+                                                                        <span class="tooltip-text">Dispositivi</span>
 								</div>
 							</a>
 							<a
@@ -409,7 +415,7 @@
 									</svg>
 								</div>
 								<div class="hidden sm:block">
-									<span class="tooltip-text">Random</span>
+                                                                        <span class="tooltip-text">Casuale</span>
 								</div>
 							</a>
 							<a
@@ -435,7 +441,7 @@
 									</svg>
 								</div>
 								<div class="hidden sm:block">
-									<span class="tooltip-text">Settings</span>
+                                                                        <span class="tooltip-text">Impostazioni</span>
 								</div>
 							</a>
 							<a href="#" class="tooltip rounded-full" onclick="reload()">
@@ -458,7 +464,7 @@
 									</svg>
 								</div>
 								<div class="hidden sm:block">
-									<span class="tooltip-text">Reload</span>
+                                                                        <span class="tooltip-text">Ricarica</span>
 								</div>
 							</a>
 						</div>
@@ -539,9 +545,9 @@
 											<img
 												src="./icon.png"
 												class="mx-auto w-16 h-16 rounded mb-1" />
-											<h1 class="font-bold">Meshtastic Map</h1>
+                                                                                        <h1 class="font-bold">Mappa Meshtastic</h1>
 											<h2>
-												Created by
+                                                                                                Creato da
 												<a
 													class="link"
 													target="_blank"
@@ -550,7 +556,7 @@
 												>
 											</h2>
 											<h2>
-												Forked by
+                                                                                                Fork di
 												<a
 													class="link"
 													target="_blank"
@@ -654,179 +660,168 @@
 										</div>
 
 										<!-- welcome -->
-										<div
-											class="bg-green-100 rounded p-2 border border-green-200">
-											👋 Welcome to my open source map of Meshtastic nodes heard
-											on the mqtt.meshnet.si MQTT server.
-										</div>
+                                                                                <div
+                                                                                        class="bg-green-100 rounded p-2 border border-green-200">
+                                                                                        👋 Benvenuto nella mia mappa open source dei nodi Meshtastic ascoltati
+                                                                                        sul server MQTT mqtt.meshnet.si.
+                                                                                </div>
 
 										<!-- features -->
 										<div>
-											<div class="font-bold mb-2">Features</div>
+                                                                                        <div class="font-bold mb-2">Funzionalità</div>
 											<div
 												class="bg-gray-100 rounded p-2 border border-gray-200">
 												<ul class="list-disc list-inside">
-													<li>
-														The map shows nodes that have sent a valid position
-														to MQTT.
-													</li>
-													<li>
-														Position packets must be unencrypted, or encrypted
-														with the default key.
-													</li>
-													<li>
-														Use the search bar to find nodes by ID or name.
-													</li>
-													<li>
-														Hover over nodes (on desktop) to see basic details.
-													</li>
-													<li>
-														Click a node to see info such as telemetry graphs
-														and traceroutes.
-													</li>
-													<li>
-														Use the top right layers panel to show neighbours
-														and waypoints.
-													</li>
-													<li>
-														Use the settings button to configure the map to your
-														liking.
-													</li>
-													<li>
-														Have a feature request, or found a bug?
-														<a
-															class="link"
-															target="_blank"
-															href="https://github.com/Komelt/meshtastic-map/issues"
-															>Open an issue</a
-														>
-														on GitHub.
-													</li>
+                                                                                                        <li>
+                                                                                                                La mappa mostra i nodi che hanno inviato una posizione valida
+                                                                                                                a MQTT.
+                                                                                                        </li>
+                                                                                                        <li>
+                                                                                                                I pacchetti di posizione devono essere non crittografati oppure
+                                                                                                                crittografati con la chiave predefinita.
+                                                                                                        </li>
+                                                                                                        <li>
+                                                                                                                Usa la barra di ricerca per trovare i nodi tramite ID o nome.
+                                                                                                        </li>
+                                                                                                        <li>
+                                                                                                                Passa il mouse sui nodi (da desktop) per vedere i dettagli di base.
+                                                                                                        </li>
+                                                                                                        <li>
+                                                                                                                Fai clic su un nodo per visualizzare informazioni come grafici di telemetria
+                                                                                                                e traceroute.
+                                                                                                        </li>
+                                                                                                        <li>
+                                                                                                                Usa il pannello dei livelli in alto a destra per mostrare vicini
+                                                                                                                e waypoint.
+                                                                                                        </li>
+                                                                                                        <li>
+                                                                                                                Usa il pulsante delle impostazioni per configurare la mappa come preferisci.
+                                                                                                        </li>
+                                                                                                        <li>
+                                                                                                                Hai una richiesta di funzionalità o hai trovato un bug?
+                                                                                                                <a
+                                                                                                                        class="link"
+                                                                                                                        target="_blank"
+                                                                                                                        href="https://github.com/Komelt/meshtastic-map/issues"
+                                                                                                                        >Apri una segnalazione</a
+                                                                                                                >
+                                                                                                                su GitHub.
+                                                                                                        </li>
 												</ul>
 											</div>
 										</div>
 
 										<!-- faq -->
 										<div>
-											<div class="font-bold mb-2">FAQ</div>
+                                                                                        <div class="font-bold mb-2">Domande frequenti</div>
 											<div class="space-y-2">
 												<div
 													class="bg-gray-100 rounded p-2 border border-gray-200">
-													<div class="font-semibold">
-														How do I add my node to the map?
-													</div>
-													<div>
-														Your node, or a node that hears your node must
-														uplink to our MQTT server.
-													</div>
-													<div>
-														Your position packet must be unencrypted, or
-														encrypted with the default key.
-													</div>
-													<div>
-														Use the MQTT server details below to uplink to this
-														map.
-													</div>
-													<div>
-														If your node has v2.5 firmware or newer, you must
-														enable "OK to MQTT".
-													</div>
+                                                                                                        <div class="font-semibold">
+                                                                                                                Come aggiungo il mio nodo alla mappa?
+                                                                                                        </div>
+                                                                                                        <div>
+                                                                                                                Il tuo nodo, o un nodo che riceve il tuo, deve collegarsi al nostro server MQTT.
+                                                                                                        </div>
+                                                                                                        <div>
+                                                                                                                Il pacchetto di posizione deve essere non crittografato oppure crittografato con la chiave predefinita.
+                                                                                                        </div>
+                                                                                                        <div>
+                                                                                                                Usa i dettagli del server MQTT qui sotto per collegarti a questa mappa.
+                                                                                                        </div>
+                                                                                                        <div>
+                                                                                                                Se il tuo nodo ha il firmware v2.5 o successivo, devi abilitare "OK to MQTT".
+                                                                                                        </div>
 												</div>
 												<div
 													class="bg-gray-100 rounded p-2 border border-gray-200">
-													<div class="font-semibold">
-														What MQTT server should I use?
-													</div>
+                                                                                                        <div class="font-semibold">
+                                                                                                                Quale server MQTT dovrei usare?
+                                                                                                        </div>
 													<ul class="list-disc list-inside">
-														<li>Address: mqtt.meshnet.si</li>
-														<li>Username: slovenia</li>
-														<li>Password: meshnet-si-slovenia</li>
-														<li>Topic: si/meshnet/slovenia</li>
-														<li>TLS Enabled: No / Yes</li>
+                                                                                                                <li>Indirizzo: mqtt.meshnet.si</li>
+                                                                                                                <li>Nome utente: slovenia</li>
+                                                                                                                <li>Password: meshnet-si-slovenia</li>
+                                                                                                                <li>Topic: si/meshnet/slovenia</li>
+                                                                                                                <li>TLS abilitato: No / Sì</li>
 													</ul>
 												</div>
 												<div
 													class="bg-gray-100 rounded p-2 border border-gray-200">
-													<div class="font-semibold">
-														How do I remove my node from the map?
-													</div>
-													<div>
-														Nodes that have not been heard for 7 days are
-														automatically removed.
-													</div>
-													<div>
-														To have your node removed now, please
-														<a
-															target="_blank"
-															href="mailto:me@komelt.dev"
-															class="link"
-															>contact me</a
-														>.
-													</div>
-													<div>
-														Disable position reporting in your node to prevent
-														it coming back.
-													</div>
-													<div>
-														Use custom encryption keys so the public can't see
-														your position data.
-													</div>
+                                                                                                        <div class="font-semibold">
+                                                                                                                Come posso rimuovere il mio nodo dalla mappa?
+                                                                                                        </div>
+                                                                                                        <div>
+                                                                                                                I nodi che non vengono rilevati per 7 giorni vengono rimossi automaticamente.
+                                                                                                        </div>
+                                                                                                        <div>
+                                                                                                                Per rimuovere subito il tuo nodo,
+                                                                                                                <a
+                                                                                                                        target="_blank"
+                                                                                                                        href="mailto:me@komelt.dev"
+                                                                                                                        class="link"
+                                                                                                                        >contattami</a
+                                                                                                                >.
+                                                                                                        </div>
+                                                                                                        <div>
+                                                                                                                Disattiva l'invio della posizione sul tuo nodo per evitare che ricompaia.
+                                                                                                        </div>
+                                                                                                        <div>
+                                                                                                                Usa chiavi di crittografia personalizzate così che il pubblico non possa vedere
+                                                                                                                i tuoi dati di posizione.
+                                                                                                        </div>
 												</div>
 												<div
 													class="bg-gray-100 rounded p-2 border border-gray-200">
-													<div class="font-semibold">
-														How do I see neighbours a node heard?
-													</div>
-													<div>
-														Open the top right layers panel and enable
-														neighbours.
-													</div>
-													<div>
-														Some neighbours are from MQTT, this is patched in
-														latest firmware.
-													</div>
+                                                                                                        <div class="font-semibold">
+                                                                                                                Come faccio a vedere i vicini ascoltati da un nodo?
+                                                                                                        </div>
+                                                                                                        <div>
+                                                                                                                Apri il pannello dei livelli in alto a destra e abilita i vicini.
+                                                                                                        </div>
+                                                                                                        <div>
+                                                                                                                Alcuni vicini provengono da MQTT; questo è stato corretto nell'ultimo firmware.
+                                                                                                        </div>
 												</div>
 											</div>
 										</div>
 
 										<!-- legal -->
 										<div>
-											<div class="font-bold mb-2">Legal</div>
+                                                                                        <div class="font-bold mb-2">Note legali</div>
 											<div
 												class="bg-gray-100 rounded p-2 border border-gray-200">
-												<div>
-													This project is not affiliated with or endorsed by the
-													<a
-														class="link"
-														target="_blank"
-														href="https://meshtastic.org"
-														>Meshtastic</a
-													>
-													project.
-												</div>
-												<div>
-													The Meshtastic logo is the trademark of Meshtastic
-													LLC.
-												</div>
-												<div>
-													Map tiles provided by
-													<a
-														class="link"
-														target="_blank"
-														href="https://www.openstreetmap.org/copyright"
-														>OpenStreetMap</a
-													>
-												</div>
+                                                                                                <div>
+                                                                                                        Questo progetto non è affiliato né approvato dal progetto
+                                                                                                        <a
+                                                                                                                class="link"
+                                                                                                                target="_blank"
+                                                                                                                href="https://meshtastic.org"
+                                                                                                                >Meshtastic</a
+                                                                                                        >.
+                                                                                                </div>
+                                                                                                <div>
+                                                                                                        Il logo Meshtastic è un marchio di Meshtastic LLC.
+                                                                                                </div>
+                                                                                                <div>
+                                                                                                        Le mappe sono fornite da
+                                                                                                        <a
+                                                                                                                class="link"
+                                                                                                                target="_blank"
+                                                                                                                href="https://www.openstreetmap.org/copyright"
+                                                                                                                >OpenStreetMap</a
+                                                                                                        >
+                                                                                                </div>
 											</div>
 										</div>
 
 										<!-- dismiss button -->
 										<div class="mx-auto">
 											<a href="javascript:void(0)" @click="dismissInfoModal">
-												<div
-													class="bg-gray-200 hover:bg-gray-300 px-6 py-2 rounded-md shadow">
-													Dismiss
-												</div>
+                                                                                                <div
+                                                                                                        class="bg-gray-200 hover:bg-gray-300 px-6 py-2 rounded-md shadow">
+                                                                                                        Chiudi
+                                                                                                </div>
 											</a>
 										</div>
 									</div>
@@ -870,8 +865,8 @@
 								<div class="p-2 border-b border-gray-200 shadow">
 									<div class="flex items-start justify-between">
 										<div>
-											<h2 class="font-bold">Meshtastic Devices</h2>
-											<h3 class="text-sm">Ordered by most popular</h3>
+                                                                                        <h2 class="font-bold">Dispositivi Meshtastic</h2>
+                                                                                        <h3 class="text-sm">Ordinate per popolarità</h3>
 										</div>
 										<div class="my-auto ml-3 flex h-7 items-center">
 											<a
@@ -926,9 +921,9 @@
 															class="truncate text-sm font-medium text-gray-900">
 															{{ hardwareModel.hardware_model_name }}
 														</p>
-														<p class="truncate text-sm text-gray-500">
-															{{ hardwareModel.count }} nodes on the map
-														</p>
+                                                                                                                <p class="truncate text-sm text-gray-500">
+                                                                                                                        {{ hardwareModel.count }} nodi sulla mappa
+                                                                                                                </p>
 													</div>
 												</div>
 											</a>
@@ -985,7 +980,7 @@
 											</div>
 										</div>
 										<div class="my-auto mr-auto">
-											<h2 class="font-bold">Node Info</h2>
+                                                                                        <h2 class="font-bold">Info nodo</h2>
 											<h3 class="text-sm">{{ selectedNode.long_name }}</h3>
 										</div>
 										<div class="my-auto ml-2 flex h-7 items-center space-x-2">
@@ -1050,9 +1045,9 @@
 													clip-rule="evenodd" />
 											</svg>
 										</div>
-										<div class="my-auto">
-											This node has not reported a position.
-										</div>
+                                                                                <div class="my-auto">
+                                                                                        Questo nodo non ha segnalato una posizione.
+                                                                                </div>
 									</div>
 
 									<div class="flex flex-col my-2">
@@ -1072,7 +1067,7 @@
 											target="_blank"
 											:href="`/text-messages/embed?from=${selectedNode.node_id}`"
 											class="flex flex-col"
-											title="Messages sent from this Node">
+                                                                                        title="Messaggi inviati da questo nodo">
 											<div class="flex mx-auto mb-1">
 												<div
 													class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full">
@@ -1090,8 +1085,8 @@
 													</svg>
 												</div>
 											</div>
-											<div class="mx-auto text-sm font-medium text-gray-900">
-												Sent Msgs
+                                                                                        <div class="mx-auto text-sm font-medium text-gray-900">
+                                                                                                Messaggi inviati
 											</div>
 										</a>
 
@@ -1100,7 +1095,7 @@
 											target="_blank"
 											:href="`/text-messages/embed?to=${selectedNode.node_id}`"
 											class="flex flex-col"
-											title="Messages sent to this Node">
+                                                                                        title="Messaggi inviati a questo nodo">
 											<div class="flex mx-auto mb-1">
 												<div
 													class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full">
@@ -1118,8 +1113,8 @@
 													</svg>
 												</div>
 											</div>
-											<div class="mx-auto text-sm font-medium text-gray-900">
-												Received Msgs
+                                                                                        <div class="mx-auto text-sm font-medium text-gray-900">
+                                                                                                Messaggi ricevuti
 											</div>
 										</a>
 
@@ -1128,7 +1123,7 @@
 											target="_blank"
 											:href="`/text-messages/embed?gateway_id=${selectedNode.node_id}`"
 											class="flex flex-col"
-											title="Messages gated to MQTT by this Node">
+                                                                                        title="Messaggi inoltrati su MQTT da questo nodo">
 											<div class="flex mx-auto mb-1">
 												<div
 													class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full">
@@ -1146,15 +1141,15 @@
 													</svg>
 												</div>
 											</div>
-											<div class="mx-auto text-sm font-medium text-gray-900">
-												Gated Msgs
+                                                                                        <div class="mx-auto text-sm font-medium text-gray-900">
+                                                                                                Messaggi inoltrati
 											</div>
 										</a>
 									</div>
 
 									<!-- details -->
 									<div>
-										<div class="bg-gray-200 p-2 font-semibold">Details</div>
+                                                                                <div class="bg-gray-200 p-2 font-semibold">Dettagli</div>
 										<ul role="list" class="flex-1 divide-y divide-gray-200">
 											<!-- id -->
 											<li class="flex p-3">
@@ -1167,7 +1162,7 @@
 											<!-- hex id -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Hex ID
+													ID esadecimale
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													{{ selectedNode.node_id_hex }}
@@ -1177,7 +1172,7 @@
 											<!-- role -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Role
+													Ruolo
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													{{ selectedNode.role_name }}
@@ -1211,7 +1206,7 @@
 
 									<!-- lora config -->
 									<div>
-										<div class="bg-gray-200 p-2 font-semibold">LoRa Config</div>
+                                                                                <div class="bg-gray-200 p-2 font-semibold">Configurazione LoRa</div>
 										<ul role="list" class="flex-1 divide-y divide-gray-200">
 											<!-- region -->
 											<li class="flex p-3">
@@ -1244,11 +1239,11 @@
 											<!-- has default channel -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Has Default Channel
+													Ha canale predefinito
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNode.has_default_channel != null"
-														>{{ selectedNode.has_default_channel ? "Yes" : "No"
+														>{{ selectedNode.has_default_channel ? "Sì" : "No"
 														}}</span
 													>
 													<span v-else>???</span>
@@ -1260,13 +1255,13 @@
 									<!-- position -->
 									<div>
 										<div @click.stop class="flex bg-gray-200 p-2 font-semibold">
-											<div class="my-auto">Position</div>
+                                                                                        <div class="my-auto">Posizione</div>
 											<div class="ml-auto">
-												<button
-													@click="showNodePositionHistory(selectedNode.node_id)"
-													type="button"
-													class="rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-													Show History
+                                                                                                <button
+                                                                                                        @click="showNodePositionHistory(selectedNode.node_id)"
+                                                                                                        type="button"
+                                                                                                        class="rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                                                                        Mostra cronologia
 												</button>
 											</div>
 										</div>
@@ -1277,9 +1272,9 @@
 														<div
 															class="relative flex min-w-0 flex-1 items-center">
 															<div class="truncate">
-																<p
-																	class="truncate text-sm font-medium text-gray-900">
-																	Latitude, Longitude
+                                                                                                                               <p
+                                                                                                                               class="truncate text-sm font-medium text-gray-900">
+                                                                                                                               Latitudine, Longitudine
 																</p>
 																<p class="truncate text-sm text-gray-700">
 																	<span
@@ -1297,8 +1292,8 @@
 
 											<!-- position -->
 											<li class="flex p-3">
-												<div class="text-sm font-medium text-gray-900">
-													Lat/Long
+                                                                                                <div class="text-sm font-medium text-gray-900">
+                                                                                                        Lat/Lon
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span
@@ -1312,8 +1307,8 @@
 
 											<!-- altitude -->
 											<li class="flex p-3">
-												<div class="text-sm font-medium text-gray-900">
-													Altitude
+                                                                                                <div class="text-sm font-medium text-gray-900">
+                                                                                                        Altitudine
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNode.altitude"
@@ -1328,15 +1323,15 @@
 									<!-- device metrics -->
 									<div>
 										<div class="flex bg-gray-200 p-2 font-semibold">
-											<div class="my-auto">Device Metrics</div>
+                                                                                        <div class="my-auto">Metriche del dispositivo</div>
 											<div class="my-auto ml-auto">
 												<select
 													v-model="deviceMetricsTimeRange"
 													class="block w-full rounded-md border-0 py-0.5 pl-2 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
-                                                                                                        <option value="1d">1 Day</option>
-                                                                                                        <option value="3d">3 Days</option>
-                                                                                                        <option value="7d">7 Days</option>
-                                                                                                        <option value="30d">30 Days</option>
+                                                                                                        <option value="1d">1 giorno</option>
+                                                                                                        <option value="3d">3 giorni</option>
+                                                                                                        <option value="7d">7 giorni</option>
+                                                                                                        <option value="30d">30 giorni</option>
 												</select>
 											</div>
 										</div>
@@ -1355,7 +1350,7 @@
 																		class="my-auto w-2 h-2 bg-blue-500 rounded-full"></div>
 																	<div
 																		class="my-auto ml-1 text-sm text-gray-500">
-																		Battery Level
+																		Livello batteria
 																	</div>
 																</div>
 																<div class="flex mx-auto">
@@ -1363,7 +1358,7 @@
 																		class="my-auto w-2 h-2 bg-green-500 rounded-full"></div>
 																	<div
 																		class="my-auto ml-1 text-sm text-gray-500">
-																		Channel Utilization
+																		Utilizzo canale
 																	</div>
 																</div>
 																<div class="flex mx-auto">
@@ -1371,7 +1366,7 @@
 																		class="my-auto w-2 h-2 bg-orange-500 rounded-full"></div>
 																	<div
 																		class="my-auto ml-1 text-sm text-gray-500">
-																		Air Util TX
+																		Utilizzo TX in aria
 																	</div>
 																</div>
 															</div>
@@ -1383,12 +1378,12 @@
 											<!-- battery level -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Battery Level
+													Livello batteria
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNode.battery_level">
 														<span v-if="selectedNode.battery_level > 100"
-															>Plugged In</span
+															>In carica</span
 														>
 														<span v-else
 															>{{ selectedNode.battery_level }}%</span
@@ -1400,8 +1395,8 @@
 
 											<!-- voltage -->
 											<li class="flex p-3">
-												<div class="text-sm font-medium text-gray-900">
-													Voltage
+                                                                                                <div class="text-sm font-medium text-gray-900">
+                                                                                                        Tensione
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNode.voltage"
@@ -1415,7 +1410,7 @@
 											<!-- channel utilization -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Channel Utilization
+													Utilizzo canale
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNode.channel_utilization"
@@ -1430,7 +1425,7 @@
 											<!-- air util tx -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Air Util Tx
+													Utilizzo TX in aria
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNode.air_util_tx"
@@ -1443,8 +1438,8 @@
 
 											<!-- air util tx -->
 											<li class="flex p-3">
-												<div class="text-sm font-medium text-gray-900">
-													Uptime
+                                                                                                <div class="text-sm font-medium text-gray-900">
+                                                                                                        Tempo di attività
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNode.uptime_seconds"
@@ -1460,15 +1455,15 @@
 									<!-- environment metrics -->
 									<div>
 										<div class="flex bg-gray-200 p-2 font-semibold">
-											<div class="my-auto">Environment Metrics</div>
+                                                                                        <div class="my-auto">Metriche ambientali</div>
 											<div class="my-auto ml-auto">
 												<select
 													v-model="environmentMetricsTimeRange"
 													class="block w-full rounded-md border-0 py-0.5 pl-2 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
-                                                                                                        <option value="1d">1 Day</option>
-                                                                                                        <option value="3d">3 Days</option>
-                                                                                                        <option value="7d">7 Days</option>
-                                                                                                        <option value="30d">30 Days</option>
+                                                                                                        <option value="1d">1 giorno</option>
+                                                                                                        <option value="3d">3 giorni</option>
+                                                                                                        <option value="7d">7 giorni</option>
+                                                                                                        <option value="30d">30 giorni</option>
 												</select>
 											</div>
 										</div>
@@ -1487,7 +1482,7 @@
 																		class="my-auto w-2 h-2 bg-blue-500 rounded-full"></div>
 																	<div
 																		class="my-auto ml-1 text-sm text-gray-500">
-																		Temperature
+																		Temperatura
 																	</div>
 																</div>
 																<div class="flex mx-auto">
@@ -1515,7 +1510,7 @@
 											<!-- temperature -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Temperature
+													Temperatura
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNode.temperature"
@@ -1529,7 +1524,7 @@
 											<!-- relative humidity -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Relative Humidity
+													Umidità relativa
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNode.relative_humidity"
@@ -1544,7 +1539,7 @@
 											<!-- barometric pressure -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Barometric Pressure
+													Pressione barometrica
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNode.barometric_pressure"
@@ -1561,15 +1556,15 @@
 									<!-- power metrics -->
 									<div>
 										<div class="flex bg-gray-200 p-2 font-semibold">
-											<div class="my-auto">Power Metrics</div>
+                                                                                        <div class="my-auto">Metriche di alimentazione</div>
 											<div class="my-auto ml-auto">
 												<select
 													v-model="powerMetricsTimeRange"
 													class="block w-full rounded-md border-0 py-0.5 pl-2 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
-                                                                                                        <option value="1d">1 Day</option>
-                                                                                                        <option value="3d">3 Days</option>
-                                                                                                        <option value="7d">7 Days</option>
-                                                                                                        <option value="30d">30 Days</option>
+                                                                                                        <option value="1d">1 giorno</option>
+                                                                                                        <option value="3d">3 giorni</option>
+                                                                                                        <option value="7d">7 giorni</option>
+                                                                                                        <option value="30d">30 giorni</option>
 												</select>
 											</div>
 										</div>
@@ -1588,7 +1583,7 @@
 																		class="my-auto w-2 h-2 bg-blue-500 rounded-full"></div>
 																	<div
 																		class="my-auto ml-1 text-sm text-gray-500">
-																		Channel 1
+																		Canale 1
 																	</div>
 																</div>
 																<div class="flex mx-auto">
@@ -1596,7 +1591,7 @@
 																		class="my-auto w-2 h-2 bg-green-500 rounded-full"></div>
 																	<div
 																		class="my-auto ml-1 text-sm text-gray-500">
-																		Channel 2
+																		Canale 2
 																	</div>
 																</div>
 																<div class="flex mx-auto">
@@ -1604,7 +1599,7 @@
 																		class="my-auto w-2 h-2 bg-orange-500 rounded-full"></div>
 																	<div
 																		class="my-auto ml-1 text-sm text-gray-500">
-																		Channel 3
+																		Canale 3
 																	</div>
 																</div>
 															</div>
@@ -1616,7 +1611,7 @@
 											<!-- channel 1 -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Channel 1
+													Canale 1
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNodeLatestPowerMetric">
@@ -1641,7 +1636,7 @@
 											<!-- channel 2 -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Channel 2
+													Canale 2
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNodeLatestPowerMetric">
@@ -1666,7 +1661,7 @@
 											<!-- channel 3 -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Channel 3
+													Canale 3
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNodeLatestPowerMetric">
@@ -1694,9 +1689,9 @@
 									<div>
 										<div class="bg-gray-200 p-2">
 											<div class="font-semibold">MQTT</div>
-											<div class="text-sm text-gray-600">
-												Topics this node sent packets to
-											</div>
+                                                                                        <div class="text-sm text-gray-600">
+                                                                                                Topic a cui questo nodo ha inviato pacchetti
+                                                                                        </div>
 										</div>
 										<ul role="list" class="flex-1 divide-y divide-gray-200">
 											<template v-if="selectedNodeMqttMetrics.length > 0">
@@ -1711,7 +1706,7 @@
 																		{{ mqttMetric.mqtt_topic }}
 																	</p>
 																	<div class="text-sm text-gray-700">
-																		Last packet {{ moment(new
+																		Ultimo pacchetto {{ moment(new
 																		Date(mqttMetric.last_packet_at)).fromNow()
 																		}}
 																	</div>
@@ -1729,7 +1724,7 @@
 																class="relative flex min-w-0 flex-1 items-center">
 																<div class="truncate">
 																	<div class="text-sm text-gray-700">
-																		No packets seen on MQTT
+																		Nessun pacchetto visto su MQTT
 																	</div>
 																</div>
 															</div>
@@ -1743,9 +1738,9 @@
 									<!-- traceroutes -->
 									<div>
 										<div class="bg-gray-200 p-2">
-											<div class="font-semibold">Trace Routes</div>
+											<div class="font-semibold">Traceroute</div>
 											<div class="text-sm text-gray-600">
-												Only 5 most recent are shown
+												Sono mostrati solo i 5 più recenti
 											</div>
 										</div>
 										<ul role="list" class="flex-1 divide-y divide-gray-200">
@@ -1773,7 +1768,7 @@
 																	<div class="text-sm text-gray-700">
 																		{{ moment(new
 																		Date(traceroute.updated_at)).fromNow() }} -
-																		{{ traceroute.route.length }} hops {{
+																		{{ traceroute.route.length }} salti {{
 																		traceroute.channel_id ? `on
 																		${traceroute.channel_id}` : '' }}
 																	</div>
@@ -1791,7 +1786,7 @@
 																class="relative flex min-w-0 flex-1 items-center">
 																<div class="truncate">
 																	<div class="text-sm text-gray-700">
-																		No traceroutes seen on MQTT
+																		Nessun traceroute visto su MQTT
 																	</div>
 																</div>
 															</div>
@@ -1804,12 +1799,12 @@
 
 									<!-- other -->
 									<div>
-										<div class="bg-gray-200 p-2 font-semibold">Other</div>
+										<div class="bg-gray-200 p-2 font-semibold">Altro</div>
 										<ul role="list" class="flex-1 divide-y divide-gray-200">
 											<!-- first seen -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													First Seen
+													Prima rilevazione
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													{{ moment(new Date(selectedNode.created_at)).fromNow()
@@ -1820,7 +1815,7 @@
 											<!-- last seen -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Last Seen
+													Ultima rilevazione
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													{{ moment(new Date(selectedNode.updated_at)).fromNow()
@@ -1831,7 +1826,7 @@
 											<!-- neighbours updated -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Neighbours Updated
+													Aggiornamento vicini
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNode.neighbours_updated_at"
@@ -1846,7 +1841,7 @@
 											<!-- position updated -->
 											<li class="flex p-3">
 												<div class="text-sm font-medium text-gray-900">
-													Position Updated
+													Aggiornamento posizione
 												</div>
 												<div class="ml-auto text-sm text-gray-700">
 													<span v-if="selectedNode.position_updated_at"
@@ -1863,13 +1858,13 @@
 									<!-- share -->
 									<div>
 										<div class="flex bg-gray-200 p-2 font-semibold">
-											<div class="my-auto">Share Link</div>
+											<div class="my-auto">Condividi link</div>
 											<div class="ml-auto">
 												<button
 													@click="copyShareLinkForNode(selectedNode.node_id)"
 													type="button"
 													class="rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-													Copy
+													Copia
 												</button>
 											</div>
 										</div>
@@ -1937,7 +1932,7 @@
 											<h3 class="text-sm">
 												{{ moment(new
 												Date(selectedTraceRoute.updated_at)).fromNow() }} - {{
-												selectedTraceRoute.route.length }} hops {{
+												selectedTraceRoute.route.length }} salti {{
 												selectedTraceRoute.channel_id ? `on
 												${selectedTraceRoute.channel_id}` : '' }}
 											</h3>
@@ -2004,10 +1999,10 @@
 														'???' }}
 													</div>
 													<div>
-														Hex ID: !{{
+														ID esadecimale: !{{
 														Number(selectedTraceRoute.to).toString(16) }}
 													</div>
-													<div>Started the traceroute</div>
+													<div>Ha avviato il traceroute</div>
 												</div>
 											</li>
 
@@ -2037,8 +2032,8 @@
 													<div class="font-medium text-gray-900">
 														{{ findNodeById(route)?.long_name || '???' }}
 													</div>
-													<div>Hex ID: !{{ Number(route).toString(16) }}</div>
-													<div>Forwarded the packet</div>
+													<div>ID esadecimale: !{{ Number(route).toString(16) }}</div>
+													<div>Ha inoltrato il pacchetto</div>
 												</div>
 											</li>
 
@@ -2072,10 +2067,10 @@
 														|| '???' }}
 													</div>
 													<div>
-														Hex ID: !{{
+														ID esadecimale: !{{
 														Number(selectedTraceRoute.from).toString(16) }}
 													</div>
-													<div>Replied to traceroute</div>
+													<div>Ha risposto al traceroute</div>
 												</div>
 											</li>
 
@@ -2110,18 +2105,18 @@
 														|| '???' }}
 													</div>
 													<div>
-														Hex ID: !{{
+														ID esadecimale: !{{
 														Number(selectedTraceRoute.gateway_id).toString(16)
 														}}
 													</div>
-													<div>Gated the packet to MQTT</div>
+													<div>Ha inoltrato il pacchetto su MQTT</div>
 												</div>
 											</li>
 										</ul>
 									</div>
 
 									<div>
-										<div class="bg-gray-200 p-2 font-semibold">Raw Data</div>
+										<div class="bg-gray-200 p-2 font-semibold">Dati grezzi</div>
 										<div class="text-sm text-gray-700">
 											<pre class="bg-gray-100 rounded p-2 overflow-x-auto">
 {{ JSON.stringify(selectedTraceRoute, null, 4) }}</pre
@@ -2168,9 +2163,9 @@
 								<div class="p-2 border-b border-gray-200 shadow">
 									<div class="flex items-start justify-between">
 										<div>
-											<h2 class="font-bold">Settings</h2>
+											<h2 class="font-bold">Impostazioni</h2>
 											<h3 class="text-sm">
-												Changes are only saved in this browser.
+												Le modifiche vengono salvate solo in questo browser.
 											</h3>
 										</div>
 										<div class="my-auto ml-3 flex h-7 items-center">
@@ -2206,131 +2201,131 @@
 									<!-- configNodesMaxAgeInSeconds -->
 									<div class="p-2">
 										<label class="block text-sm font-medium text-gray-900"
-											>Nodes Max Age</label
+											>Età massima nodi</label
 										>
-										<div class="text-xs text-gray-600 mb-2">
-											Nodes not updated within this time are hidden. Reload to
-											update map.
-										</div>
+                                                                                <div class="text-xs text-gray-600 mb-2">
+                                                                                        I nodi non aggiornati entro questo intervallo vengono nascosti. Ricarica per
+                                                                                        aggiornare la mappa.
+                                                                                </div>
 										<select
 											v-model="configNodesMaxAgeInSeconds"
 											class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-											<option :value="null">Show All</option>
-											<option value="900">15 minutes</option>
-											<option value="1800">30 minutes</option>
-											<option value="3600">1 hour</option>
-											<option value="10800">3 hours</option>
-											<option value="21600">6 hours</option>
-											<option value="43200">12 hours</option>
-											<option value="86400">24 hours</option>
-											<option value="172800">2 days</option>
-											<option value="259200">3 days</option>
-											<option value="345600">4 days</option>
-											<option value="432000">5 days</option>
-											<option value="518400">6 days</option>
-											<option value="604800">7 days</option>
+											<option :value="null">Mostra tutto</option>
+											<option value="900">15 minuti</option>
+											<option value="1800">30 minuti</option>
+											<option value="3600">1 ora</option>
+											<option value="10800">3 ore</option>
+											<option value="21600">6 ore</option>
+											<option value="43200">12 ore</option>
+											<option value="86400">24 ore</option>
+											<option value="172800">2 giorni</option>
+											<option value="259200">3 giorni</option>
+											<option value="345600">4 giorni</option>
+											<option value="432000">5 giorni</option>
+											<option value="518400">6 giorni</option>
+											<option value="604800">7 giorni</option>
 										</select>
 									</div>
 
 									<!-- configNodesDisconnectedAgeInSeconds -->
 									<div class="p-2">
 										<label class="block text-sm font-medium text-gray-900"
-											>Nodes Disconnected Age</label
+											>Età nodi disconnessi</label
 										>
-										<div class="text-xs text-gray-600 mb-2">
-											Nodes that have not uplinked to MQTT in this time will
-											show as blue icons. Reload to update map.
-										</div>
+                                                                                <div class="text-xs text-gray-600 mb-2">
+                                                                                        I nodi che non effettuano uplink a MQTT entro questo intervallo saranno
+                                                                                        mostrati come icone blu. Ricarica per aggiornare la mappa.
+                                                                                </div>
 										<select
 											v-model="configNodesDisconnectedAgeInSeconds"
 											class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-											<option value="900">15 minutes</option>
-											<option value="1800">30 minutes</option>
-											<option value="2700">45 minutes</option>
-											<option value="3600">1 hour</option>
-											<option value="7200">2 hours</option>
-											<option value="10800">3 hours</option>
-											<option value="21600">6 hours</option>
-											<option value="43200">12 hours</option>
-											<option value="86400">24 hours</option>
-											<option value="172800">2 days</option>
-											<option value="259200">3 days</option>
-											<option value="345600">4 days</option>
-											<option value="432000">5 days</option>
-											<option value="518400">6 days</option>
-											<option value="604800">7 days</option>
+											<option value="900">15 minuti</option>
+											<option value="1800">30 minuti</option>
+											<option value="2700">45 minuti</option>
+											<option value="3600">1 ora</option>
+											<option value="7200">2 ore</option>
+											<option value="10800">3 ore</option>
+											<option value="21600">6 ore</option>
+											<option value="43200">12 ore</option>
+											<option value="86400">24 ore</option>
+											<option value="172800">2 giorni</option>
+											<option value="259200">3 giorni</option>
+											<option value="345600">4 giorni</option>
+											<option value="432000">5 giorni</option>
+											<option value="518400">6 giorni</option>
+											<option value="604800">7 giorni</option>
 										</select>
 									</div>
 
 									<!-- configNodesOfflineAgeInSeconds -->
 									<div class="p-2">
 										<label class="block text-sm font-medium text-gray-900"
-											>Nodes Offline Age</label
+											>Età nodi offline</label
 										>
-										<div class="text-xs text-gray-600 mb-2">
-											Nodes not updated within this time will show as red icons.
-											Reload to update map.
-										</div>
+                                                                                <div class="text-xs text-gray-600 mb-2">
+                                                                                        I nodi non aggiornati entro questo intervallo saranno mostrati come icone
+                                                                                        rosse. Ricarica per aggiornare la mappa.
+                                                                                </div>
 										<select
 											v-model="configNodesOfflineAgeInSeconds"
 											class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-											<option :value="null">Don't show as offline</option>
-											<option value="900">15 minutes</option>
-											<option value="1800">30 minutes</option>
-											<option value="2700">45 minutes</option>
-											<option value="3600">1 hour</option>
-											<option value="7200">2 hours</option>
-											<option value="10800">3 hours</option>
-											<option value="21600">6 hours</option>
-											<option value="43200">12 hours</option>
-											<option value="86400">24 hours</option>
-											<option value="172800">2 days</option>
-											<option value="259200">3 days</option>
-											<option value="345600">4 days</option>
-											<option value="432000">5 days</option>
-											<option value="518400">6 days</option>
-											<option value="604800">7 days</option>
+											<option :value="null">Non mostrare come offline</option>
+											<option value="900">15 minuti</option>
+											<option value="1800">30 minuti</option>
+											<option value="2700">45 minuti</option>
+											<option value="3600">1 ora</option>
+											<option value="7200">2 ore</option>
+											<option value="10800">3 ore</option>
+											<option value="21600">6 ore</option>
+											<option value="43200">12 ore</option>
+											<option value="86400">24 ore</option>
+											<option value="172800">2 giorni</option>
+											<option value="259200">3 giorni</option>
+											<option value="345600">4 giorni</option>
+											<option value="432000">5 giorni</option>
+											<option value="518400">6 giorni</option>
+											<option value="604800">7 giorni</option>
 										</select>
 									</div>
 
 									<!-- configWaypointsMaxAgeInSeconds -->
 									<div class="p-2">
 										<label class="block text-sm font-medium text-gray-900"
-											>Waypoints Max Age</label
+											>Età massima waypoint</label
 										>
-										<div class="text-xs text-gray-600 mb-2">
-											Waypoints not updated within this time are hidden. Reload
-											to update map.
-										</div>
+                                                                                <div class="text-xs text-gray-600 mb-2">
+                                                                                        I waypoint non aggiornati entro questo intervallo vengono nascosti. Ricarica
+                                                                                        per aggiornare la mappa.
+                                                                                </div>
 										<select
 											v-model="configWaypointsMaxAgeInSeconds"
 											class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-											<option :value="null">Show All</option>
-											<option value="900">15 minutes</option>
-											<option value="1800">30 minutes</option>
-											<option value="3600">1 hour</option>
-											<option value="10800">3 hours</option>
-											<option value="21600">6 hours</option>
-											<option value="43200">12 hours</option>
-											<option value="86400">24 hours</option>
-											<option value="172800">2 days</option>
-											<option value="259200">3 days</option>
-											<option value="345600">4 days</option>
-											<option value="432000">5 days</option>
-											<option value="518400">6 days</option>
-											<option value="604800">7 days</option>
+											<option :value="null">Mostra tutto</option>
+											<option value="900">15 minuti</option>
+											<option value="1800">30 minuti</option>
+											<option value="3600">1 ora</option>
+											<option value="10800">3 ore</option>
+											<option value="21600">6 ore</option>
+											<option value="43200">12 ore</option>
+											<option value="86400">24 ore</option>
+											<option value="172800">2 giorni</option>
+											<option value="259200">3 giorni</option>
+											<option value="345600">4 giorni</option>
+											<option value="432000">5 giorni</option>
+											<option value="518400">6 giorni</option>
+											<option value="604800">7 giorni</option>
 										</select>
 									</div>
 
 									<!-- configNeighboursMaxDistanceInMeters -->
 									<div class="p-2">
 										<label class="block text-sm font-medium text-gray-900"
-											>Neighbours Max Distance (meters)</label
+											>Distanza massima vicini (metri)</label
 										>
-										<div class="text-xs text-gray-600 mb-2">
-											Neighbours further than this are hidden. Reload to update
-											map.
-										</div>
+                                                                                <div class="text-xs text-gray-600 mb-2">
+                                                                                        I vicini oltre questa distanza vengono nascosti. Ricarica per aggiornare la
+                                                                                        mappa.
+                                                                                </div>
 										<input
 											type="number"
 											v-model="configNeighboursMaxDistanceInMeters"
@@ -2340,10 +2335,10 @@
 									<!-- configZoomLevelGoToNode -->
 									<div class="p-2">
 										<label class="block text-sm font-medium text-gray-900"
-											>Zoom Level (go to node)</label
+											>Livello di zoom (vai al nodo)</label
 										>
 										<div class="text-xs text-gray-600 mb-2">
-											How far to zoom map when navigating to a node.
+											Quanto zoom applicare alla mappa quando si passa a un nodo.
 										</div>
 										<input
 											type="number"
@@ -2354,10 +2349,10 @@
 									<!-- configTemperatureFormat -->
 									<div class="p-2">
 										<label class="block text-sm font-medium text-gray-900"
-											>Temperature Format</label
+											>Formato temperatura</label
 										>
 										<div class="text-xs text-gray-600 mb-2">
-											Metrics will be shown in the selected format.
+											Le metriche verranno mostrate nel formato selezionato.
 										</div>
 										<select
 											v-model="configTemperatureFormat"
@@ -2378,11 +2373,11 @@
 													required />
 											</div>
 											<label class="ml-2 text-sm font-medium text-gray-900"
-												>Auto Update Position in URL</label
+												>Aggiorna automaticamente la posizione nell'URL</label
 											>
 										</div>
 										<div class="text-xs text-gray-600">
-											Sets lat/lng/zoom as query parameters.
+											Imposta lat/lon/zoom come parametri della query.
 										</div>
 									</div>
 
@@ -2397,11 +2392,11 @@
 													required />
 											</div>
 											<label class="ml-2 text-sm font-medium text-gray-900"
-												>Enable Map Animations</label
+												>Attiva animazioni della mappa</label
 											>
 										</div>
 										<div class="text-xs text-gray-600">
-											Map will animate flying to nodes.
+											La mappa animerà il movimento verso i nodi.
 										</div>
 									</div>
 								</div>
@@ -2432,20 +2427,20 @@
 								<div class="p-2">
 									<div class="flex items-start justify-between">
 										<div>
-											<h2 class="font-bold">
-												{{ selectedNodeToShowNeighbours.short_name }} Neighbours
-											</h2>
+                                                                                        <h2 class="font-bold">
+                                                                                                Vicini di {{ selectedNodeToShowNeighbours.short_name }}
+                                                                                        </h2>
 											<h3
 												v-if="selectedNodeToShowNeighboursType === 'we_heard'"
 												class="text-sm">
-												Nodes heard by {{
-												selectedNodeToShowNeighbours.short_name }}
+                                                                                                Nodi ascoltati da {{
+                                                                                                selectedNodeToShowNeighbours.short_name }}
 											</h3>
 											<h3
 												v-if="selectedNodeToShowNeighboursType === 'heard_us'"
 												class="text-sm">
-												Nodes that heard {{
-												selectedNodeToShowNeighbours.short_name }}
+                                                                                                Nodi che hanno ascoltato {{
+                                                                                                selectedNodeToShowNeighbours.short_name }}
 											</h3>
 										</div>
 										<div class="my-auto ml-3 flex h-7 items-center">
@@ -2540,7 +2535,7 @@
 										</div>
 										<div class="my-auto mr-auto font-bold">
 											{{ selectedNodeToShowPositionHistory.short_name }}
-											Position History
+                                                                                        Cronologia posizioni
 										</div>
 										<div class="flex my-auto ml-3 space-x-2">
 											<a
@@ -2578,19 +2573,19 @@
 												@click="onPositionHistoryQuickRangeClick('1h')"
 												type="button"
 												class="w-full bg-gray-100 rounded border shadow px-2 py-1 text-sm hover:bg-gray-200 text-center">
-												1 Hour
+												1 ora
 											</button>
 											<button
 												@click="onPositionHistoryQuickRangeClick('24h')"
 												type="button"
 												class="w-full bg-gray-100 rounded border shadow px-2 py-1 text-sm hover:bg-gray-200 text-center">
-												24 Hours
+												24 ore
 											</button>
 											<button
 												@click="onPositionHistoryQuickRangeClick('7d')"
 												type="button"
 												class="w-full bg-gray-100 rounded border shadow px-2 py-1 text-sm hover:bg-gray-200 text-center">
-												7 Days
+												7 giorni
 											</button>
 										</div>
 
@@ -2599,7 +2594,7 @@
 											<!-- from -->
 											<div class="flex items-center">
 												<label class="text-sm pr-1 min-w-12 text-right"
-													>From:</label
+													>Da:</label
 												>
 												<input
 													v-model="positionHistoryDateTimeFrom"
@@ -2611,7 +2606,7 @@
 											<!-- to -->
 											<div class="flex items-center">
 												<label class="text-sm pr-1 min-w-12 text-right"
-													>To:</label
+													>A:</label
 												>
 												<input
 													v-model="positionHistoryDateTimeTo"
@@ -2724,7 +2719,7 @@
 			}
 
 			function getConfigNodesDisconnectedAgeInSeconds() {
-				// default to showing nodes as recently uplinked if heard in the last 30 minutes
+				// default to showing nodes as recently uplinked if heard in the last 30 minuti
 				const value = localStorage.getItem(
 					"config_nodes_disconnected_age_in_seconds"
 				);
@@ -3181,7 +3176,7 @@
 								labels: labels,
 								datasets: [
 									{
-										label: "Battery Level",
+										label: "Livello batteria",
 										borderColor: "#3b82f6",
 										backgroundColor: "#3b82f6",
 										pointStyle: false, // no points
@@ -3197,7 +3192,7 @@
 										data: channelUtilizationMetrics,
 									},
 									{
-										label: "Air Util TX",
+										label: "Utilizzo TX in aria",
 										borderColor: "#f97316",
 										backgroundColor: "#f97316",
 										showLine: false, // no lines between points
@@ -3208,7 +3203,7 @@
 								labels: labels,
 								datasets: [
 									{
-										label: "Battery Level",
+										label: "Livello batteria",
 										borderColor: "#3b82f6",
 										backgroundColor: "#3b82f6",
 										pointStyle: false, // no points
@@ -3224,7 +3219,7 @@
 										data: channelUtilizationMetrics,
 									},
 									{
-										label: "Air Util TX",
+										label: "Utilizzo TX in aria",
 										borderColor: "#f97316",
 										backgroundColor: "#f97316",
 										showLine: false, // no lines between points
@@ -3254,7 +3249,7 @@
 									},
 									y: {
 										min: 0,
-										max: 101, // 101 is "Plugged In", need to include for tooltip to work
+										max: 101, // 101 is "In carica", need to include for tooltip to work
 										ticks: {
 											callback: (label) => `${label}%`,
 										},
@@ -3317,7 +3312,7 @@
 								labels: labels,
 								datasets: [
 									{
-										label: "Temperature",
+										label: "Temperatura",
 										suffix: "ºC",
 										borderColor: "#3b82f6",
 										backgroundColor: "#3b82f6",
@@ -3966,7 +3961,7 @@
 				div.style.backgroundColor = "white";
 				div.style.padding = "12px";
 				div.innerHTML =
-					`<div style="margin-bottom:6px;"><strong>Legend</strong></div>` +
+					`<div style="margin-bottom:6px;"><strong>Legenda</strong></div>` +
 					`<div style="display:flex"><div class="icon-mqtt-connected" style="width:12px;height:12px;margin-right:4px;margin-top:auto;margin-bottom:auto;"></div> MQTT Connected</div>` +
 					`<div style="display:flex"><div class="icon-mqtt-disconnected" style="width:12px;height:12px;margin-right:4px;margin-top:auto;margin-bottom:auto;"></div> MQTT Disconnected</div>` +
 					`<div style="display:flex"><div class="icon-offline" style="width:12px;height:12px;margin-right:4px;margin-top:auto;margin-bottom:auto;"></div> Offline Too Long</div>`;
@@ -4390,8 +4385,8 @@
                 + `<br/>SNR: ${neighbour.snr}dB`
                 + `<br/>Distance: ${distance}`
                 + `<br/><br/>ID: ${node.node_id} heard ${neighbourNode.node_id}`
-                + `<br/>Hex ID: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`
-                + (node.neighbours_updated_at ? `<br/>Updated: ${moment(new Date(node.neighbours_updated_at)).fromNow()}` : '')
+                + `<br/>ID esadecimale: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`
+                + (node.neighbours_updated_at ? `<br/>Aggiornamento: ${moment(new Date(node.neighbours_updated_at)).fromNow()}` : '')
                 + `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`
                 + `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
 
@@ -4518,8 +4513,8 @@
                 + `<br/>SNR: ${neighbour.snr}dB`
                 + `<br/>Distance: ${distance}`
                 + `<br/><br/>ID: ${neighbourNode.node_id} heard ${node.node_id}`
-                + `<br/>Hex ID: ${neighbourNode.node_id_hex} heard ${node.node_id_hex}`
-                + (neighbourNode.neighbours_updated_at ? `<br/>Updated: ${moment(new Date(neighbourNode.neighbours_updated_at)).fromNow()}` : '')
+                + `<br/>ID esadecimale: ${neighbourNode.node_id_hex} heard ${node.node_id_hex}`
+                + (neighbourNode.neighbours_updated_at ? `<br/>Aggiornamento: ${moment(new Date(neighbourNode.neighbours_updated_at)).fromNow()}` : '')
                 + `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`
                 + `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
 
@@ -4783,8 +4778,8 @@
 								+ `<br/>SNR: ${neighbour.snr}dB`
 								+ `<br/>Distance: ${distance}`
 								+ `<br/><br/>ID: ${node.node_id} heard ${neighbourNode.node_id}`
-								+ `<br/>Hex ID: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`
-								+ (node.neighbours_updated_at ? `<br/>Updated: ${moment(new Date(node.neighbours_updated_at)).fromNow()}` : '')
+								+ `<br/>ID esadecimale: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`
+								+ (node.neighbours_updated_at ? `<br/>Aggiornamento: ${moment(new Date(node.neighbours_updated_at)).fromNow()}` : '')
 								+ `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`
 								+ `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
 
@@ -4938,18 +4933,18 @@
 
 						let tooltip = "";
 						if (positionHistory.type === "position") {
-							tooltip += `<b>Position</b>`;
+							tooltip += `<b>Posizione</b>`;
 						} else if (positionHistory.type === "map_report") {
-							tooltip += `<b>Map Report</b>`;
+							tooltip += `<b>Rapporto mappa</b>`;
 						}
 						tooltip += `<br/>[${escapeString(node.short_name)}] ${escapeString(
 							node.long_name
 						)}`;
 						if (positionHistory.ground_speed) {
-							tooltip += `<br/>Ground Speed: ${positionHistory.ground_speed} km/h`;
+							tooltip += `<br/>Velocità al suolo: ${positionHistory.ground_speed} km/h`;
 						}
 						tooltip += `<br/>${positionHistory.latitude}, ${positionHistory.longitude}`;
-						tooltip += `<br/>Heard on: ${moment(
+						tooltip += `<br/>Ascoltato su: ${moment(
 							new Date(positionHistory.created_at)
 						).format("DD/MM/YYYY hh:mm A")}`;
 
@@ -4959,7 +4954,7 @@
 							const gatewayNodeInfo = gatewayNode
 								? `[${gatewayNode.short_name}] ${gatewayNode.long_name}`
 								: "???";
-							tooltip += `<br/>Heard by: <a href="javascript:void(0);" onclick="goToNode(${positionHistory.gateway_id})">${gatewayNodeInfo}</a>`;
+							tooltip += `<br/>Ascoltato da: <a href="javascript:void(0);" onclick="goToNode(${positionHistory.gateway_id})">${gatewayNodeInfo}</a>`;
 						}
 
 						// create position history marker
@@ -5175,7 +5170,7 @@
 								node.position_precision
 						  )}`
 						: "") +
-					`<br/><br/>Role: ${node.role_name}` +
+					`<br/><br/>Ruolo: ${node.role_name}` +
 					`<br/>Hardware: ${node.hardware_model_name}` +
 					(node.firmware_version != null
 						? `<br/>Firmware: ${node.firmware_version}`
@@ -5187,61 +5182,61 @@
 						? `<br/>Modem Preset: ${node.modem_preset_name}`
 						: "") +
 					(node.has_default_channel != null
-						? `<br/>Has Default Channel: ${
-								node.has_default_channel ? "Yes" : "No"
+						? `<br/>Ha canale predefinito: ${
+								node.has_default_channel ? "Sì" : "No"
 						  }`
 						: "");
 
 				if (node.battery_level) {
 					if (node.battery_level > 100) {
-						tooltip += `<br/>Battery: ${
-							node.battery_level > 100 ? "Plugged In" : node.battery_level
+						tooltip += `<br/>Batteria: ${
+							node.battery_level > 100 ? "In carica" : node.battery_level
 						}`;
 					} else {
-						tooltip += `<br/>Battery: ${node.battery_level}%`;
+						tooltip += `<br/>Batteria: ${node.battery_level}%`;
 					}
 				}
 
 				if (node.voltage) {
-					tooltip += `<br/>Voltage: ${Number(node.voltage).toFixed(2)}V`;
+					tooltip += `<br/>Tensione: ${Number(node.voltage).toFixed(2)}V`;
 				}
 
 				if (node.channel_utilization) {
-					tooltip += `<br/>Ch Util: ${Number(node.channel_utilization).toFixed(
+					tooltip += `<br/>Utilizzo canale: ${Number(node.channel_utilization).toFixed(
 						2
 					)}%`;
 				}
 
 				if (node.air_util_tx) {
-					tooltip += `<br/>Air Util: ${Number(node.air_util_tx).toFixed(2)}%`;
+					tooltip += `<br/>Utilizzo aria: ${Number(node.air_util_tx).toFixed(2)}%`;
 				}
 
 				// ignore alt above 42949000 due to https://github.com/meshtastic/firmware/issues/3109
 				if (node.altitude && node.altitude < 42949000) {
-					tooltip += `<br/>Altitude: ${node.altitude}m`;
+					tooltip += `<br/>Altitudine: ${node.altitude}m`;
 				}
 
 				// bottom info
 				tooltip += `<br/><br/>ID: ${node.node_id}`;
-				tooltip += `<br/>Hex ID: ${node.node_id_hex}`;
-				tooltip += `<br/>Updated: ${moment(
+				tooltip += `<br/>ID esadecimale: ${node.node_id_hex}`;
+				tooltip += `<br/>Aggiornamento: ${moment(
 					new Date(node.updated_at)
 				).fromNow()}`;
 				tooltip += node.neighbours_updated_at
-					? `<br/>Neighbours Updated: ${moment(
+					? `<br/>Aggiornamento vicini: ${moment(
 							new Date(node.neighbours_updated_at)
 					  ).fromNow()}`
 					: "";
 				tooltip += node.position_updated_at
-					? `<br/>Position Updated: ${moment(
+					? `<br/>Aggiornamento posizione: ${moment(
 							new Date(node.position_updated_at)
 					  ).fromNow()}`
 					: "";
 
 				// show details button
-				tooltip += `<br/><br/><button onclick="showNodeDetails(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200 mb-1">Show Full Details</button>`;
-				tooltip += `<br/><button onclick="showNodeNeighboursThatHeardUs(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200 mb-1">Show Neighbours (Heard Us)</button>`;
-				tooltip += `<br/><button onclick="showNodeNeighboursThatWeHeard(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200">Show Neighbours (We Heard)</button>`;
+				tooltip += `<br/><br/><button onclick="showNodeDetails(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200 mb-1">Mostra dettagli completi</button>`;
+				tooltip += `<br/><button onclick="showNodeNeighboursThatHeardUs(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200 mb-1">Mostra vicini (ci hanno ascoltato)</button>`;
+				tooltip += `<br/><button onclick="showNodeNeighboursThatWeHeard(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200">Mostra vicini (li abbiamo ascoltati)</button>`;
 				tooltip += `</div>`;
 
 				return tooltip;
@@ -5261,20 +5256,20 @@
 					).fromNow()}` +
 					`<br/>Lat/Lng: ${waypoint.latitude}, ${waypoint.longitude}` +
 					`<br/><br/>From ID: ${waypoint.from}` +
-					`<br/>From Hex ID: !${Number(waypoint.from).toString(16)}`;
+					`<br/>From ID esadecimale: !${Number(waypoint.from).toString(16)}`;
 
 				// show node name this waypoint is from, if possible
 				if (fromNode != null) {
-					tooltip += `<br/>From Node: <a href="#" onclick="goToNode(${
+					tooltip += `<br/>Dal nodo: <a href="#" onclick="goToNode(${
 						waypoint.from
 					})">${escapeString(fromNode.long_name) || "Unnamed Node"}</a>`;
 				} else {
-					tooltip += `<br/>From Node: ???`;
+					tooltip += `<br/>Dal nodo: ???`;
 				}
 
 				// bottom info
 				tooltip += `<br/><br/>ID: ${waypoint.waypoint_id}`;
-				tooltip += `<br/>Updated: ${moment(
+				tooltip += `<br/>Aggiornamento: ${moment(
 					new Date(waypoint.updated_at)
 				).fromNow()}`;
 
