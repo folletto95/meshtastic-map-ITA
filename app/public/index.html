@@ -1333,9 +1333,10 @@
 												<select
 													v-model="deviceMetricsTimeRange"
 													class="block w-full rounded-md border-0 py-0.5 pl-2 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
-													<option value="1d">1 Day</option>
-													<option value="3d">3 Days</option>
-													<option value="7d">7 Days</option>
+                                                                                                        <option value="1d">1 Day</option>
+                                                                                                        <option value="3d">3 Days</option>
+                                                                                                        <option value="7d">7 Days</option>
+                                                                                                        <option value="30d">30 Days</option>
 												</select>
 											</div>
 										</div>
@@ -1464,9 +1465,10 @@
 												<select
 													v-model="environmentMetricsTimeRange"
 													class="block w-full rounded-md border-0 py-0.5 pl-2 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
-													<option value="1d">1 Day</option>
-													<option value="3d">3 Days</option>
-													<option value="7d">7 Days</option>
+                                                                                                        <option value="1d">1 Day</option>
+                                                                                                        <option value="3d">3 Days</option>
+                                                                                                        <option value="7d">7 Days</option>
+                                                                                                        <option value="30d">30 Days</option>
 												</select>
 											</div>
 										</div>
@@ -1564,9 +1566,10 @@
 												<select
 													v-model="powerMetricsTimeRange"
 													class="block w-full rounded-md border-0 py-0.5 pl-2 pr-8 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
-													<option value="1d">1 Day</option>
-													<option value="3d">3 Days</option>
-													<option value="7d">7 Days</option>
+                                                                                                        <option value="1d">1 Day</option>
+                                                                                                        <option value="3d">3 Days</option>
+                                                                                                        <option value="7d">7 Days</option>
+                                                                                                        <option value="30d">30 Days</option>
 												</select>
 											</div>
 										</div>
@@ -2940,8 +2943,10 @@
 					loadNodeDeviceMetrics: function (nodeId) {
 						// calculate unix timestamps in milliseconds for supported time ranges
 						const oneDayAgoInMilliseconds = new Date().getTime() - 86400 * 1000;
-						const threeDaysAgoInMilliseconds =
-							new Date().getTime() - 259200 * 1000;
+                                                const threeDaysAgoInMilliseconds =
+                                                        new Date().getTime() - 259200 * 1000;
+                                                const thirtyDaysAgoInMilliseconds =
+                                                        new Date().getTime() - 2592000 * 1000;
 						const sevenDaysAgoInMilliseconds =
 							new Date().getTime() - 604800 * 1000;
 
@@ -2956,10 +2961,14 @@
 								timeFrom = threeDaysAgoInMilliseconds;
 								break;
 							}
-							case "7d": {
-								timeFrom = sevenDaysAgoInMilliseconds;
-								break;
-							}
+                                                        case "7d": {
+                                                                timeFrom = sevenDaysAgoInMilliseconds;
+                                                                break;
+                                                        }
+                                                        case "30d": {
+                                                                timeFrom = thirtyDaysAgoInMilliseconds;
+                                                                break;
+                                                        }
 						}
 
 						window.axios
@@ -2982,8 +2991,10 @@
 					loadNodeEnvironmentMetrics: function (nodeId) {
 						// calculate unix timestamps in milliseconds for supported time ranges
 						const oneDayAgoInMilliseconds = new Date().getTime() - 86400 * 1000;
-						const threeDaysAgoInMilliseconds =
-							new Date().getTime() - 259200 * 1000;
+                                                const threeDaysAgoInMilliseconds =
+                                                        new Date().getTime() - 259200 * 1000;
+                                                const thirtyDaysAgoInMilliseconds =
+                                                        new Date().getTime() - 2592000 * 1000;
 						const sevenDaysAgoInMilliseconds =
 							new Date().getTime() - 604800 * 1000;
 
@@ -2998,10 +3009,14 @@
 								timeFrom = threeDaysAgoInMilliseconds;
 								break;
 							}
-							case "7d": {
-								timeFrom = sevenDaysAgoInMilliseconds;
-								break;
-							}
+                                                        case "7d": {
+                                                                timeFrom = sevenDaysAgoInMilliseconds;
+                                                                break;
+                                                        }
+                                                        case "30d": {
+                                                                timeFrom = thirtyDaysAgoInMilliseconds;
+                                                                break;
+                                                        }
 						}
 
 						window.axios
@@ -3024,8 +3039,10 @@
 					loadNodePowerMetrics: function (nodeId) {
 						// calculate unix timestamps in milliseconds for supported time ranges
 						const oneDayAgoInMilliseconds = new Date().getTime() - 86400 * 1000;
-						const threeDaysAgoInMilliseconds =
-							new Date().getTime() - 259200 * 1000;
+                                                const threeDaysAgoInMilliseconds =
+                                                        new Date().getTime() - 259200 * 1000;
+                                                const thirtyDaysAgoInMilliseconds =
+                                                        new Date().getTime() - 2592000 * 1000;
 						const sevenDaysAgoInMilliseconds =
 							new Date().getTime() - 604800 * 1000;
 
@@ -3040,10 +3057,14 @@
 								timeFrom = threeDaysAgoInMilliseconds;
 								break;
 							}
-							case "7d": {
-								timeFrom = sevenDaysAgoInMilliseconds;
-								break;
-							}
+                                                        case "7d": {
+                                                                timeFrom = sevenDaysAgoInMilliseconds;
+                                                                break;
+                                                        }
+                                                        case "30d": {
+                                                                timeFrom = thirtyDaysAgoInMilliseconds;
+                                                                break;
+                                                        }
 						}
 
 						window.axios
@@ -3801,15 +3822,21 @@
 					configTemperatureFormat() {
 						window.setConfigTemperatureFormat(this.configTemperatureFormat);
 					},
-					deviceMetricsTimeRange() {
-						this.loadNodeDeviceMetrics(this.selectedNode.node_id);
-					},
-					environmentMetricsTimeRange() {
-						this.loadNodeEnvironmentMetrics(this.selectedNode.node_id);
-					},
-					powerMetricsTimeRange() {
-						this.loadNodePowerMetrics(this.selectedNode.node_id);
-					},
+                                        deviceMetricsTimeRange() {
+                                                if (this.selectedNode && this.selectedNode.node_id) {
+                                                        this.loadNodeDeviceMetrics(this.selectedNode.node_id);
+                                                }
+                                        },
+                                        environmentMetricsTimeRange() {
+                                                if (this.selectedNode && this.selectedNode.node_id) {
+                                                        this.loadNodeEnvironmentMetrics(this.selectedNode.node_id);
+                                                }
+                                        },
+                                        powerMetricsTimeRange() {
+                                                if (this.selectedNode && this.selectedNode.node_id) {
+                                                        this.loadNodePowerMetrics(this.selectedNode.node_id);
+                                                }
+                                        },
 				},
 			}).mount("#app");
 		</script>
