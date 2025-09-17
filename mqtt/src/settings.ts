@@ -11,7 +11,7 @@ export const MQTT_CLIENT_ID: string = process.env.MQTT_CLIENT_ID || "Test";
 export const MQTT_TOPIC: string = process.env.MQTT_TOPIC || "msh/#";
 
 export const PURGE_INTERVAL_SECONDS: number = Number.parseInt(
- process.env.PURGE_INTERVAL_SECONDS || "2592000",
+  process.env.PURGE_INTERVAL_SECONDS || "2592000",
 );
 export const PURGE_DEVICE_METRICS_AFTER_SECONDS: number = Number.parseInt(
  process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS || "2592000",
