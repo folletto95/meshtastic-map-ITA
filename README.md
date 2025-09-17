@@ -1,6 +1,6 @@
 **Created by:** Liam Cottle\
 **Forked by:** Tilen Komel
-
+**Forked by:** Niccolò Malenotti
 <h2 align="center">Meshtastic Map</h2>
 
 A map of all Meshtastic nodes heard via MQTT.
@@ -11,7 +11,7 @@ My version of the map is available at https://map.meshnet.si
 
 ## How does it work?
 
-- An [mqtt client](./src/mqtt.js) is persistently connected to `mqtt.meshnet.si` and subscribed to the `si/#` topic.
+- An [mqtt client](./src/mqtt.js) is persistently connected to `smpisa.ddn.bet` and subscribed to the `msh/#` topic.
 - All messages received are attempted to be decoded as [ServiceEnvelope](https://buf.build/meshtastic/protobufs/docs/main:meshtastic#meshtastic.ServiceEnvelope) packets.
 - If a packet is encrypted, it attempts to decrypt it with the default `AQ==` key.
 - If a packet can't be decoded as a `ServiceEnvelope`, it is ignored.
@@ -47,7 +47,7 @@ My version of the map is available at https://map.meshnet.si
 Clone the project repo:
 
 ```
-git clone https://github.com/KomelT/meshtastic-map
+git clone https://github.com/folletto95/meshtastic-map-ITA
 cd meshtastic-map
 ```
 
@@ -80,7 +80,7 @@ docker compose -f docker-compose.dev.yaml up
 Clone the project repo:
 
 ```
-git clone https://github.com/KomelT/meshtastic-map
+git clone https://github.com/folletto95/meshtastic-map-ITA
 cd meshtastic-map
 ```
 
@@ -122,7 +122,7 @@ npm run test
 
 ## Contributing
 
-If you have a feature request, or find a bug, please [open an issue](https://github.com/Komelt/meshtastic-map/issues) here on GitHub.
+If you have a feature request, or find a bug, please [open an issue](https://github.com/folletto95/meshtastic-map-ITA/issues) here on GitHub.
 
 ## License
 
