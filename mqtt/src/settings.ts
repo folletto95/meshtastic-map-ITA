@@ -76,6 +76,4 @@ export const LOG_UNKNOWN_PACKET_TYPES: boolean = extractBoolean(
 
 export const DECRYPTION_KEYS: string[] = process.env.DECRYPTION_KEYS?.split(
 	",",
-) || [
-	"AQ==",
-];
+) || ["AQ=="];
