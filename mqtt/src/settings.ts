@@ -1,6 +1,25 @@
 import type { MqttProtocol } from "mqtt";
 import { extractBoolean } from "./tools/decrypt.js";
 
+function parseNumberEnv(
+	value: string | undefined,
+	defaultValue: number,
+): number {
+	if (value === undefined) {
+		return defaultValue;
+	}
+
+	const trimmed = value.trim();
+
+	if (trimmed === "") {
+		return defaultValue;
+	}
+
+	const parsed = Number.parseInt(trimmed, 10);
+
+	return Number.isNaN(parsed) ? defaultValue : parsed;
+}
+
 export const MQTT_URL: string =
 	process.env.MQTT_URL || "mqtt://192.168.10.202:1883";
 export const MQTT_PROTOCOL: MqttProtocol =
@@ -10,41 +29,53 @@ export const MQTT_PASSWORD: string = process.env.MQTT_PASSWORD || "tettebelle2";
 export const MQTT_CLIENT_ID: string = process.env.MQTT_CLIENT_ID || "Test";
 export const MQTT_TOPIC: string = process.env.MQTT_TOPIC || "msh/#";
 
-export const PURGE_INTERVAL_SECONDS: number = Number.parseInt(
-  process.env.PURGE_INTERVAL_SECONDS || "2592000",
+export const PURGE_INTERVAL_SECONDS: number = parseNumberEnv(
+	process.env.PURGE_INTERVAL_SECONDS,
+	2592000,
 );
-export const PURGE_DEVICE_METRICS_AFTER_SECONDS: number = Number.parseInt(
- process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS || "2592000",
+export const PURGE_DEVICE_METRICS_AFTER_SECONDS: number = parseNumberEnv(
+	process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS,
+	2592000,
 );
-export const PURGE_ENVIROMENT_METRICS_AFTER_SECONDS: number = Number.parseInt(
- process.env.PURGE_ENVIROMENT_METRICS_AFTER_SECONDS || "2592000",
+export const PURGE_ENVIROMENT_METRICS_AFTER_SECONDS: number = parseNumberEnv(
+	process.env.PURGE_ENVIROMENT_METRICS_AFTER_SECONDS,
+	2592000,
 );
-export const PURGE_POWER_METRICS_AFTER_SECONDS: number = Number.parseInt(
- process.env.PURGE_POWER_METRICS_AFTER_SECONDS || "2592000",
+export const PURGE_POWER_METRICS_AFTER_SECONDS: number = parseNumberEnv(
+	process.env.PURGE_POWER_METRICS_AFTER_SECONDS,
+	2592000,
 );
-export const PURGE_MAP_REPORTS_AFTER_SECONDS: number = Number.parseInt(
- process.env.PURGE_MAP_REPORTS_AFTER_SECONDS || "2592000",
+export const PURGE_MAP_REPORTS_AFTER_SECONDS: number = parseNumberEnv(
+	process.env.PURGE_MAP_REPORTS_AFTER_SECONDS,
+	2592000,
 );
-export const PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS: number = Number.parseInt(
- process.env.PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS || "2592000",
+export const PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS: number = parseNumberEnv(
+	process.env.PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS,
+	2592000,
 );
-export const PURGE_UNHEARD_NODES_FOR_SECONDS: number = Number.parseInt(
- process.env.PURGE_UNHEARD_NODES_FOR_SECONDS || "2592000",
+export const PURGE_UNHEARD_NODES_FOR_SECONDS: number = parseNumberEnv(
+	process.env.PURGE_UNHEARD_NODES_FOR_SECONDS,
+	2592000,
 );
-export const PURGE_POSITIONS_AFTER_SECONDS: number = Number.parseInt(
- process.env.PURGE_POSITIONS_AFTER_SECONDS || "2592000",
+export const PURGE_POSITIONS_AFTER_SECONDS: number = parseNumberEnv(
+	process.env.PURGE_POSITIONS_AFTER_SECONDS,
+	2592000,
 );
-export const PURGE_SERVICE_ENVELOPES_AFTER_SECONDS: number = Number.parseInt(
- process.env.PURGE_SERVICE_ENVELOPES_AFTER_SECONDS || "2592000",
+export const PURGE_SERVICE_ENVELOPES_AFTER_SECONDS: number = parseNumberEnv(
+	process.env.PURGE_SERVICE_ENVELOPES_AFTER_SECONDS,
+	2592000,
 );
-export const PURGE_TEXT_MESSAGES_AFTER_SECONDS: number = Number.parseInt(
- process.env.PURGE_TEXT_MESSAGES_AFTER_SECONDS || "2592000",
+export const PURGE_TEXT_MESSAGES_AFTER_SECONDS: number = parseNumberEnv(
+	process.env.PURGE_TEXT_MESSAGES_AFTER_SECONDS,
+	2592000,
 );
-export const PURGE_TRACEROUTES_AFTER_SECONDS: number = Number.parseInt(
- process.env.PURGE_TRACEROUTES_AFTER_SECONDS || "2592000",
+export const PURGE_TRACEROUTES_AFTER_SECONDS: number = parseNumberEnv(
+	process.env.PURGE_TRACEROUTES_AFTER_SECONDS,
+	2592000,
 );
-export const PURGE_WAYPOINTS_AFTER_SECONDS: number = Number.parseInt(
- process.env.PURGE_WAYPOINTS_AFTER_SECONDS || "2592000",
+export const PURGE_WAYPOINTS_AFTER_SECONDS: number = parseNumberEnv(
+	process.env.PURGE_WAYPOINTS_AFTER_SECONDS,
+	2592000,
 );
 
 export const COLLECT_SERVICE_ENVELOPES: boolean =
