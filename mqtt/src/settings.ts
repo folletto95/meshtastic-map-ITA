@@ -14,41 +14,41 @@ export const PURGE_INTERVAL_SECONDS: number = Number.parseInt(
 	process.env.PURGE_INTERVAL_SECONDS || "2592000",
 );
 export const PURGE_DEVICE_METRICS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS || "0",
+	process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS || "2592000",
 );
 export const PURGE_ENVIROMENT_METRICS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_ENVIROMENT_METRICS_AFTER_SECONDS || "0",
+	process.env.PURGE_ENVIROMENT_METRICS_AFTER_SECONDS || "2592000",
 );
 export const PURGE_POWER_METRICS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_POWER_METRICS_AFTER_SECONDS || "0",
+	process.env.PURGE_POWER_METRICS_AFTER_SECONDS || "2592000",
 );
 export const PURGE_MAP_REPORTS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_MAP_REPORTS_AFTER_SECONDS || "0",
+	process.env.PURGE_MAP_REPORTS_AFTER_SECONDS || "2592000",
 );
 export const PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS || "0",
+	process.env.PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS || "2592000",
 );
 export const PURGE_UNHEARD_NODES_FOR_SECONDS: number = Number.parseInt(
-	process.env.PURGE_UNHEARD_NODES_FOR_SECONDS || "0",
+	process.env.PURGE_UNHEARD_NODES_FOR_SECONDS || "2592000",
 );
 export const PURGE_POSITIONS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_POSITIONS_AFTER_SECONDS || "0",
+	process.env.PURGE_POSITIONS_AFTER_SECONDS || "2592000",
 );
 export const PURGE_SERVICE_ENVELOPES_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_SERVICE_ENVELOPES_AFTER_SECONDS || "0",
+	process.env.PURGE_SERVICE_ENVELOPES_AFTER_SECONDS || "2592000",
 );
 export const PURGE_TEXT_MESSAGES_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_TEXT_MESSAGES_AFTER_SECONDS || "0",
+	process.env.PURGE_TEXT_MESSAGES_AFTER_SECONDS || "2592000",
 );
 export const PURGE_TRACEROUTES_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_TRACEROUTES_AFTER_SECONDS || "0",
+	process.env.PURGE_TRACEROUTES_AFTER_SECONDS || "2592000",
 );
 export const PURGE_WAYPOINTS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_WAYPOINTS_AFTER_SECONDS || "0",
+	process.env.PURGE_WAYPOINTS_AFTER_SECONDS || "2592000",
 );
 
 export const COLLECT_SERVICE_ENVELOPES: boolean =
-	!!process.env.COLLECT_SERVICE_ENVELOPES || false;
+	!!process.env.COLLECT_SERVICE_ENVELOPES || true;
 export const COLLECT_POSITIONS: boolean =
 	!!process.env.COLLECT_POSITIONS || true;
 export const COLLECT_TEXT_MESSAGES: boolean =
@@ -58,9 +58,9 @@ export const IGNORE_DIRECT_MESSAGES: boolean =
 export const COLLECT_WAYPOINTS: boolean =
 	!!process.env.COLLECT_WAYPOINTS || true;
 export const COLLECT_NEIGHBOUR_INFO: boolean =
-	!!process.env.COLLECT_NEIGHBOURINFOS || false;
+	!!process.env.COLLECT_NEIGHBOURINFOS || true;
 export const COLLECT_TRACEROUTES: boolean =
-	!!process.env.COLLECT_TRACEROUTES || false;
+	!!process.env.COLLECT_TRACEROUTES || true;
 export const COLLECT_MAP_REPORTS: boolean =
 	!!process.env.COLLECT_MAP_REPORTS || true;
 
@@ -70,7 +70,7 @@ export const LOG_KNOWN_PACKET_TYPES: boolean = extractBoolean(
 );
 export const LOG_UNKNOWN_PACKET_TYPES: boolean = extractBoolean(
 	process.env.LOG_UNKNOWN_PACKET_TYPES,
-	false,
+	true,
 );
 
 export const DECRYPTION_KEYS: string[] = process.env.DECRYPTION_KEYS?.split(
