@@ -16,37 +16,37 @@ export const PURGE_INTERVAL_SECONDS: number = Number.parseInt(
 	process.env.PURGE_INTERVAL_SECONDS || "86400",
 );
 export const PURGE_DEVICE_METRICS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS || "604800",
+        process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS || "2592000",
 );
 export const PURGE_ENVIROMENT_METRICS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_ENVIROMENT_METRICS_AFTER_SECONDS || "604800",
+        process.env.PURGE_ENVIROMENT_METRICS_AFTER_SECONDS || "2592000",
 );
 export const PURGE_POWER_METRICS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_POWER_METRICS_AFTER_SECONDS || "604800",
+        process.env.PURGE_POWER_METRICS_AFTER_SECONDS || "2592000",
 );
 export const PURGE_MAP_REPORTS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_MAP_REPORTS_AFTER_SECONDS || "604800",
+        process.env.PURGE_MAP_REPORTS_AFTER_SECONDS || "2592000",
 );
 export const PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS || "604800",
+        process.env.PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS || "2592000",
 );
 export const PURGE_UNHEARD_NODES_FOR_SECONDS: number = Number.parseInt(
-	process.env.PURGE_UNHEARD_NODES_FOR_SECONDS || "604800",
+        process.env.PURGE_UNHEARD_NODES_FOR_SECONDS || "2592000",
 );
 export const PURGE_POSITIONS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_POSITIONS_AFTER_SECONDS || "604800",
+        process.env.PURGE_POSITIONS_AFTER_SECONDS || "2592000",
 );
 export const PURGE_SERVICE_ENVELOPES_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_SERVICE_ENVELOPES_AFTER_SECONDS || "604800",
+        process.env.PURGE_SERVICE_ENVELOPES_AFTER_SECONDS || "2592000",
 );
 export const PURGE_TEXT_MESSAGES_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_TEXT_MESSAGES_AFTER_SECONDS || "604800",
+        process.env.PURGE_TEXT_MESSAGES_AFTER_SECONDS || "2592000",
 );
 export const PURGE_TRACEROUTES_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_TRACEROUTES_AFTER_SECONDS || "604800",
+        process.env.PURGE_TRACEROUTES_AFTER_SECONDS || "2592000",
 );
 export const PURGE_WAYPOINTS_AFTER_SECONDS: number = Number.parseInt(
-	process.env.PURGE_WAYPOINTS_AFTER_SECONDS || "604800",
+        process.env.PURGE_WAYPOINTS_AFTER_SECONDS || "2592000",
 );
 
 export const COLLECT_SERVICE_ENVELOPES: boolean =
