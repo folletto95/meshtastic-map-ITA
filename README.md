@@ -1,17 +1,17 @@
 **Created by:** Liam Cottle\
-**Forked by:** Tilen Komel
+**Forked by:** Tilen Komel\
 **Forked by:** Niccolò Malenotti
 <h2 align="center">Meshtastic Map</h2>
 
 A map of all Meshtastic nodes heard via MQTT.
 
-My version of the map is available at https://map.meshnet.si
+My version of the map is available at http://smpisa.ddn.net:9090
 
 <img src="./screenshot.png">
 
 ## How does it work?
 
-- An [mqtt client](./src/mqtt.js) is persistently connected to `smpisa.ddn.bet` and subscribed to the `msh/#` topic.
+- An [mqtt client](./src/mqtt.js) is persistently connected to `smpisa.ddn.net` and subscribed to the `msh/#` topic.
 - All messages received are attempted to be decoded as [ServiceEnvelope](https://buf.build/meshtastic/protobufs/docs/main:meshtastic#meshtastic.ServiceEnvelope) packets.
 - If a packet is encrypted, it attempts to decrypt it with the default `AQ==` key.
 - If a packet can't be decoded as a `ServiceEnvelope`, it is ignored.
