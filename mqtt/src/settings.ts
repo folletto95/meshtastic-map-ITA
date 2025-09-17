@@ -2,18 +2,17 @@ import type { MqttProtocol } from "mqtt";
 import { extractBoolean } from "./tools/decrypt.js";
 
 export const MQTT_URL: string =
-	process.env.MQTT_URL || "mqtt://mqtt.meshnet.si";
+	process.env.MQTT_URL || "mqtt://mqtt.si";
 export const MQTT_PROTOCOL: MqttProtocol =
 	process.env.MQTT_PROTOCOL === "mqtts" ? "mqtts" : "mqtt";
-export const MQTT_USERNAME: string = process.env.MQTT_USERNAME || "slovenia";
-export const MQTT_PASSWORD: string =
-	process.env.MQTT_PASSWORD || "meshnet-si-slovenia";
+export const MQTT_USERNAME: string = process.env.MQTT_USERNAME || "test";
+export const MQTT_PASSWORD: string = process.env.MQTT_PASSWORD || "test";
 export const MQTT_CLIENT_ID: string =
-	process.env.MQTT_CLIENT_ID || "map.meshnet.si";
-export const MQTT_TOPIC: string = process.env.MQTT_TOPIC || "si/#";
+	process.env.MQTT_CLIENT_ID || "Test";
+export const MQTT_TOPIC: string = process.env.MQTT_TOPIC || "msh/#";
 
 export const PURGE_INTERVAL_SECONDS: number = Number.parseInt(
-	process.env.PURGE_INTERVAL_SECONDS || "86400",
+	process.env.PURGE_INTERVAL_SECONDS || "2592000",
 );
 export const PURGE_DEVICE_METRICS_AFTER_SECONDS: number = Number.parseInt(
         process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS || "2592000",
@@ -50,7 +49,7 @@ export const PURGE_WAYPOINTS_AFTER_SECONDS: number = Number.parseInt(
 );
 
 export const COLLECT_SERVICE_ENVELOPES: boolean =
-	!!process.env.COLLECT_SERVICE_ENVELOPES || false;
+	!!process.env.COLLECT_SERVICE_ENVELOPES || true;
 export const COLLECT_POSITIONS: boolean =
 	!!process.env.COLLECT_POSITIONS || true;
 export const COLLECT_TEXT_MESSAGES: boolean =
@@ -60,9 +59,9 @@ export const IGNORE_DIRECT_MESSAGES: boolean =
 export const COLLECT_WAYPOINTS: boolean =
 	!!process.env.COLLECT_WAYPOINTS || true;
 export const COLLECT_NEIGHBOUR_INFO: boolean =
-	!!process.env.COLLECT_NEIGHBOURINFOS || false;
+	!!process.env.COLLECT_NEIGHBOURINFOS || true;
 export const COLLECT_TRACEROUTES: boolean =
-	!!process.env.COLLECT_TRACEROUTES || false;
+	!!process.env.COLLECT_TRACEROUTES || true;
 export const COLLECT_MAP_REPORTS: boolean =
 	!!process.env.COLLECT_MAP_REPORTS || true;
 
@@ -72,12 +71,11 @@ export const LOG_KNOWN_PACKET_TYPES: boolean = extractBoolean(
 );
 export const LOG_UNKNOWN_PACKET_TYPES: boolean = extractBoolean(
 	process.env.LOG_UNKNOWN_PACKET_TYPES,
-	false,
+	true,
 );
 
 export const DECRYPTION_KEYS: string[] = process.env.DECRYPTION_KEYS?.split(
 	",",
 ) || [
-	"1PG7OiApB1nwvP+rz05pAQ==",
-	"zrECbRbQIZOFrYf3skmymrsnW9p7Jjr9MjTB8bay40U=",
+	"AQ==",
 ];
