@@ -2637,6 +2637,7 @@
                         const overlaysGroupLabel = "Sovrapposizioni";
                         const legendOverlayLabel = "Legenda";
                         const neighboursOverlayLabel = "Vicini";
+                        const traceroutesOverlayLabel = "Traceroute";
                         const waypointsOverlayLabel = "Punti di passaggio";
                         const positionHistoryOverlayLabel = "Cronologia posizioni";
                         const legendMqttConnectedLabel = "MQTT connesso";
@@ -3855,11 +3856,12 @@
 		</script>
 
 		<script>
-			// global state
-			var nodes = [];
-			var nodeMarkers = {};
-			var selectedNodeOutlineCircle = null;
-			var waypoints = [];
+                        // global state
+                        var nodes = [];
+                        var nodeMarkers = {};
+                        var traceroutes = [];
+                        var selectedNodeOutlineCircle = null;
+                        var waypoints = [];
 
 			// set map bounds to be a little more than full size to prevent panning off screen
 			var bounds = [
@@ -3937,8 +3939,9 @@
 
 			// create layer groups
 			var nodesLayerGroup = new L.LayerGroup();
-			var neighboursLayerGroup = new L.LayerGroup();
-			var nodeNeighboursLayerGroup = new L.LayerGroup();
+                        var neighboursLayerGroup = new L.LayerGroup();
+                        var traceroutesLayerGroup = new L.LayerGroup();
+                        var nodeNeighboursLayerGroup = new L.LayerGroup();
 			var nodesClusteredLayerGroup = L.markerClusterGroup({
 				showCoverageOnHover: false,
 				disableClusteringAtZoom: 10, // zoom level where node clustering is disabled
@@ -4016,6 +4019,7 @@
                                                 [overlaysGroupLabel]: {
                                                         [legendOverlayLabel]: legendLayerGroup,
                                                         [neighboursOverlayLabel]: neighboursLayerGroup,
+                                                        [traceroutesOverlayLabel]: traceroutesLayerGroup,
                                                         [waypointsOverlayLabel]: waypointsLayerGroup,
                                                         [positionHistoryOverlayLabel]: nodePositionHistoryLayerGroup,
                                                 },
@@ -4037,6 +4041,9 @@
                         }
                         if (enabledOverlayLayers.includes(neighboursOverlayLabel)) {
                                 neighboursLayerGroup.addTo(map);
+                        }
+                        if (enabledOverlayLayers.includes(traceroutesOverlayLabel)) {
+                                traceroutesLayerGroup.addTo(map);
                         }
                         if (enabledOverlayLayers.includes(waypointsOverlayLabel)) {
                                 waypointsLayerGroup.addTo(map);
@@ -4183,13 +4190,18 @@
 				nodesRouterLayerGroup.clearLayers();
 			}
 
-			function clearAllNeighbours() {
-				neighboursLayerGroup.clearLayers();
-			}
+                        function clearAllNeighbours() {
+                                neighboursLayerGroup.clearLayers();
+                        }
 
-			function clearAllWaypoints() {
-				waypointsLayerGroup.clearLayers();
-			}
+                        function clearAllTraceroutes() {
+                                traceroutes = [];
+                                traceroutesLayerGroup.clearLayers();
+                        }
+
+                        function clearAllWaypoints() {
+                                waypointsLayerGroup.clearLayers();
+                        }
 
 			function closeAllPopups() {
 				map.eachLayer(function (layer) {
@@ -4550,15 +4562,180 @@
 				}
 			}
 
-			function clearMap() {
-				closeAllPopups();
-				closeAllTooltips();
-				clearAllNodes();
-				clearAllNeighbours();
-				clearAllWaypoints();
-				clearNodeOutline();
-				cleanUpNodeNeighbours();
-			}
+                        function clearMap() {
+                                closeAllPopups();
+                                closeAllTooltips();
+                                clearAllNodes();
+                                clearAllNeighbours();
+                                clearAllTraceroutes();
+                                clearAllWaypoints();
+                                clearNodeOutline();
+                                cleanUpNodeNeighbours();
+                        }
+
+                        function getNodeIdFromRouteEntry(routeEntry) {
+                                if (routeEntry == null) {
+                                        return null;
+                                }
+
+                                if (typeof routeEntry === "object") {
+                                        if ("nodeId" in routeEntry && routeEntry.nodeId != null) {
+                                                return routeEntry.nodeId;
+                                        }
+                                        if ("node_id" in routeEntry && routeEntry.node_id != null) {
+                                                return routeEntry.node_id;
+                                        }
+                                        if ("id" in routeEntry && routeEntry.id != null) {
+                                                return routeEntry.id;
+                                        }
+                                }
+
+                                return routeEntry;
+                        }
+
+                        function formatNodeIdAsHex(nodeId) {
+                                try {
+                                        return `!${BigInt(nodeId).toString(16)}`;
+                                } catch (error) {
+                                        return `!${String(nodeId ?? "???")}`;
+                                }
+                        }
+
+                        function renderTraceroutes() {
+                                traceroutesLayerGroup.clearLayers();
+
+                                if (!Array.isArray(traceroutes) || traceroutes.length === 0) {
+                                        return;
+                                }
+
+                                for (const traceroute of traceroutes) {
+                                        const pathNodeIds = [];
+
+                                        if (traceroute?.to != null) {
+                                                pathNodeIds.push(traceroute.to);
+                                        }
+
+                                        if (Array.isArray(traceroute?.route)) {
+                                                for (const routeEntry of traceroute.route) {
+                                                        const nodeId = getNodeIdFromRouteEntry(routeEntry);
+                                                        if (nodeId != null && nodeId !== "") {
+                                                                pathNodeIds.push(nodeId);
+                                                        }
+                                                }
+                                        }
+
+                                        if (traceroute?.from != null) {
+                                                pathNodeIds.push(traceroute.from);
+                                        }
+
+                                        if (pathNodeIds.length < 2) {
+                                                continue;
+                                        }
+
+                                        const routeNodeInfos = pathNodeIds.map((nodeId) => {
+                                                return {
+                                                        nodeId: nodeId,
+                                                        node: findNodeById(nodeId),
+                                                };
+                                        });
+
+                                        const tooltipRoute = routeNodeInfos
+                                                .map((info) => {
+                                                        if (info.node) {
+                                                                return `[${escapeString(info.node.short_name)}] ${escapeString(info.node.long_name)}`;
+                                                        }
+
+                                                        return `Nodo ${formatNodeIdAsHex(info.nodeId)}`;
+                                                })
+                                                .join(" &rarr; ");
+
+                                        const hopCount = Math.max(pathNodeIds.length - 1, 0);
+
+                                        let tooltip = `<b>Traceroute #${traceroute.id}</b>`;
+                                        if (traceroute.updated_at) {
+                                                tooltip += `<br/>Aggiornamento: ${moment(new Date(traceroute.updated_at)).fromNow()}`;
+                                        }
+                                        tooltip += `<br/><br/>${tooltipRoute}`;
+                                        tooltip += `<br/>Salti: ${hopCount}`;
+
+                                        if (traceroute.channel_id) {
+                                                tooltip += `<br/>Canale MQTT: ${escapeString(traceroute.channel_id)}`;
+                                        }
+
+                                        if (traceroute.channel != null) {
+                                                tooltip += `<br/>Canale: ${escapeString(String(traceroute.channel))}`;
+                                        }
+
+                                        if (traceroute.gateway_id != null) {
+                                                const gatewayNode = findNodeById(traceroute.gateway_id);
+                                                const gatewayLabel = gatewayNode
+                                                        ? `[${escapeString(gatewayNode.short_name)}] ${escapeString(gatewayNode.long_name)}`
+                                                        : `Nodo ${formatNodeIdAsHex(traceroute.gateway_id)}`;
+                                                tooltip += `<br/>Instradato su MQTT da: ${gatewayLabel}`;
+                                        }
+
+                                        const segments = [];
+                                        let currentSegment = [];
+
+                                        const flushSegment = () => {
+                                                if (currentSegment.length >= 2) {
+                                                        segments.push(currentSegment);
+                                                }
+                                                currentSegment = [];
+                                        };
+
+                                        for (const nodeInfo of routeNodeInfos) {
+                                                const marker = findNodeMarkerById(nodeInfo.nodeId);
+                                                if (!marker) {
+                                                        flushSegment();
+                                                        continue;
+                                                }
+
+                                                currentSegment.push(marker.getLatLng());
+                                        }
+
+                                        flushSegment();
+
+                                        if (segments.length === 0) {
+                                                continue;
+                                        }
+
+                                        for (const latLngs of segments) {
+                                                const line = L.polyline(latLngs, {
+                                                        color: "#ef4444",
+                                                        opacity: 0.85,
+                                                        weight: 3,
+                                                })
+                                                        .arrowheads({
+                                                                size: "10px",
+                                                                fill: true,
+                                                                offsets: {
+                                                                        end: "20px",
+                                                                },
+                                                        })
+                                                        .addTo(traceroutesLayerGroup);
+
+                                                line
+                                                        .bindTooltip(tooltip, {
+                                                                sticky: true,
+                                                                opacity: 1,
+                                                                interactive: true,
+                                                        })
+                                                        .bindPopup(tooltip)
+                                                        .on("click", function (event) {
+                                                                event.target.closeTooltip();
+                                                        });
+                                        }
+                                }
+                        }
+
+                        function onTraceroutesUpdated(updatedTraceroutes) {
+                                traceroutes = Array.isArray(updatedTraceroutes)
+                                        ? updatedTraceroutes
+                                        : [];
+
+                                renderTraceroutes();
+                        }
 
 			// returns true if the element or one of its parents has the class classname
 			function elementOrAnyAncestorHasClass(element, className) {
@@ -4816,7 +4993,8 @@
 					}
 				}
 
-				window._onNodesUpdated(nodes);
+                                renderTraceroutes();
+                                window._onNodesUpdated(nodes);
 			}
 
 			function onWaypointsUpdated(updatedWaypoints) {
@@ -5027,31 +5205,42 @@
 				clearMap();
 
 				// fetch nodes
-				await fetch("/api/v1/nodes").then(async (response) => {
-					// update nodes
-					var json = await response.json();
-					onNodesUpdated(json.nodes);
+                                await fetch("/api/v1/nodes").then(async (response) => {
+                                        // update nodes
+                                        var json = await response.json();
+                                        onNodesUpdated(json.nodes);
 
-					// hide loading
-					setLoading(false);
+                                        // hide loading
+                                        setLoading(false);
 
-					// go to node id if provided
-					if (goToNodeId) {
-						// go to node
-						if (window.goToNode(goToNodeId, false, zoom)) {
-							return;
-						}
+                                        // go to node id if provided
+                                        if (goToNodeId) {
+                                                // go to node
+                                                if (window.goToNode(goToNodeId, false, zoom)) {
+                                                        return;
+                                                }
 
-						// fallback to showing node details since we can't go to the node
-						window.showNodeDetails(goToNodeId);
-					}
-				});
+                                                // fallback to showing node details since we can't go to the node
+                                                window.showNodeDetails(goToNodeId);
+                                        }
+                                });
 
-				// fetch waypoints (after awaiting nodes, so we can use nodes cache in waypoint tooltips)
-				await fetch("/api/v1/waypoints").then(async (response) => {
-					// update waypoints
-					var json = await response.json();
-					onWaypointsUpdated(json.waypoints);
+                                // fetch traceroutes (after nodes so markers are available)
+                                await fetch("/api/v1/traceroutes?count=250")
+                                        .then(async (response) => {
+                                                var json = await response.json();
+                                                onTraceroutesUpdated(json.traceroutes ?? []);
+                                        })
+                                        .catch((error) => {
+                                                console.error("Failed to load traceroutes", error);
+                                                onTraceroutesUpdated([]);
+                                        });
+
+                                // fetch waypoints (after awaiting nodes, so we can use nodes cache in waypoint tooltips)
+                                await fetch("/api/v1/waypoints").then(async (response) => {
+                                        // update waypoints
+                                        var json = await response.json();
+                                        onWaypointsUpdated(json.waypoints);
 				});
 			}
 

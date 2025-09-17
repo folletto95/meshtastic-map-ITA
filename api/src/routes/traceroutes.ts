@@ -1,5 +1,73 @@
+import type { TraceRoute } from "@prisma/client";
+
 import { prisma } from "../db.js";
 import express from "../express.js";
+
+type SerializableTraceRoute = TraceRoute & {
+	route: unknown;
+	route_back: unknown;
+	snr_towards: unknown;
+	snr_back: unknown;
+};
+
+function formatTraceRoute(trace: TraceRoute): SerializableTraceRoute {
+	const formattedTrace: SerializableTraceRoute = {
+		...trace,
+		route: trace.route,
+		route_back: trace.route_back,
+		snr_towards: trace.snr_towards,
+		snr_back: trace.snr_back,
+	};
+
+	if (typeof formattedTrace.route === "string") {
+		formattedTrace.route = JSON.parse(formattedTrace.route);
+	}
+
+	if (typeof formattedTrace.route_back === "string") {
+		formattedTrace.route_back = JSON.parse(formattedTrace.route_back);
+	}
+
+	if (typeof formattedTrace.snr_towards === "string") {
+		formattedTrace.snr_towards = JSON.parse(formattedTrace.snr_towards);
+	}
+
+	if (typeof formattedTrace.snr_back === "string") {
+		formattedTrace.snr_back = JSON.parse(formattedTrace.snr_back);
+	}
+
+	return formattedTrace;
+}
+
+express.get("/api/v1/traceroutes", async (req, res) => {
+	try {
+		const count = req.query.count
+			? Number.parseInt(req.query.count as string)
+			: 100;
+
+		const traceroutes = await prisma.traceRoute.findMany({
+			where: {
+				want_response: false,
+				gateway_id: {
+					not: null,
+				},
+			},
+			orderBy: {
+				id: "desc",
+			},
+			take: count,
+		});
+
+		res.json({
+			traceroutes: traceroutes.map((trace) => formatTraceRoute(trace)),
+		});
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({
+			message: "Something went wrong, try again later.",
+		});
+	}
+});
+console.log("API:EXPRESS registered route GET:/api/v1/traceroutes");
 
 express.get("/api/v1/nodes/:nodeId/traceroutes", async (req, res) => {
 	try {
@@ -42,29 +110,7 @@ express.get("/api/v1/nodes/:nodeId/traceroutes", async (req, res) => {
 		});
 
 		res.json({
-			traceroutes: traceroutes.map((trace) => {
-				// ensure route is json array
-				if (typeof trace.route === "string") {
-					trace.route = JSON.parse(trace.route);
-				}
-
-				// ensure route_back is json array
-				if (typeof trace.route_back === "string") {
-					trace.route_back = JSON.parse(trace.route_back);
-				}
-
-				// ensure snr_towards is json array
-				if (typeof trace.snr_towards === "string") {
-					trace.snr_towards = JSON.parse(trace.snr_towards);
-				}
-
-				// ensure snr_back is json array
-				if (typeof trace.snr_back === "string") {
-					trace.snr_back = JSON.parse(trace.snr_back);
-				}
-
-				return trace;
-			}),
+			traceroutes: traceroutes.map((trace) => formatTraceRoute(trace)),
 		});
 	} catch (err) {
 		console.error(err);

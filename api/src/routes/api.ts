@@ -43,6 +43,10 @@ express.get("/api", async (req, res) => {
 			description: "Meshtastic traceroutes in JSON format.",
 		},
 		{
+			path: "/api/v1/traceroutes",
+			description: "Latest Meshtastic traceroutes in JSON format.",
+		},
+		{
 			path: "/api/v1/text-messages",
 			description: "Meshtastic text messages in JSON format.",
 		},
