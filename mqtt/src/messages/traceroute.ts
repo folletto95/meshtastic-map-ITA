@@ -41,7 +41,7 @@ export async function handleTraceroute(
 				data: {
 					to: packet.to,
 					from: packet.from,
-					want_response: packet.wantAck,
+					want_response: payload.wantResponse ?? false,
 					route: traceroute.route,
 					snr_towards: traceroute.snrTowards,
 					route_back: traceroute.routeBack,
