@@ -1740,21 +1740,46 @@
 									</div>
 
 									<!-- traceroutes -->
-									<div>
-										<div class="bg-gray-200 p-2">
-											<div class="font-semibold">Traceroute</div>
-											<div class="text-sm text-gray-600">
-												Sono mostrati solo i 5 più recenti
-											</div>
-										</div>
-										<ul role="list" class="flex-1 divide-y divide-gray-200">
-											<template v-if="selectedNodeTraceroutes.length > 0">
-												<li
-													@click="showTraceRoute(traceroute)"
-													v-for="traceroute of selectedNodeTraceroutes">
-													<div class="relative flex items-center">
-														<div class="block flex-1 px-4 py-2">
-															<div
+                                                                        <div>
+                                                                                <div class="bg-gray-200 p-2">
+                                                                                        <div class="font-semibold">Traceroute</div>
+                                                                                        <div class="text-sm text-gray-600">
+                                                                                                Sono mostrati solo i 5 più recenti che rispettano l'età massima configurata.
+                                                                                        </div>
+                                                                                </div>
+                                                                                <div class="p-2 space-y-1 border-b border-gray-200">
+                                                                                        <label class="block text-xs font-medium text-gray-700"
+                                                                                                >Età massima tracce</label
+                                                                                        >
+                                                                                        <select
+                                                                                                v-model="configTraceroutesMaxAgeInSeconds"
+                                                                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                                                                                        >
+                                                                                                <option :value="null">Mostra tutto</option>
+                                                                                                <option value="900">15 minuti</option>
+                                                                                                <option value="1800">30 minuti</option>
+                                                                                                <option value="3600">1 ora</option>
+                                                                                                <option value="10800">3 ore</option>
+                                                                                                <option value="21600">6 ore</option>
+                                                                                                <option value="43200">12 ore</option>
+                                                                                                <option value="86400">24 ore</option>
+                                                                                                <option value="172800">2 giorni</option>
+                                                                                                <option value="259200">3 giorni</option>
+                                                                                                <option value="345600">4 giorni</option>
+                                                                                                <option value="432000">5 giorni</option>
+                                                                                                <option value="518400">6 giorni</option>
+                                                                                                <option value="604800">7 giorni</option>
+                                                                                        </select>
+                                                                                </div>
+                                                                                <ul role="list" class="flex-1 divide-y divide-gray-200">
+                                                                                        <template v-if="filteredSelectedNodeTraceroutes.length > 0">
+                                                                                                <li
+                                                                                                        @click="showTraceRoute(traceroute)"
+                                                                                                        v-for="traceroute of filteredSelectedNodeTraceroutes"
+                                                                                                        :key="`traceroute-${traceroute.id}`">
+                                                                                                        <div class="relative flex items-center">
+                                                                                                                <div class="block flex-1 px-4 py-2">
+                                                                                                                        <div
 																class="relative flex min-w-0 flex-1 items-center">
 																<div>
 																	<p class="text-sm text-gray-900">
@@ -1782,18 +1807,18 @@
 													</div>
 												</li>
 											</template>
-											<template v-else>
-												<li>
-													<div class="relative flex items-center">
-														<div class="block flex-1 px-4 py-2">
-															<div
-																class="relative flex min-w-0 flex-1 items-center">
-																<div class="truncate">
-																	<div class="text-sm text-gray-700">
-																		Nessun traceroute visto su MQTT
-																	</div>
-																</div>
-															</div>
+                                                                                        <template v-else>
+                                                                                                <li>
+                                                                                                        <div class="relative flex items-center">
+                                                                                                                <div class="block flex-1 px-4 py-2">
+                                                                                                                        <div
+                                                                                                                                class="relative flex min-w-0 flex-1 items-center">
+                                                                                                                                <div class="truncate">
+                                                                                                                                        <div class="text-sm text-gray-700">
+                                                                                                                                                Nessun traceroute recente visto su MQTT
+                                                                                                                                       </div>
+                                                                                                                                </div>
+                                                                                                                        </div>
 														</div>
 													</div>
 												</li>
@@ -2843,6 +2868,41 @@
                                 }
                         }
 
+                        function filterTraceroutesByMaxAge(
+                                traceroutes,
+                                maxAgeInSeconds,
+                                momentLib
+                        ) {
+                                if (!Array.isArray(traceroutes) || traceroutes.length === 0) {
+                                        return [];
+                                }
+
+                                if (
+                                        maxAgeInSeconds == null ||
+                                        Number.isNaN(Number(maxAgeInSeconds))
+                                ) {
+                                        return traceroutes;
+                                }
+
+                                const momentToUse = momentLib ?? moment;
+                                const now = momentToUse();
+
+                                return traceroutes.filter((traceroute) => {
+                                        const updatedAt = traceroute?.updated_at ?? traceroute?.created_at;
+                                        if (!updatedAt) {
+                                                return true;
+                                        }
+
+                                        const updatedAtMoment = momentToUse(updatedAt);
+                                        if (!updatedAtMoment?.isValid?.()) {
+                                                return true;
+                                        }
+
+                                        const ageInMillis = now.diff(updatedAtMoment);
+                                        return ageInMillis <= maxAgeInSeconds * 1000;
+                                });
+                        }
+
                         function getConfigNeighboursMaxDistanceInMeters() {
                                 const value = localStorage.getItem(
                                         "config_neighbours_max_distance_in_meters"
@@ -3842,10 +3902,17 @@
 						// only return the first 500 results to avoid ui lag...
 						return nodes.slice(0, 500);
 					},
-					selectedNodeLatestPowerMetric() {
-						const [latestPowerMetric] = this.selectedNodePowerMetrics.slice(-1);
-						return latestPowerMetric;
-					},
+                                        selectedNodeLatestPowerMetric() {
+                                                const [latestPowerMetric] = this.selectedNodePowerMetrics.slice(-1);
+                                                return latestPowerMetric;
+                                        },
+                                        filteredSelectedNodeTraceroutes() {
+                                                return filterTraceroutesByMaxAge(
+                                                        this.selectedNodeTraceroutes,
+                                                        this.configTraceroutesMaxAgeInSeconds,
+                                                        this.moment
+                                                );
+                                        },
 				},
 				watch: {
 					configNodesMaxAgeInSeconds() {
@@ -4665,26 +4732,11 @@
                                         return;
                                 }
 
-                                let traceroutesToRender = traceroutes;
-                                const configTraceroutesMaxAgeInSeconds =
-                                        getConfigTraceroutesMaxAgeInSeconds();
-                                if (configTraceroutesMaxAgeInSeconds) {
-                                        const now = moment();
-                                        traceroutesToRender = traceroutes.filter((traceroute) => {
-                                                const updatedAt = traceroute?.updated_at ?? traceroute?.created_at;
-                                                if (!updatedAt) {
-                                                        return true;
-                                                }
-
-                                                const updatedAtMoment = moment(updatedAt);
-                                                if (!updatedAtMoment.isValid()) {
-                                                        return true;
-                                                }
-
-                                                const ageInMillis = now.diff(updatedAtMoment);
-                                                return ageInMillis <= configTraceroutesMaxAgeInSeconds * 1000;
-                                        });
-                                }
+                                const traceroutesToRender = filterTraceroutesByMaxAge(
+                                        traceroutes,
+                                        getConfigTraceroutesMaxAgeInSeconds(),
+                                        moment
+                                );
 
                                 if (!Array.isArray(traceroutesToRender) || traceroutesToRender.length === 0) {
                                         return;
