@@ -2970,13 +2970,16 @@
 						selectedNode: null,
 						selectedNodeDeviceMetrics: [],
 						selectedNodeEnvironmentMetrics: [],
-						selectedNodePowerMetrics: [],
-						selectedNodeMqttMetrics: [],
-						selectedNodeTraceroutes: [],
+                                                selectedNodePowerMetrics: [],
+                                                selectedNodeMqttMetrics: [],
+                                                selectedNodeTraceroutes: [],
 
-						deviceMetricsTimeRange: "3d",
-						environmentMetricsTimeRange: "3d",
-						powerMetricsTimeRange: "3d",
+                                                tracerouteAgeTicker: 0,
+                                                tracerouteAgeIntervalId: null,
+
+                                                deviceMetricsTimeRange: "3d",
+                                                environmentMetricsTimeRange: "3d",
+                                                powerMetricsTimeRange: "3d",
 
 						isPositionHistoryModalExpanded: true,
 						positionHistoryDateTimeFrom: null,
@@ -3027,15 +3030,21 @@
 						this.selectedNodeToShowNeighboursType = "heard_us";
 					};
 
-					// handle nodes updated callback from outside of vue
-					window._onNodesUpdated = (nodes) => {
-						this.nodes = nodes;
-					};
-				},
-				methods: {
-					getAnnouncementId: function () {
-						// change this when making a new announcement
-						return "1";
+                                        // handle nodes updated callback from outside of vue
+                                        window._onNodesUpdated = (nodes) => {
+                                                this.nodes = nodes;
+                                        };
+
+                                        this.tracerouteAgeIntervalId = window.setInterval(() => {
+                                                this.tracerouteAgeTicker =
+                                                        (this.tracerouteAgeTicker + 1) % Number.MAX_SAFE_INTEGER;
+                                                renderTraceroutes();
+                                        }, 30 * 1000);
+                                },
+                                methods: {
+                                        getAnnouncementId: function () {
+                                                // change this when making a new announcement
+                                                return "1";
 					},
 					shouldShowAnnouncement: function () {
 						const lastSeenAnnouncementId = window.localStorage.getItem(
@@ -3907,14 +3916,17 @@
                                                 return latestPowerMetric;
                                         },
                                         filteredSelectedNodeTraceroutes() {
+                                                // include tracerouteAgeTicker so vue recomputes the filtered list as time passes
+                                                void this.tracerouteAgeTicker;
+
                                                 return filterTraceroutesByMaxAge(
                                                         this.selectedNodeTraceroutes,
                                                         this.configTraceroutesMaxAgeInSeconds,
                                                         this.moment
                                                 );
                                         },
-				},
-				watch: {
+                                },
+                                watch: {
 					configNodesMaxAgeInSeconds() {
 						window.setConfigNodesMaxAgeInSeconds(
 							this.configNodesMaxAgeInSeconds
@@ -3975,9 +3987,15 @@
                                                         this.loadNodePowerMetrics(this.selectedNode.node_id);
                                                 }
                                         },
-				},
-			}).mount("#app");
-		</script>
+                                },
+                                unmounted() {
+                                        if (this.tracerouteAgeIntervalId != null) {
+                                                window.clearInterval(this.tracerouteAgeIntervalId);
+                                                this.tracerouteAgeIntervalId = null;
+                                        }
+                                },
+                        }).mount("#app");
+                </script>
 
 		<script>
                         // global state
