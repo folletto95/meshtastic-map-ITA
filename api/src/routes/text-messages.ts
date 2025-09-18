@@ -12,8 +12,18 @@ express.get("/api/v1/text-messages", async (req, res) => {
 		const to = req.query.to ?? undefined;
 		const from = req.query.from ?? undefined;
 		const channelId = (req.query.channel_id as string) ?? undefined;
-		const gatewayId =
-			Number.parseInt(req.query.gateway_id as string) ?? undefined;
+		const gatewayIdParam = req.query.gateway_id;
+		const gatewayIdValue = Array.isArray(gatewayIdParam)
+			? gatewayIdParam[0]
+			: gatewayIdParam;
+		let gatewayId: bigint | undefined;
+		if (typeof gatewayIdValue === "string" && gatewayIdValue !== "") {
+			try {
+				gatewayId = BigInt(gatewayIdValue);
+			} catch {
+				gatewayId = undefined;
+			}
+		}
 		const directMessageNodeIds =
 			typeof directMessageIds === "string"
 				? directMessageIds.split(",")
@@ -37,7 +47,6 @@ express.get("/api/v1/text-messages", async (req, res) => {
 		// default where clauses that should always be used for filtering
 		let where: Prisma.TextMessageWhereInput = {
 			channel_id: channelId,
-			gateway_id: gatewayId,
 			// when ordered oldest to newest (asc), only get records after last id
 			// when ordered newest to oldest (desc), only get records before last id
 			id:
@@ -49,6 +58,13 @@ express.get("/api/v1/text-messages", async (req, res) => {
 							lt: lastId,
 						},
 		};
+
+		if (gatewayId !== undefined) {
+			where = {
+				...where,
+				gateway_id: gatewayId,
+			};
+		}
 
 		// if direct message node ids are provided, we expect exactly 2 node ids
 		if (
