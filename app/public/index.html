@@ -2292,11 +2292,11 @@
 										</select>
 									</div>
 
-									<!-- configWaypointsMaxAgeInSeconds -->
-									<div class="p-2">
-										<label class="block text-sm font-medium text-gray-900"
-											>Età massima waypoint</label
-										>
+                                                                        <!-- configWaypointsMaxAgeInSeconds -->
+                                                                        <div class="p-2">
+                                                                                <label class="block text-sm font-medium text-gray-900"
+                                                                                        >Età massima waypoint</label
+                                                                                >
                                                                                 <div class="text-xs text-gray-600 mb-2">
                                                                                         I waypoint non aggiornati entro questo intervallo vengono nascosti. Ricarica
                                                                                         per aggiornare la mappa.
@@ -2318,13 +2318,42 @@
 											<option value="432000">5 giorni</option>
 											<option value="518400">6 giorni</option>
 											<option value="604800">7 giorni</option>
-										</select>
-									</div>
+                                                                                </select>
+                                                                        </div>
 
-									<!-- configNeighboursMaxDistanceInMeters -->
-									<div class="p-2">
-										<label class="block text-sm font-medium text-gray-900"
-											>Distanza massima vicini (metri)</label
+                                                                        <!-- configTraceroutesMaxAgeInSeconds -->
+                                                                        <div class="p-2">
+                                                                                <label class="block text-sm font-medium text-gray-900"
+                                                                                        >Età massima tracce</label
+                                                                                >
+                                                                                <div class="text-xs text-gray-600 mb-2">
+                                                                                        Le tracce vengono eliminate oltre questo intervallo. Ricarica per
+                                                                                        aggiornare la mappa.
+                                                                                </div>
+                                                                                <select
+                                                                                        v-model="configTraceroutesMaxAgeInSeconds"
+                                                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                                                                        <option :value="null">Mostra tutto</option>
+                                                                                        <option value="900">15 minuti</option>
+                                                                                        <option value="1800">30 minuti</option>
+                                                                                        <option value="3600">1 ora</option>
+                                                                                        <option value="10800">3 ore</option>
+                                                                                        <option value="21600">6 ore</option>
+                                                                                        <option value="43200">12 ore</option>
+                                                                                        <option value="86400">24 ore</option>
+                                                                                        <option value="172800">2 giorni</option>
+                                                                                        <option value="259200">3 giorni</option>
+                                                                                        <option value="345600">4 giorni</option>
+                                                                                        <option value="432000">5 giorni</option>
+                                                                                        <option value="518400">6 giorni</option>
+                                                                                        <option value="604800">7 giorni</option>
+                                                                                </select>
+                                                                        </div>
+
+                                                                        <!-- configNeighboursMaxDistanceInMeters -->
+                                                                        <div class="p-2">
+                                                                                <label class="block text-sm font-medium text-gray-900"
+                                                                                        >Distanza massima vicini (metri)</label
 										>
                                                                                 <div class="text-xs text-gray-600 mb-2">
                                                                                         I vicini oltre questa distanza vengono nascosti. Ricarica per aggiornare la
@@ -2783,22 +2812,42 @@
 				return value != null ? parseInt(value) : null;
 			}
 
-			function setConfigWaypointsMaxAgeInSeconds(value) {
-				if (value != null) {
-					return localStorage.setItem(
-						"config_waypoints_max_age_in_seconds",
-						value
-					);
-				} else {
-					return localStorage.removeItem("config_waypoints_max_age_in_seconds");
-				}
-			}
+                        function setConfigWaypointsMaxAgeInSeconds(value) {
+                                if (value != null) {
+                                        return localStorage.setItem(
+                                                "config_waypoints_max_age_in_seconds",
+                                                value
+                                        );
+                                } else {
+                                        return localStorage.removeItem("config_waypoints_max_age_in_seconds");
+                                }
+                        }
 
-			function getConfigNeighboursMaxDistanceInMeters() {
-				const value = localStorage.getItem(
-					"config_neighbours_max_distance_in_meters"
-				);
-				return value != null ? parseInt(value) : null;
+                        function getConfigTraceroutesMaxAgeInSeconds() {
+                                const value = localStorage.getItem(
+                                        "config_traceroutes_max_age_in_seconds"
+                                );
+                                return value != null ? parseInt(value) : null;
+                        }
+
+                        function setConfigTraceroutesMaxAgeInSeconds(value) {
+                                if (value != null) {
+                                        return localStorage.setItem(
+                                                "config_traceroutes_max_age_in_seconds",
+                                                value
+                                        );
+                                } else {
+                                        return localStorage.removeItem(
+                                                "config_traceroutes_max_age_in_seconds"
+                                        );
+                                }
+                        }
+
+                        function getConfigNeighboursMaxDistanceInMeters() {
+                                const value = localStorage.getItem(
+                                        "config_neighbours_max_distance_in_meters"
+                                );
+                                return value != null ? parseInt(value) : null;
 			}
 
 			function setConfigNeighboursMaxDistanceInMeters(value) {
@@ -2834,12 +2883,14 @@
 						configNodesMaxAgeInSeconds: window.getConfigNodesMaxAgeInSeconds(),
 						configNodesDisconnectedAgeInSeconds:
 							window.getConfigNodesDisconnectedAgeInSeconds(),
-						configNodesOfflineAgeInSeconds:
-							window.getConfigNodesOfflineAgeInSeconds(),
-						configWaypointsMaxAgeInSeconds:
-							window.getConfigWaypointsMaxAgeInSeconds(),
-						configNeighboursMaxDistanceInMeters:
-							window.getConfigNeighboursMaxDistanceInMeters(),
+                                                configNodesOfflineAgeInSeconds:
+                                                        window.getConfigNodesOfflineAgeInSeconds(),
+                                                configWaypointsMaxAgeInSeconds:
+                                                        window.getConfigWaypointsMaxAgeInSeconds(),
+                                                configTraceroutesMaxAgeInSeconds:
+                                                        window.getConfigTraceroutesMaxAgeInSeconds(),
+                                                configNeighboursMaxDistanceInMeters:
+                                                        window.getConfigNeighboursMaxDistanceInMeters(),
 						configZoomLevelGoToNode: window.getConfigZoomLevelGoToNode(),
 						configAutoUpdatePositionInUrl:
 							window.getConfigAutoUpdatePositionInUrl(),
@@ -3812,16 +3863,22 @@
 							this.configNodesOfflineAgeInSeconds
 						);
 					},
-					configWaypointsMaxAgeInSeconds() {
-						window.setConfigWaypointsMaxAgeInSeconds(
-							this.configWaypointsMaxAgeInSeconds
-						);
-					},
-					configNeighboursMaxDistanceInMeters() {
-						window.setConfigNeighboursMaxDistanceInMeters(
-							this.configNeighboursMaxDistanceInMeters
-						);
-					},
+                                        configWaypointsMaxAgeInSeconds() {
+                                                window.setConfigWaypointsMaxAgeInSeconds(
+                                                        this.configWaypointsMaxAgeInSeconds
+                                                );
+                                        },
+                                        configTraceroutesMaxAgeInSeconds() {
+                                                window.setConfigTraceroutesMaxAgeInSeconds(
+                                                        this.configTraceroutesMaxAgeInSeconds
+                                                );
+                                                renderTraceroutes();
+                                        },
+                                        configNeighboursMaxDistanceInMeters() {
+                                                window.setConfigNeighboursMaxDistanceInMeters(
+                                                        this.configNeighboursMaxDistanceInMeters
+                                                );
+                                        },
 					configZoomLevelGoToNode() {
 						window.setConfigZoomLevelGoToNode(this.configZoomLevelGoToNode);
 					},
@@ -4608,7 +4665,32 @@
                                         return;
                                 }
 
-                                for (const traceroute of traceroutes) {
+                                let traceroutesToRender = traceroutes;
+                                const configTraceroutesMaxAgeInSeconds =
+                                        getConfigTraceroutesMaxAgeInSeconds();
+                                if (configTraceroutesMaxAgeInSeconds) {
+                                        const now = moment();
+                                        traceroutesToRender = traceroutes.filter((traceroute) => {
+                                                const updatedAt = traceroute?.updated_at ?? traceroute?.created_at;
+                                                if (!updatedAt) {
+                                                        return true;
+                                                }
+
+                                                const updatedAtMoment = moment(updatedAt);
+                                                if (!updatedAtMoment.isValid()) {
+                                                        return true;
+                                                }
+
+                                                const ageInMillis = now.diff(updatedAtMoment);
+                                                return ageInMillis <= configTraceroutesMaxAgeInSeconds * 1000;
+                                        });
+                                }
+
+                                if (!Array.isArray(traceroutesToRender) || traceroutesToRender.length === 0) {
+                                        return;
+                                }
+
+                                for (const traceroute of traceroutesToRender) {
                                         const pathNodeIds = [];
 
                                         if (traceroute?.to != null) {
