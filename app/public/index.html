@@ -2348,25 +2348,48 @@
                                                                                         Le tracce vengono eliminate oltre questo intervallo. Ricarica per
                                                                                         aggiornare la mappa.
                                                                                 </div>
-                                                                               <select
-                                                                                       v-model="configTraceroutesMaxAgeInSeconds"
-                                                                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                                               >
-                                                                                       <option
-                                                                                               v-for="option in tracerouteAgeOptions"
-                                                                                               :key="`settings-traceroute-age-${option.value === null ? 'all' : option.value}`"
-                                                                                               :value="option.value"
-                                                                                       >
-                                                                                               {{ option.label }}
-                                                                                       </option>
-                                                                               </select>
+                                                                                <select
+                                                                                        v-model="configTraceroutesMaxAgeInSeconds"
+                                                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                                                >
+                                                                                        <option
+                                                                                                v-for="option in tracerouteAgeOptions"
+                                                                                                :key="`settings-traceroute-age-${option.value === null ? 'all' : option.value}`"
+                                                                                                :value="option.value"
+                                                                                        >
+                                                                                                {{ option.label }}
+                                                                                        </option>
+                                                                                </select>
+                                                                        </div>
+
+                                                                        <!-- configNeighboursMaxAgeInSeconds -->
+                                                                        <div class="p-2">
+                                                                                <label class="block text-sm font-medium text-gray-900"
+                                                                                        >Età massima vicini</label
+                                                                                >
+                                                                                <div class="text-xs text-gray-600 mb-2">
+                                                                                        Le linee dei vicini vengono eliminate oltre questo intervallo.
+                                                                                        Ricarica per aggiornare la mappa.
+                                                                                </div>
+                                                                                <select
+                                                                                        v-model="configNeighboursMaxAgeInSeconds"
+                                                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                                                >
+                                                                                        <option
+                                                                                                v-for="option in tracerouteAgeOptions"
+                                                                                                :key="`settings-neighbours-age-${option.value === null ? 'all' : option.value}`"
+                                                                                                :value="option.value"
+                                                                                        >
+                                                                                                {{ option.label }}
+                                                                                        </option>
+                                                                                </select>
                                                                         </div>
 
                                                                         <!-- configNeighboursMaxDistanceInMeters -->
                                                                         <div class="p-2">
                                                                                 <label class="block text-sm font-medium text-gray-900"
                                                                                         >Distanza massima vicini (metri)</label
-										>
+                                                                                >
                                                                                 <div class="text-xs text-gray-600 mb-2">
                                                                                         I vicini oltre questa distanza vengono nascosti. Ricarica per aggiornare la
                                                                                         mappa.
@@ -2855,6 +2878,26 @@
                                 }
                         }
 
+                        function getConfigNeighboursMaxAgeInSeconds() {
+                                const value = localStorage.getItem(
+                                        "config_neighbours_max_age_in_seconds"
+                                );
+                                return value != null ? parseInt(value) : null;
+                        }
+
+                        function setConfigNeighboursMaxAgeInSeconds(value) {
+                                if (value != null) {
+                                        return localStorage.setItem(
+                                                "config_neighbours_max_age_in_seconds",
+                                                value
+                                        );
+                                }
+
+                                return localStorage.removeItem(
+                                        "config_neighbours_max_age_in_seconds"
+                                );
+                        }
+
                         function filterTraceroutesByMaxAge(
                                 traceroutes,
                                 maxAgeInSeconds,
@@ -2888,6 +2931,33 @@
                                         const ageInMillis = now.diff(updatedAtMoment);
                                         return ageInMillis <= maxAgeInSeconds * 1000;
                                 });
+                        }
+
+                        function hasNeighbourInfoExpired(
+                                neighboursUpdatedAt,
+                                maxAgeInSeconds,
+                                nowMoment
+                        ) {
+                                if (
+                                        maxAgeInSeconds == null ||
+                                        Number.isNaN(Number(maxAgeInSeconds))
+                                ) {
+                                        return false;
+                                }
+
+                                if (!neighboursUpdatedAt) {
+                                        return false;
+                                }
+
+                                const currentMoment = nowMoment ?? moment();
+                                const updatedAtMoment = moment(neighboursUpdatedAt);
+
+                                if (!updatedAtMoment?.isValid?.()) {
+                                        return false;
+                                }
+
+                                const ageInMillis = currentMoment.diff(updatedAtMoment);
+                                return ageInMillis > maxAgeInSeconds * 1000;
                         }
 
                         function getConfigNeighboursMaxDistanceInMeters() {
@@ -2936,6 +3006,8 @@
                                                         window.getConfigWaypointsMaxAgeInSeconds(),
                                                 configTraceroutesMaxAgeInSeconds:
                                                         window.getConfigTraceroutesMaxAgeInSeconds(),
+                                                configNeighboursMaxAgeInSeconds:
+                                                        window.getConfigNeighboursMaxAgeInSeconds(),
                                                 configNeighboursMaxDistanceInMeters:
                                                         window.getConfigNeighboursMaxDistanceInMeters(),
 						configZoomLevelGoToNode: window.getConfigZoomLevelGoToNode(),
@@ -3957,6 +4029,11 @@
                                                 );
                                                 renderTraceroutes();
                                         },
+                                        configNeighboursMaxAgeInSeconds() {
+                                                window.setConfigNeighboursMaxAgeInSeconds(
+                                                        this.configNeighboursMaxAgeInSeconds
+                                                );
+                                        },
                                         configNeighboursMaxDistanceInMeters() {
                                                 window.setConfigNeighboursMaxDistanceInMeters(
                                                         this.configNeighboursMaxDistanceInMeters
@@ -4475,16 +4552,30 @@
 					return;
 				}
 
-				// find node marker
-				const nodeMarker = findNodeMarkerById(node.node_id);
-				if (!nodeMarker) {
-					return;
-				}
+                                // find node marker
+                                const nodeMarker = findNodeMarkerById(node.node_id);
+                                if (!nodeMarker) {
+                                        return;
+                                }
 
-				// show overlay for node neighbours
-				window._onShowNodeNeighboursWeHeardClick(node);
+                                const now = moment();
+                                const configNeighboursMaxAgeInSeconds =
+                                        getConfigNeighboursMaxAgeInSeconds();
 
-				// ensure we have neighbours to show
+                                if (
+                                        hasNeighbourInfoExpired(
+                                                node.neighbours_updated_at,
+                                                configNeighboursMaxAgeInSeconds,
+                                                now
+                                        )
+                                ) {
+                                        return;
+                                }
+
+                                // show overlay for node neighbours
+                                window._onShowNodeNeighboursWeHeardClick(node);
+
+                                // ensure we have neighbours to show
 				const neighbours = node.neighbours ?? [];
 				if (neighbours.length === 0) {
 					return;
@@ -4589,23 +4680,37 @@
 					return;
 				}
 
-				// find node marker
-				const nodeMarker = findNodeMarkerById(node.node_id);
-				if (!nodeMarker) {
-					return;
-				}
+                                // find node marker
+                                const nodeMarker = findNodeMarkerById(node.node_id);
+                                if (!nodeMarker) {
+                                        return;
+                                }
 
-				// show overlay for node neighbours
-				window._onShowNodeNeighboursHeardUsClick(node);
+                                const now = moment();
+                                const configNeighboursMaxAgeInSeconds =
+                                        getConfigNeighboursMaxAgeInSeconds();
 
-				// find all nodes that have us as a neighbour
-				const neighbourNodeInfos = [];
-				for (const nodeThatMayHaveHeardUs of nodes) {
-					// find our node in this nodes neighbours
-					const nodeNeighbours = nodeThatMayHaveHeardUs.neighbours ?? [];
-					const neighbour = nodeNeighbours.find(function (neighbour) {
-						return neighbour.node_id.toString() === node.node_id.toString();
-					});
+                                // show overlay for node neighbours
+                                window._onShowNodeNeighboursHeardUsClick(node);
+
+                                // find all nodes that have us as a neighbour
+                                const neighbourNodeInfos = [];
+                                for (const nodeThatMayHaveHeardUs of nodes) {
+                                        if (
+                                                hasNeighbourInfoExpired(
+                                                        nodeThatMayHaveHeardUs.neighbours_updated_at,
+                                                        configNeighboursMaxAgeInSeconds,
+                                                        now
+                                                )
+                                        ) {
+                                                continue;
+                                        }
+
+                                        // find our node in this nodes neighbours
+                                        const nodeNeighbours = nodeThatMayHaveHeardUs.neighbours ?? [];
+                                        const neighbour = nodeNeighbours.find(function (neighbour) {
+                                                return neighbour.node_id.toString() === node.node_id.toString();
+                                        });
 
 					// we exist as a neighbour
 					if (neighbour) {
@@ -4622,14 +4727,24 @@
 				}
 
 				// add node neighbours
-				for (const neighbourNodeInfo of neighbourNodeInfos) {
-					const neighbourNode = neighbourNodeInfo.node;
-					const neighbour = neighbourNodeInfo.neighbour;
+                                for (const neighbourNodeInfo of neighbourNodeInfos) {
+                                        const neighbourNode = neighbourNodeInfo.node;
+                                        const neighbour = neighbourNodeInfo.neighbour;
 
-					// fixme: skipping zero snr? saw some crazy long neighbours with zero snr...
-					if (neighbour.snr === 0) {
-						continue;
-					}
+                                        if (
+                                                hasNeighbourInfoExpired(
+                                                        neighbourNode.neighbours_updated_at,
+                                                        configNeighboursMaxAgeInSeconds,
+                                                        now
+                                                )
+                                        ) {
+                                                continue;
+                                        }
+
+                                        // fixme: skipping zero snr? saw some crazy long neighbours with zero snr...
+                                        if (neighbour.snr === 0) {
+                                                continue;
+                                        }
 
 					// find neighbour node marker
 					const neighbourNodeMarker = findNodeMarkerById(neighbourNode.node_id);
@@ -4934,12 +5049,14 @@
 				nodes = [];
 
 				// get config
-				const now = moment();
-				const configNodesMaxAgeInSeconds = getConfigNodesMaxAgeInSeconds();
-				const configNodesOfflineAgeInSeconds =
-					getConfigNodesOfflineAgeInSeconds();
-				const configNeighboursMaxDistanceInMeters =
-					getConfigNeighboursMaxDistanceInMeters();
+                                const now = moment();
+                                const configNodesMaxAgeInSeconds = getConfigNodesMaxAgeInSeconds();
+                                const configNodesOfflineAgeInSeconds =
+                                        getConfigNodesOfflineAgeInSeconds();
+                                const configNeighboursMaxDistanceInMeters =
+                                        getConfigNeighboursMaxDistanceInMeters();
+                                const configNeighboursMaxAgeInSeconds =
+                                        getConfigNeighboursMaxAgeInSeconds();
 
 				// add nodes
 				for (const node of updatedNodes) {
@@ -5056,16 +5173,26 @@
 					nodeMarkers[node.node_id] = marker;
 				}
 
-				for (const [i, node] of updatedNodes.entries()) {
-					// find current node
-					const currentNode = findNodeMarkerById(node.node_id);
-					if (!currentNode) {
-						continue;
-					}
+                                for (const [i, node] of updatedNodes.entries()) {
+                                        // find current node
+                                        const currentNode = findNodeMarkerById(node.node_id);
+                                        if (!currentNode) {
+                                                continue;
+                                        }
 
-					// add node neighbours
-					const neighbours = node.neighbours ?? [];
-					for (const neighbour of neighbours) {
+                                        if (
+                                                hasNeighbourInfoExpired(
+                                                        node.neighbours_updated_at,
+                                                        configNeighboursMaxAgeInSeconds,
+                                                        now
+                                                )
+                                        ) {
+                                                continue;
+                                        }
+
+                                        // add node neighbours
+                                        const neighbours = node.neighbours ?? [];
+                                        for (const neighbour of neighbours) {
 						// fixme: skipping zero snr? saw some crazy long neighbours with zero snr...
 						if (neighbour.snr === 0) {
 							continue;
