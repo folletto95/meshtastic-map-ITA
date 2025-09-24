@@ -8,7 +8,23 @@ type SerializableTraceRoute = TraceRoute & {
 	route_back: unknown;
 	snr_towards: unknown;
 	snr_back: unknown;
+	age_in_seconds: number | null;
 };
+
+function calculateTraceAgeInSeconds(trace: TraceRoute): number | null {
+	const updatedAt = trace.updated_at ?? trace.created_at;
+	if (!updatedAt) {
+		return null;
+	}
+
+	const ageInMilliseconds = Date.now() - updatedAt.getTime();
+	if (!Number.isFinite(ageInMilliseconds)) {
+		return null;
+	}
+
+	const ageInSeconds = Math.floor(ageInMilliseconds / 1000);
+	return Math.max(ageInSeconds, 0);
+}
 
 function formatTraceRoute(trace: TraceRoute): SerializableTraceRoute {
 	const formattedTrace: SerializableTraceRoute = {
@@ -17,6 +33,7 @@ function formatTraceRoute(trace: TraceRoute): SerializableTraceRoute {
 		route_back: trace.route_back,
 		snr_towards: trace.snr_towards,
 		snr_back: trace.snr_back,
+		age_in_seconds: calculateTraceAgeInSeconds(trace),
 	};
 
 	if (typeof formattedTrace.route === "string") {
