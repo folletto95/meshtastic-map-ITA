@@ -2967,11 +2967,11 @@
 
                         function getTracerouteAgeLabel(traceroute, momentLib) {
                                 const momentToUse = momentLib ?? moment;
-
                                 const ageInSeconds = getTracerouteAgeInSeconds(
                                         traceroute,
                                         momentToUse,
                                 );
+                          
                                 if (ageInSeconds != null) {
                                         const nowMoment = momentToUse();
                                         let approxUpdatedAtMoment = null;
