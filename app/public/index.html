@@ -2967,8 +2967,40 @@
 
                         function getTracerouteAgeLabel(traceroute, momentLib) {
                                 const momentToUse = momentLib ?? moment;
-                                const updatedAt = traceroute?.updated_at ?? traceroute?.created_at;
+                                const ageInSeconds = getTracerouteAgeInSeconds(
+                                        traceroute,
+                                        momentToUse,
+                                );
+                          
+                                if (ageInSeconds != null) {
+                                        const nowMoment = momentToUse();
+                                        let approxUpdatedAtMoment = null;
 
+                                        if (typeof nowMoment?.clone === "function") {
+                                                approxUpdatedAtMoment = nowMoment.clone().subtract(
+                                                        ageInSeconds,
+                                                        "seconds",
+                                                );
+                                        } else if (typeof nowMoment?.subtract === "function") {
+                                                approxUpdatedAtMoment = nowMoment.subtract(
+                                                        ageInSeconds,
+                                                        "seconds",
+                                                );
+                                        }
+
+                                        if (approxUpdatedAtMoment?.isValid?.()) {
+                                                return approxUpdatedAtMoment.fromNow();
+                                        }
+
+                                        const duration = momentToUse.duration(ageInSeconds, "seconds");
+                                        if (duration?.humanize) {
+                                                return duration.humanize();
+                                        }
+
+                                        return `${Math.round(ageInSeconds)} secondi`;
+                                }
+
+                                const updatedAt = traceroute?.updated_at ?? traceroute?.created_at;
                                 if (updatedAt) {
                                         const updatedAtMoment = momentToUse(updatedAt);
                                         if (updatedAtMoment?.isValid?.()) {
@@ -2976,20 +3008,7 @@
                                         }
                                 }
 
-                                const ageInSeconds = getTracerouteAgeInSeconds(
-                                        traceroute,
-                                        momentToUse,
-                                );
-                                if (ageInSeconds == null) {
-                                        return "Età sconosciuta";
-                                }
-
-                                const duration = momentToUse.duration(ageInSeconds, "seconds");
-                                if (duration?.humanize) {
-                                        return duration.humanize();
-                                }
-
-                                return `${Math.round(ageInSeconds)} secondi`;
+                                return "Età sconosciuta";
                         }
 
                         function hasNeighbourInfoExpired(
