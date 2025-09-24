@@ -1787,13 +1787,13 @@
 																			|| '???' }}</span
 																		>
 																	</p>
-																	<div class="text-sm text-gray-700">
-																		{{ moment(new
-																		Date(traceroute.updated_at)).fromNow() }} -
-																		{{ traceroute.route.length }} salti {{
-																		traceroute.channel_id ? `on
-																		${traceroute.channel_id}` : '' }}
-																	</div>
+                                                                                                                               <div class="text-sm text-gray-700">
+                                                                                                                               Età: {{ formatTracerouteAgeLabel(traceroute) }} - {{
+                                                                                                                               traceroute.route.length
+                                                                                                                               }} salti {{
+                                                                                                                               traceroute.channel_id ? `on ${traceroute.channel_id}` : ''
+                                                                                                                               }}
+                                                                                                                               </div>
 																</div>
 															</div>
 														</div>
@@ -1951,13 +1951,11 @@
 											<h2 class="font-bold">
 												Traceroute #{{ selectedTraceRoute.id }}
 											</h2>
-											<h3 class="text-sm">
-												{{ moment(new
-												Date(selectedTraceRoute.updated_at)).fromNow() }} - {{
-												selectedTraceRoute.route.length }} salti {{
-												selectedTraceRoute.channel_id ? `on
-												${selectedTraceRoute.channel_id}` : '' }}
-											</h3>
+                                                                                        <h3 class="text-sm">
+                                                                                                Età: {{ formatTracerouteAgeLabel(selectedTraceRoute) }} - {{
+                                                                                                selectedTraceRoute.route.length }} salti {{
+                                                                                                selectedTraceRoute.channel_id ? `on ${selectedTraceRoute.channel_id}` : '' }}
+                                                                                        </h3>
 										</div>
 										<div class="my-auto ml-3 flex h-7 items-center">
 											<a
@@ -2933,6 +2931,67 @@
                                 });
                         }
 
+                        function getTracerouteAgeInSeconds(traceroute, momentLib) {
+                                if (traceroute == null) {
+                                        return null;
+                                }
+
+                                const tracerouteAge = traceroute.age_in_seconds;
+                                if (
+                                        typeof tracerouteAge === "number" &&
+                                        Number.isFinite(tracerouteAge) &&
+                                        tracerouteAge >= 0
+                                ) {
+                                        return tracerouteAge;
+                                }
+
+                                const momentToUse = momentLib ?? moment;
+                                const updatedAt = traceroute?.updated_at ?? traceroute?.created_at;
+                                if (!updatedAt) {
+                                        return null;
+                                }
+
+                                const updatedAtMoment = momentToUse(updatedAt);
+                                if (!updatedAtMoment?.isValid?.()) {
+                                        return null;
+                                }
+
+                                const now = momentToUse();
+                                const ageInSeconds = now.diff(updatedAtMoment, "seconds");
+                                if (!Number.isFinite(ageInSeconds)) {
+                                        return null;
+                                }
+
+                                return Math.max(ageInSeconds, 0);
+                        }
+
+                        function getTracerouteAgeLabel(traceroute, momentLib) {
+                                const momentToUse = momentLib ?? moment;
+                                const updatedAt = traceroute?.updated_at ?? traceroute?.created_at;
+
+                                if (updatedAt) {
+                                        const updatedAtMoment = momentToUse(updatedAt);
+                                        if (updatedAtMoment?.isValid?.()) {
+                                                return updatedAtMoment.fromNow();
+                                        }
+                                }
+
+                                const ageInSeconds = getTracerouteAgeInSeconds(
+                                        traceroute,
+                                        momentToUse,
+                                );
+                                if (ageInSeconds == null) {
+                                        return "Età sconosciuta";
+                                }
+
+                                const duration = momentToUse.duration(ageInSeconds, "seconds");
+                                if (duration?.humanize) {
+                                        return duration.humanize();
+                                }
+
+                                return `${Math.round(ageInSeconds)} secondi`;
+                        }
+
                         function hasNeighbourInfoExpired(
                                 neighboursUpdatedAt,
                                 maxAgeInSeconds,
@@ -3122,24 +3181,27 @@
                                                 // change this when making a new announcement
                                                 return "1";
 					},
-					shouldShowAnnouncement: function () {
-						const lastSeenAnnouncementId = window.localStorage.getItem(
-							"last-seen-announcement-id"
-						);
-						return (
-							lastSeenAnnouncementId?.toString() !== this.getAnnouncementId()
-						);
-					},
-					dismissAnnouncement: function () {
-						window.localStorage.setItem(
-							"last-seen-announcement-id",
-							this.getAnnouncementId()
-						);
-						this.isShowingAnnouncement = false;
-					},
-					shouldShowInfoModal: function () {
-						return !window.getConfigHasSeenInfoModal() && !window.isMobile();
-					},
+                                        shouldShowAnnouncement: function () {
+                                                const lastSeenAnnouncementId = window.localStorage.getItem(
+                                                        "last-seen-announcement-id"
+                                                );
+                                                return (
+                                                        lastSeenAnnouncementId?.toString() !== this.getAnnouncementId()
+                                                );
+                                        },
+                                        dismissAnnouncement: function () {
+                                                window.localStorage.setItem(
+                                                        "last-seen-announcement-id",
+                                                        this.getAnnouncementId()
+                                                );
+                                                this.isShowingAnnouncement = false;
+                                        },
+                                        formatTracerouteAgeLabel: function (traceroute) {
+                                                return getTracerouteAgeLabel(traceroute, this.moment);
+                                        },
+                                        shouldShowInfoModal: function () {
+                                                return !window.getConfigHasSeenInfoModal() && !window.isMobile();
+                                        },
 					loadHardwareModelStats: function () {
 						window.axios
 							.get("/api/v1/stats/hardware-models")
@@ -4923,8 +4985,9 @@
                                         const hopCount = Math.max(pathNodeIds.length - 1, 0);
 
                                         let tooltip = `<b>Traceroute #${traceroute.id}</b>`;
-                                        if (traceroute.updated_at) {
-                                                tooltip += `<br/>Aggiornamento: ${moment(new Date(traceroute.updated_at)).fromNow()}`;
+                                        const tracerouteAgeLabel = getTracerouteAgeLabel(traceroute, moment);
+                                        if (tracerouteAgeLabel) {
+                                                tooltip += `<br/>Età: ${escapeString(tracerouteAgeLabel)}`;
                                         }
                                         tooltip += `<br/><br/>${tooltipRoute}`;
                                         tooltip += `<br/>Salti: ${hopCount}`;
