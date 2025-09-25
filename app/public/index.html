@@ -1787,13 +1787,11 @@
 																			|| '???' }}</span
 																		>
 																	</p>
-                                                                                                                               <div class="text-sm text-gray-700">
-                                                                                                                               Età: {{ formatTracerouteAgeLabel(traceroute) }} - {{
-                                                                                                                               traceroute.route.length
-                                                                                                                               }} salti {{
-                                                                                                                               traceroute.channel_id ? `on ${traceroute.channel_id}` : ''
-                                                                                                                               }}
-                                                                                                                               </div>
+      <div class="text-sm text-gray-700">
+        <span>Età: {{ formatTracerouteAgeLabel(traceroute) }} - {{ getTracerouteHopCount(traceroute) }} salti</span>
+        <span v-if="traceroute.total_distance_label"> - Distanza totale: {{ traceroute.total_distance_label }}</span>
+        <span v-if="traceroute.channel_id"> on {{ traceroute.channel_id }}</span>
+      </div>
 																</div>
 															</div>
 														</div>
@@ -1951,11 +1949,11 @@
 											<h2 class="font-bold">
 												Traceroute #{{ selectedTraceRoute.id }}
 											</h2>
-                                                                                        <h3 class="text-sm">
-                                                                                                Età: {{ formatTracerouteAgeLabel(selectedTraceRoute) }} - {{
-                                                                                                selectedTraceRoute.route.length }} salti {{
-                                                                                                selectedTraceRoute.channel_id ? `on ${selectedTraceRoute.channel_id}` : '' }}
-                                                                                        </h3>
+                                                                                          <h3 class="text-sm">
+                                                                                                  <span>Età: {{ formatTracerouteAgeLabel(selectedTraceRoute) }} - {{ getTracerouteHopCount(selectedTraceRoute) }} salti</span>
+                                                                                                  <span v-if="selectedTraceRoute.total_distance_label"> - Distanza totale: {{ selectedTraceRoute.total_distance_label }}</span>
+                                                                                                  <span v-if="selectedTraceRoute.channel_id"> on {{ selectedTraceRoute.channel_id }}</span>
+                                                                                          </h3>
 										</div>
 										<div class="my-auto ml-3 flex h-7 items-center">
 											<a
@@ -3218,6 +3216,13 @@
                                         formatTracerouteAgeLabel: function (traceroute) {
                                                 return getTracerouteAgeLabel(traceroute, this.moment);
                                         },
+                                        getTracerouteHopCount: function (traceroute) {
+                                                if (!traceroute || !Array.isArray(traceroute.route)) {
+                                                        return 0;
+                                                }
+
+                                                return traceroute.route.length;
+                                        },
                                         shouldShowInfoModal: function () {
                                                 return !window.getConfigHasSeenInfoModal() && !window.isMobile();
                                         },
@@ -3394,9 +3399,22 @@
 									count: 5,
 								},
 							})
-							.then((response) => {
-								this.selectedNodeTraceroutes = response.data.traceroutes;
-							})
+                                                        .then((response) => {
+                                                                const traceroutes = Array.isArray(response.data.traceroutes)
+                                                                        ? response.data.traceroutes
+                                                                        : [];
+
+                                                                this.selectedNodeTraceroutes = traceroutes.map((traceroute) => {
+                                                                        const { totalDistanceInMeters, totalDistanceLabel } =
+                                                                                calculateTracerouteDistanceMetadata(traceroute);
+
+                                                                        return {
+                                                                                ...traceroute,
+                                                                                total_distance_meters: totalDistanceInMeters,
+                                                                                total_distance_label: totalDistanceLabel,
+                                                                        };
+                                                                });
+                                                        })
 							.catch(() => {
 								// do nothing
 							});
@@ -3857,9 +3875,29 @@
 							},
 						});
 					},
-					showTraceRoute: function (traceroute) {
-						this.selectedTraceRoute = traceroute;
-					},
+                                        showTraceRoute: function (traceroute) {
+                                                if (traceroute == null) {
+                                                        this.selectedTraceRoute = null;
+                                                        return;
+                                                }
+
+                                                let totalDistanceInMeters = traceroute.total_distance_meters ?? null;
+                                                let totalDistanceLabel = traceroute.total_distance_label ?? null;
+
+                                                if (totalDistanceInMeters == null || totalDistanceLabel == null) {
+                                                        const { totalDistanceInMeters: computedMeters, totalDistanceLabel: computedLabel } =
+                                                                calculateTracerouteDistanceMetadata(traceroute) ?? {};
+
+                                                        totalDistanceInMeters = computedMeters ?? null;
+                                                        totalDistanceLabel = computedLabel ?? null;
+                                                }
+
+                                                this.selectedTraceRoute = {
+                                                        ...traceroute,
+                                                        total_distance_meters: totalDistanceInMeters,
+                                                        total_distance_label: totalDistanceLabel,
+                                                };
+                                        },
 					findNodeById: function (id) {
 						return window.findNodeById(id);
 					},
@@ -4935,6 +4973,93 @@
                                 return routeEntry;
                         }
 
+                        function getTraceroutePathNodeIds(traceroute) {
+                                const pathNodeIds = [];
+
+                                if (traceroute?.to != null && traceroute.to !== "") {
+                                        pathNodeIds.push(traceroute.to);
+                                }
+
+                                if (Array.isArray(traceroute?.route)) {
+                                        for (const routeEntry of traceroute.route) {
+                                                const nodeId = getNodeIdFromRouteEntry(routeEntry);
+                                                if (nodeId != null && nodeId !== "") {
+                                                        pathNodeIds.push(nodeId);
+                                                }
+                                        }
+                                }
+
+                                if (traceroute?.from != null && traceroute.from !== "") {
+                                        pathNodeIds.push(traceroute.from);
+                                }
+
+                                return pathNodeIds;
+                        }
+
+                        function formatDistanceLabelFromMeters(distanceInMeters) {
+                                if (!Number.isFinite(distanceInMeters) || distanceInMeters <= 0) {
+                                        return null;
+                                }
+
+                                const distanceInMetersRounded = distanceInMeters.toFixed(2);
+                                var distanceLabel = `${distanceInMetersRounded} metri`;
+
+                                if (distanceInMeters >= 1000) {
+                                        const distanceInKilometers = (distanceInMeters / 1000).toFixed(2);
+                                        distanceLabel = `${distanceInKilometers} chilometri`;
+                                }
+
+                                return distanceLabel;
+                        }
+
+                        function calculateTracerouteDistanceMetadata(traceroute, pathNodeIds) {
+                                const resolvedPathNodeIds = Array.isArray(pathNodeIds)
+                                        ? pathNodeIds
+                                        : getTraceroutePathNodeIds(traceroute);
+
+                                if (!Array.isArray(resolvedPathNodeIds) || resolvedPathNodeIds.length < 2) {
+                                        return {
+                                                totalDistanceInMeters: null,
+                                                totalDistanceLabel: null,
+                                        };
+                                }
+
+                                let totalDistanceInMeters = 0;
+                                let previousLatLng = null;
+                                let hasDistance = false;
+
+                                for (const nodeId of resolvedPathNodeIds) {
+                                        const marker = findNodeMarkerById(nodeId);
+                                        if (!marker) {
+                                                previousLatLng = null;
+                                                continue;
+                                        }
+
+                                        const latLng = marker.getLatLng();
+                                        if (previousLatLng) {
+                                                const segmentDistance = previousLatLng.distanceTo(latLng);
+                                                if (Number.isFinite(segmentDistance) && segmentDistance > 0) {
+                                                        totalDistanceInMeters += segmentDistance;
+                                                        hasDistance = true;
+                                                }
+                                        }
+
+                                        previousLatLng = latLng;
+                                }
+
+                                if (!hasDistance || !Number.isFinite(totalDistanceInMeters) || totalDistanceInMeters <= 0) {
+                                        return {
+                                                totalDistanceInMeters: null,
+                                                totalDistanceLabel: null,
+                                        };
+                                }
+
+                                return {
+                                        totalDistanceInMeters: totalDistanceInMeters,
+                                        totalDistanceLabel: formatDistanceLabelFromMeters(totalDistanceInMeters),
+                                };
+                        }
+
                         function formatNodeIdAsHex(nodeId) {
                                 try {
                                         return `!${BigInt(nodeId).toString(16)}`;
@@ -4961,25 +5086,7 @@
                                 }
 
                                 for (const traceroute of traceroutesToRender) {
-                                        const pathNodeIds = [];
-
-                                        if (traceroute?.to != null) {
-                                                pathNodeIds.push(traceroute.to);
-                                        }
-
-                                        if (Array.isArray(traceroute?.route)) {
-                                                for (const routeEntry of traceroute.route) {
-                                                        const nodeId = getNodeIdFromRouteEntry(routeEntry);
-                                                        if (nodeId != null && nodeId !== "") {
-                                                                pathNodeIds.push(nodeId);
-                                                        }
-                                                }
-                                        }
-
-                                        if (traceroute?.from != null) {
-                                                pathNodeIds.push(traceroute.from);
-                                        }
-
+                                        const pathNodeIds = getTraceroutePathNodeIds(traceroute);
                                         if (pathNodeIds.length < 2) {
                                                 continue;
                                         }
@@ -4990,6 +5097,15 @@
                                                         node: findNodeById(nodeId),
                                                 };
                                         });
+
+                                        const { totalDistanceInMeters, totalDistanceLabel } =
+                                                calculateTracerouteDistanceMetadata(traceroute, pathNodeIds);
+                                        if (totalDistanceInMeters != null) {
+                                                traceroute.total_distance_meters = totalDistanceInMeters;
+                                        }
+                                        if (totalDistanceLabel) {
+                                                traceroute.total_distance_label = totalDistanceLabel;
+                                        }
 
                                         const tooltipRoute = routeNodeInfos
                                                 .map((info) => {
@@ -5010,6 +5126,9 @@
                                         }
                                         tooltip += `<br/><br/>${tooltipRoute}`;
                                         tooltip += `<br/>Salti: ${hopCount}`;
+                                        if (traceroute.total_distance_label) {
+                                                tooltip += `<br/>Distanza totale: ${escapeString(traceroute.total_distance_label)}`;
+                                        }
 
                                         if (traceroute.channel_id) {
                                                 tooltip += `<br/>Canale MQTT: ${escapeString(traceroute.channel_id)}`;
