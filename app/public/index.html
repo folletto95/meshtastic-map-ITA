@@ -1787,18 +1787,12 @@
 																			|| '???' }}</span
 																		>
 																	</p>
-                                                                                                                               <div class="text-sm text-gray-700">
-                                                                                                                               Età: {{ formatTracerouteAgeLabel(traceroute) }} - {{
-                                                                                                                               traceroute.route.length
-                                                                                                                               }} salti {{
-                                                                                                                               traceroute.total_distance_label
-                                                                                                                                        ? `- Distanza totale: ${traceroute.total_distance_label}`
-                                                                                                                                        : ''
-                                                                                                                               }} {{
-                                                                                                                               traceroute.channel_id ? `on ${traceroute.channel_id}` : ''
-                                                                                                                               }}
-                                                                                                                               </div>
-																</div>
+      <div class="text-sm text-gray-700">
+        <span>Età: {{ formatTracerouteAgeLabel(traceroute) }} - {{ getTracerouteHopCount(traceroute) }} salti</span>
+        <span v-if="traceroute.total_distance_label"> - Distanza totale: {{ traceroute.total_distance_label }}</span>
+        <span v-if="traceroute.channel_id"> on {{ traceroute.channel_id }}</span>
+      </div>
+								</div>
 															</div>
 														</div>
 													</div>
@@ -1955,15 +1949,11 @@
 											<h2 class="font-bold">
 												Traceroute #{{ selectedTraceRoute.id }}
 											</h2>
-                                                                                        <h3 class="text-sm">
-                                                                                                Età: {{ formatTracerouteAgeLabel(selectedTraceRoute) }} - {{
-                                                                                                selectedTraceRoute.route.length }} salti {{
-                                                                                                selectedTraceRoute.total_distance_label
-                                                                                                        ? `- Distanza totale: ${selectedTraceRoute.total_distance_label}`
-                                                                                                        : ''
-                                                                                                }} {{
-                                                                                                selectedTraceRoute.channel_id ? `on ${selectedTraceRoute.channel_id}` : '' }}
-                                                                                        </h3>
+                                                                                          <h3 class="text-sm">
+                                                                                                  <span>Età: {{ formatTracerouteAgeLabel(selectedTraceRoute) }} - {{ getTracerouteHopCount(selectedTraceRoute) }} salti</span>
+                                                                                                  <span v-if="selectedTraceRoute.total_distance_label"> - Distanza totale: {{ selectedTraceRoute.total_distance_label }}</span>
+                                                                                                  <span v-if="selectedTraceRoute.channel_id"> on {{ selectedTraceRoute.channel_id }}</span>
+                                                                                          </h3>
 										</div>
 										<div class="my-auto ml-3 flex h-7 items-center">
 											<a
@@ -3225,6 +3215,13 @@
                                         },
                                         formatTracerouteAgeLabel: function (traceroute) {
                                                 return getTracerouteAgeLabel(traceroute, this.moment);
+                                        },
+                                        getTracerouteHopCount: function (traceroute) {
+                                                if (!traceroute || !Array.isArray(traceroute.route)) {
+                                                        return 0;
+                                                }
+
+                                                return traceroute.route.length;
                                         },
                                         shouldShowInfoModal: function () {
                                                 return !window.getConfigHasSeenInfoModal() && !window.isMobile();
@@ -5005,11 +5002,11 @@
                                 }
 
                                 const distanceInMetersRounded = distanceInMeters.toFixed(2);
-                                var distanceLabel = `${distanceInMetersRounded} meters`;
+                                var distanceLabel = `${distanceInMetersRounded} metri`;
 
                                 if (distanceInMeters >= 1000) {
                                         const distanceInKilometers = (distanceInMeters / 1000).toFixed(2);
-                                        distanceLabel = `${distanceInKilometers} kilometers`;
+                                        distanceLabel = `${distanceInKilometers} chilometri`;
                                 }
 
                                 return distanceLabel;
