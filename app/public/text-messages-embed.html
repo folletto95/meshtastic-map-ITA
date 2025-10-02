@@ -54,7 +54,7 @@
 
                     <div class="mr-2 mt-2">
                         <a target="_blank" :href="`/?node_id=${message.from}`">
-                            <div class="flex rounded-full h-12 w-12 text-white shadow" :class="[ `bg-[${getNodeColour(message.from)}]`, `text-[${getNodeTextColour(message.from)}]` ]">
+                            <div class="flex rounded-full h-12 w-12 text-white shadow" :class="getMessageAvatarClasses(message)">
                                 <div class="mx-auto my-auto drop-shadow-sm">{{ getNodeShortName(message.from) }}</div>
                             </div>
                         </a>
@@ -77,9 +77,27 @@
                         <div @click="message.is_details_expanded = !message.is_details_expanded" class="flex">
                             <div class="border border-gray-300 rounded-xl shadow overflow-hidden bg-[#efefef] divide-y">
                                 <div class="w-full space-y-0.5 px-2.5 py-1" v-html="escapeMessageText(message.text)" style="white-space:pre-wrap;word-break:break-word;"></div>
-                                <div v-if="message.is_details_expanded" class="text-xs text-gray-500 px-2 py-1">
-                                    <span :title="message.created_at">{{ formatMessageTimestamp(message.created_at) }}</span>
-                                    <span> • Inoltrato da <a target="_blank" :href="`/?node_id=${message.gateway_id}`" class="hover:text-blue-500">{{ getNodeName(message.gateway_id) }}</a></span>
+                                <div v-if="message.is_details_expanded" class="text-xs text-gray-500 px-2 py-1 space-y-1">
+                                    <div>
+                                        <span :title="message.created_at">{{ formatMessageTimestamp(message.created_at) }}</span>
+                                        <span> • Inoltrato da <a target="_blank" :href="`/?node_id=${message.gateway_id}`" class="hover:text-blue-500">{{ getNodeName(message.gateway_id) }}</a></span>
+                                    </div>
+                                    <div class="flex flex-wrap gap-2 pt-1">
+                                        <span class="inline-flex items-center gap-1 rounded-full bg-gray-200 px-2 py-[2px] text-[10px] font-semibold uppercase tracking-wide text-gray-600">
+                                            <span>Trasmissione</span>
+                                            <span class="font-mono normal-case text-gray-700">{{ getMessageSnrLabel(message) }}</span>
+                                        </span>
+                                        <span class="inline-flex items-center gap-1 rounded-full bg-gray-200 px-2 py-[2px] text-[10px] font-semibold uppercase tracking-wide text-gray-600">
+                                            <span>Ricezione</span>
+                                            <span class="font-mono normal-case text-gray-700">{{ getMessageRssiLabel(message) }}</span>
+                                        </span>
+                                        <span v-if="isMqttMessage(message)" class="inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-[2px] text-[10px] font-semibold uppercase tracking-wide text-sky-700">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12l-7.5 7.5m-9-15L12 12l-7.5 7.5" />
+                                            </svg>
+                                            <span>Pacchetto MQTT</span>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -322,6 +340,21 @@
                 return `[${node.short_name}] ${node.long_name}`;
 
             },
+            getMessageAvatarClasses(message) {
+
+                if(this.isMqttMessage(message)){
+                    return [
+                        "bg-[#0ea5e9]",
+                        "text-white",
+                    ];
+                }
+
+                return [
+                    `bg-[${this.getNodeColour(message.from)}]`,
+                    `text-[${this.getNodeTextColour(message.from)}]`,
+                ];
+
+            },
             getNodeShortName(nodeId) {
                 return this.nodesById[nodeId]?.short_name?.substring(0, 4) ?? "?";
             },
@@ -344,6 +377,66 @@
 
                 // determine text color based on brightness
                 return brightness > 0.5 ? "#000000" : "#FFFFFF";
+
+            },
+            isMqttMessage(message) {
+
+                const snr = this.parseSnrValue(message.rx_snr);
+                const rssi = this.parseRssiValue(message.rx_rssi);
+
+                if(snr === null || rssi === null){
+                    return false;
+                }
+
+                return snr === 0 && rssi === 0;
+
+            },
+            parseSnrValue(value) {
+
+                if(value === null || value === undefined){
+                    return null;
+                }
+
+                const parsed = Number(value);
+                if(!Number.isFinite(parsed)){
+                    return null;
+                }
+
+                return parsed;
+
+            },
+            parseRssiValue(value) {
+
+                if(value === null || value === undefined){
+                    return null;
+                }
+
+                const parsed = Number(value);
+                if(!Number.isFinite(parsed)){
+                    return null;
+                }
+
+                return parsed;
+
+            },
+            getMessageSnrLabel(message) {
+
+                const snr = this.parseSnrValue(message.rx_snr);
+                if(snr === null){
+                    return "N/D";
+                }
+
+                return `${snr.toFixed(1)} dB`;
+
+            },
+            getMessageRssiLabel(message) {
+
+                const rssi = this.parseRssiValue(message.rx_rssi);
+                if(rssi === null){
+                    return "N/D";
+                }
+
+                return `${rssi} dBm`;
 
             },
             escapeMessageText(text) {
