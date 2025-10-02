@@ -1789,7 +1789,9 @@
                                                                                                         v-for="traceroute of filteredSelectedNodeTraceroutes"
                                                                                                         :key="`traceroute-${traceroute.id}`">
                                                                                                         <div class="relative flex items-center">
-                                                                                                                <div class="block flex-1 px-4 py-2">
+                                                                                                                <div
+                                                                                                                        class="block flex-1 px-4 py-2"
+                                                                                                                        :class="traceroute.is_mqtt ? 'bg-sky-50' : ''">
                                                                                                                         <div
 																class="relative flex min-w-0 flex-1 items-center">
 																<div>
@@ -1812,6 +1814,34 @@
                                                                                                                                         <span v-if="traceroute.total_distance_label">
                                                                                                                                                 - Distanza totale: {{ traceroute.total_distance_label }}</span>
                                                                                                                                         <span v-if="traceroute.channel_id"> on {{ traceroute.channel_id }}</span>
+                                                                                                                               <div class="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-600">
+                                                                                                                                       <div>
+                                                                                                                                               <span class="font-semibold uppercase tracking-wide">SNR andata</span>
+                                                                                                                                               <span class="ml-1 font-mono">
+                                                                                                                                                       {{ traceroute.snr_towards_label || 'N/D' }}
+                                                                                                                                               </span>
+                                                                                                                                       </div>
+                                                                                                                                       <div>
+                                                                                                                                               <span class="font-semibold uppercase tracking-wide">SNR ritorno</span>
+                                                                                                                                               <span class="ml-1 font-mono">
+                                                                                                                                                       {{ traceroute.snr_back_label || 'N/D' }}
+                                                                                                                                               </span>
+                                                                                                                                       </div>
+                                                                                                                               </div>
+                                                                                                                               <div
+                                                                                                                                       v-if="traceroute.is_mqtt"
+                                                                                                                                       class="mt-1 inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-[2px] text-[10px] font-semibold uppercase tracking-wide text-sky-700">
+                                                                                                                                       <svg
+                                                                                                                                               xmlns="http://www.w3.org/2000/svg"
+                                                                                                                                               fill="none"
+                                                                                                                                               viewBox="0 0 24 24"
+                                                                                                                                               stroke-width="1.5"
+                                                                                                                                               stroke="currentColor"
+                                                                                                                                               class="size-3">
+                                                                                                                                               <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12l-7.5 7.5m-9-15L12 12l-7.5 7.5" />
+                                                                                                                                       </svg>
+                                                                                                                                       <span>Pacchetto MQTT</span>
+                                                                                                                               </div>
                                                                                                                                </div>
                                                                                                                                <div
                                                                                                                                        class="mt-1 text-xs text-gray-500 space-y-1"
@@ -2012,6 +2042,34 @@
                                                                                                   <span>Età: {{ formatTracerouteAgeLabel(selectedTraceRoute) }} - {{ getTracerouteHopCount(selectedTraceRoute) }} salti</span>
                                                                                                   <span v-if="selectedTraceRoute.total_distance_label"> - Distanza totale: {{ selectedTraceRoute.total_distance_label }}</span>
                                                                                                   <span v-if="selectedTraceRoute.channel_id"> on {{ selectedTraceRoute.channel_id }}</span>
+                                                                                                  <div class="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">
+                                                                                                          <div>
+                                                                                                                  <span class="font-semibold uppercase tracking-wide">SNR andata</span>
+                                                                                                                  <span class="ml-1 font-mono">
+                                                                                                                          {{ selectedTraceRoute.snr_towards_label || "N/D" }}
+                                                                                                                  </span>
+                                                                                                          </div>
+                                                                                                          <div>
+                                                                                                                  <span class="font-semibold uppercase tracking-wide">SNR ritorno</span>
+                                                                                                                  <span class="ml-1 font-mono">
+                                                                                                                          {{ selectedTraceRoute.snr_back_label || "N/D" }}
+                                                                                                                  </span>
+                                                                                                          </div>
+                                                                                                  </div>
+                                                                                                  <div
+                                                                                                          v-if="selectedTraceRoute.is_mqtt"
+                                                                                                          class="mt-1 inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-[2px] text-[10px] font-semibold uppercase tracking-wide text-sky-700">
+                                                                                                          <svg
+                                                                                                                  xmlns="http://www.w3.org/2000/svg"
+                                                                                                                  fill="none"
+                                                                                                                  viewBox="0 0 24 24"
+                                                                                                                  stroke-width="1.5"
+                                                                                                                  stroke="currentColor"
+                                                                                                                  class="size-3">
+                                                                                                                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12l-7.5 7.5m-9-15L12 12l-7.5 7.5" />
+                                                                                                          </svg>
+                                                                                                          <span>Pacchetto MQTT</span>
+                                                                                                  </div>
                                                                                                   <div
                                                                                                           class="mt-1 text-xs text-gray-500 space-y-1"
                                                                                                           v-if="selectedTraceRoute.created_at || selectedTraceRoute.updated_at">
@@ -2631,11 +2689,100 @@
                                                                                         }}
                                                                                 </div>
                                                                         </div>
+
+                                                                        <div class="mt-4 border-t border-gray-200">
+                                                                                <template v-if="selectedNodeNeighboursEntries.length > 0">
+                                                                                        <ul role="list" class="divide-y divide-gray-200">
+                                                                                                <li
+                                                                                                        v-for="entry in selectedNodeNeighboursEntries"
+                                                                                                        :key="`neighbour-${selectedNodeToShowNeighboursType}-${entry.node_id}`"
+                                                                                                        class="flex gap-3 py-3">
+                                                                                                        <div class="flex-none">
+                                                                                                                <div
+                                                                                                                        class="flex h-10 w-10 items-center justify-center rounded-full text-xs font-semibold text-white shadow"
+                                                                                                                        :class="[
+                                                                                                                                `bg-[${getNodeColour(Number(entry.node_id ?? 0))}]`,
+                                                                                                                                `text-[${getNodeTextColour(Number(entry.node_id ?? 0))}]`,
+                                                                                                                        ]">
+                                                                                                                        <span>{{ entry.node?.short_name ?? "?" }}</span>
+                                                                                                                </div>
+                                                                                                        </div>
+                                                                                                        <div class="min-w-0 flex-1">
+                                                                                                                <p class="text-sm font-medium text-gray-900">
+                                                                                                                        {{
+                                                                                                                                entry.node?.long_name ||
+                                                                                                                                entry.node?.node_id_hex ||
+                                                                                                                                `Nodo ${entry.node_id}`
+                                                                                                                        }}
+                                                                                                                </p>
+                                                                                                                <p class="text-xs text-gray-600">
+                                                                                                                        <span v-if="entry.direction === 'we_heard'">Li abbiamo ascoltati</span>
+                                                                                                                        <span v-else>Ci hanno ascoltato</span>
+                                                                                                                        <span v-if="entry.distance_label"> · Distanza: {{ entry.distance_label }}</span>
+                                                                                                                </p>
+                                                                                                                <div class="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-600">
+                                                                                                                        <div>
+                                                                                                                                <span class="font-semibold uppercase tracking-wide">SNR</span>
+                                                                                                                                <span class="ml-1 font-mono">
+                                                                                                                                        {{ entry.quality?.snrLabel || "N/D" }}
+                                                                                                                                </span>
+                                                                                                                        </div>
+                                                                                                                        <div>
+                                                                                                                                <span class="font-semibold uppercase tracking-wide">RSSI</span>
+                                                                                                                                <span class="ml-1 font-mono">
+                                                                                                                                        {{ entry.quality?.rssiLabel || "N/D" }}
+                                                                                                                                </span>
+                                                                                                                        </div>
+                                                                                                                </div>
+                                                                                                                <div
+                                                                                                                        class="mt-1 space-y-1 text-[11px] text-gray-500"
+                                                                                                                        v-if="entry.first_seen_at || entry.updated_at">
+                                                                                                                        <div v-if="entry.first_seen_at">
+                                                                                                                                Prima info:
+                                                                                                                                {{
+                                                                                                                                        formatRelativeAndExactTimestampText(
+                                                                                                                                                entry.first_seen_at,
+                                                                                                                                        )
+                                                                                                                                }}
+                                                                                                                        </div>
+                                                                                                                        <div v-if="entry.updated_at">
+                                                                                                                                Aggiornamento:
+                                                                                                                                {{
+                                                                                                                                        formatRelativeAndExactTimestampText(
+                                                                                                                                                entry.updated_at,
+                                                                                                                                        )
+                                                                                                                                }}
+                                                                                                                        </div>
+                                                                                                                </div>
+                                                                                                        </div>
+                                                                                                        <div
+                                                                                                                v-if="entry.quality?.isMqtt"
+                                                                                                                class="mt-1 inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-[2px] text-[10px] font-semibold uppercase tracking-wide text-sky-700">
+                                                                                                                <svg
+                                                                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                                                                        fill="none"
+                                                                                                                        viewBox="0 0 24 24"
+                                                                                                                        stroke-width="1.5"
+                                                                                                                        stroke="currentColor"
+                                                                                                                        class="size-3">
+                                                                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12l-7.5 7.5m-9-15L12 12l-7.5 7.5" />
+                                                                                                                </svg>
+                                                                                                                <span>Pacchetto MQTT</span>
+                                                                                                        </div>
+                                                                                                </li>
+                                                                                        </ul>
+                                                                                </template>
+                                                                                <template v-else>
+                                                                                        <div class="py-4 text-center text-sm text-gray-600">
+                                                                                                Nessuna informazione di qualità disponibile per questa vista.
+                                                                                        </div>
+                                                                                </template>
+                                                                        </div>
                                                                 </div>
-							</div>
-						</div>
-					</div>
-				</transition>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </transition>
 			</div>
 
 			<!-- node position history modal -->
@@ -2797,6 +2944,8 @@
                         const traceroutesOverlayLabel = "Traceroute";
                         const waypointsOverlayLabel = "Punti di passaggio";
                         const positionHistoryOverlayLabel = "Cronologia posizioni";
+                        const mqttLinkColour = "#0ea5e9";
+                        const neutralLinkColour = "#6b7280";
                         const legendMqttConnectedLabel = "MQTT connesso";
                         const legendMqttDisconnectedLabel = "MQTT disconnesso";
                         const legendOfflineLabel = "Offline troppo a lungo";
@@ -3256,10 +3405,11 @@
 						selectedNodePositionHistoryMarkers: [],
 						selectedNodePositionHistoryPolyLines: [],
 
-						selectedTraceRoute: null,
+                                                selectedTraceRoute: null,
 
-						selectedNodeToShowNeighbours: null,
-						selectedNodeToShowNeighboursType: null,
+                                                selectedNodeToShowNeighbours: null,
+                                                selectedNodeToShowNeighboursType: null,
+                                                selectedNodeNeighboursEntries: [],
 
 						moment: window.moment,
 					};
@@ -3286,16 +3436,22 @@
 					};
 
 					// handle node callback from outside of vue
-					window._onShowNodeNeighboursWeHeardClick = (node) => {
-						this.selectedNodeToShowNeighbours = node;
-						this.selectedNodeToShowNeighboursType = "we_heard";
-					};
+                                        window._onShowNodeNeighboursWeHeardClick = (node, neighbours) => {
+                                                this.selectedNodeToShowNeighbours = node;
+                                                this.selectedNodeToShowNeighboursType = "we_heard";
+                                                this.selectedNodeNeighboursEntries = Array.isArray(neighbours)
+                                                        ? neighbours
+                                                        : [];
+                                        };
 
-					// handle node callback from outside of vue
-					window._onShowNodeNeighboursHeardUsClick = (node) => {
-						this.selectedNodeToShowNeighbours = node;
-						this.selectedNodeToShowNeighboursType = "heard_us";
-					};
+                                        // handle node callback from outside of vue
+                                        window._onShowNodeNeighboursHeardUsClick = (node, neighbours) => {
+                                                this.selectedNodeToShowNeighbours = node;
+                                                this.selectedNodeToShowNeighboursType = "heard_us";
+                                                this.selectedNodeNeighboursEntries = Array.isArray(neighbours)
+                                                        ? neighbours
+                                                        : [];
+                                        };
 
                                         // handle nodes updated callback from outside of vue
                                         window._onNodesUpdated = (nodes) => {
@@ -3530,11 +3686,20 @@
                                                                 this.selectedNodeTraceroutes = traceroutes.map((traceroute) => {
                                                                         const { totalDistanceInMeters, totalDistanceLabel } =
                                                                                 calculateTracerouteDistanceMetadata(traceroute);
+                                                                        const quality =
+                                                                                calculateTracerouteQualityMetrics(traceroute);
 
                                                                         return {
                                                                                 ...traceroute,
                                                                                 total_distance_meters: totalDistanceInMeters,
                                                                                 total_distance_label: totalDistanceLabel,
+                                                                                snr_towards_label:
+                                                                                        quality.snrTowardsLabel ?? null,
+                                                                                snr_back_label:
+                                                                                        quality.snrBackLabel ?? null,
+                                                                                snr_towards_values: quality.snrTowardsValues,
+                                                                                snr_back_values: quality.snrBackValues,
+                                                                                is_mqtt: quality.isMqtt,
                                                                         };
                                                                 });
                                                         })
@@ -4015,10 +4180,27 @@
                                                         totalDistanceLabel = computedLabel ?? null;
                                                 }
 
+                                                const quality = calculateTracerouteQualityMetrics(traceroute);
+                                                const snrTowardsLabel =
+                                                        traceroute.snr_towards_label ?? quality.snrTowardsLabel ?? null;
+                                                const snrBackLabel =
+                                                        traceroute.snr_back_label ?? quality.snrBackLabel ?? null;
+                                                const snrTowardsValues =
+                                                        traceroute.snr_towards_values ?? quality.snrTowardsValues;
+                                                const snrBackValues =
+                                                        traceroute.snr_back_values ?? quality.snrBackValues;
+                                                const isMqtt =
+                                                        traceroute.is_mqtt ?? quality.isMqtt ?? false;
+
                                                 this.selectedTraceRoute = {
                                                         ...traceroute,
                                                         total_distance_meters: totalDistanceInMeters,
                                                         total_distance_label: totalDistanceLabel,
+                                                        snr_towards_label: snrTowardsLabel,
+                                                        snr_back_label: snrBackLabel,
+                                                        snr_towards_values: snrTowardsValues,
+                                                        snr_back_values: snrBackValues,
+                                                        is_mqtt: isMqtt,
                                                 };
                                         },
 					findNodeById: function (id) {
@@ -4129,10 +4311,11 @@
 						// tell use we copied it
 						alert("Link copied to clipboard!");
 					},
-					dismissShowingNodeNeighbours: function () {
-						window._onHideNodeNeighboursClick();
-						this.selectedNodeToShowNeighbours = null;
-					},
+                                        dismissShowingNodeNeighbours: function () {
+                                                window._onHideNodeNeighboursClick();
+                                                this.selectedNodeToShowNeighbours = null;
+                                                this.selectedNodeNeighboursEntries = [];
+                                        },
 					dismissShowingNodePositionHistory: function () {
 						this.selectedNodePositionHistory = [];
 						this.selectedNodeToShowPositionHistory = null;
@@ -4739,10 +4922,209 @@
 				window._onNodeClick(node);
 			}
 
-			function getColourForSnr(snr) {
-				if (snr >= 0) return "#16a34a"; // good
-				if (snr < 0) return "#dc2626"; // bad
-			}
+                        function getColourForSnr(snr) {
+                                if (snr >= 0) return "#16a34a"; // good
+                                if (snr < 0) return "#dc2626"; // bad
+                                return neutralLinkColour;
+                        }
+
+                        function parseFiniteNumber(value) {
+                                if (value === null || value === undefined) {
+                                        return null;
+                                }
+
+                                if (typeof value === "number") {
+                                        return Number.isFinite(value) ? value : null;
+                                }
+
+                                if (typeof value === "string") {
+                                        const trimmed = value.trim();
+                                        if (trimmed === "") {
+                                                return null;
+                                        }
+
+                                        const parsed = Number(trimmed);
+                                        return Number.isFinite(parsed) ? parsed : null;
+                                }
+
+                                return null;
+                        }
+
+                        function formatSnrLabelFromNumber(snr) {
+                                if (snr == null) {
+                                        return null;
+                                }
+
+                                return `${snr.toFixed(1)} dB`;
+                        }
+
+                        function formatRssiLabelFromNumber(rssi) {
+                                if (rssi == null) {
+                                        return null;
+                                }
+
+                                const hasDecimal = Math.abs(rssi % 1) > 0;
+                                const formattedValue = hasDecimal ? rssi.toFixed(1) : rssi.toString();
+                                return `${formattedValue} dBm`;
+                        }
+
+                        function getNeighbourQualityMetadata(neighbour) {
+                                const snr = parseFiniteNumber(neighbour?.snr);
+                                const rssi = parseFiniteNumber(neighbour?.rssi);
+
+                                return {
+                                        snr: snr,
+                                        rssi: rssi,
+                                        snrLabel: formatSnrLabelFromNumber(snr),
+                                        rssiLabel: formatRssiLabelFromNumber(rssi),
+                                        isMqtt: snr === 0 && rssi === 0,
+                                };
+                        }
+
+                        function getNeighbourLinkColour(neighbour, qualityMetadata) {
+                                const quality = qualityMetadata ?? getNeighbourQualityMetadata(neighbour);
+
+                                if (quality.isMqtt) {
+                                        return mqttLinkColour;
+                                }
+
+                                if (quality.snr != null) {
+                                        return getColourForSnr(quality.snr);
+                                }
+
+                                return neutralLinkColour;
+                        }
+
+                        function enhanceNeighbourWithQuality(neighbour) {
+                                if (!neighbour || typeof neighbour !== "object" || Array.isArray(neighbour)) {
+                                        return neighbour;
+                                }
+
+                                const quality = getNeighbourQualityMetadata(neighbour);
+
+                                return {
+                                        ...neighbour,
+                                        snr: quality.snr,
+                                        rssi: quality.rssi,
+                                        snr_label: quality.snrLabel,
+                                        rssi_label: quality.rssiLabel,
+                                        is_mqtt: quality.isMqtt,
+                                };
+                        }
+
+                        function enhanceNodeWithNeighbourQuality(node) {
+                                if (!node || typeof node !== "object") {
+                                        return;
+                                }
+
+                                if (!Array.isArray(node.neighbours)) {
+                                        return;
+                                }
+
+                                node.neighbours = node.neighbours.map((neighbour) =>
+                                        enhanceNeighbourWithQuality(neighbour),
+                                );
+                        }
+
+                        function normaliseNumericArray(rawValues) {
+                                if (rawValues == null) {
+                                        return [];
+                                }
+
+                                let iterableValues = [];
+                                if (Array.isArray(rawValues)) {
+                                        iterableValues = rawValues;
+                                } else if (typeof rawValues[Symbol.iterator] === "function") {
+                                        iterableValues = Array.from(rawValues);
+                                }
+
+                                if (!Array.isArray(iterableValues) || iterableValues.length === 0) {
+                                        return [];
+                                }
+
+                                const numbers = [];
+                                for (const value of iterableValues) {
+                                        if (value == null) {
+                                                continue;
+                                        }
+
+                                        if (typeof value === "object" && !Array.isArray(value)) {
+                                                const candidateKeys = ["value", "snr", "rssi"];
+                                                let parsedFromObject = null;
+
+                                                for (const key of candidateKeys) {
+                                                        if (key in value) {
+                                                                parsedFromObject = parseFiniteNumber(value[key]);
+                                                                if (parsedFromObject != null) {
+                                                                        break;
+                                                                }
+                                                        }
+                                                }
+
+                                                if (parsedFromObject != null) {
+                                                        numbers.push(parsedFromObject);
+                                                        continue;
+                                                }
+                                        }
+
+                                        const parsed = parseFiniteNumber(value);
+                                        if (parsed == null) {
+                                                continue;
+                                        }
+
+                                        numbers.push(parsed);
+                                }
+
+                                return numbers;
+                        }
+
+                        function convertSnrSeriesToDb(rawValues) {
+                                return normaliseNumericArray(rawValues).map((value) => value / 4);
+                        }
+
+                        function formatSnrSeriesLabel(values) {
+                                if (!Array.isArray(values) || values.length === 0) {
+                                        return null;
+                                }
+
+                                return values.map((value) => `${value.toFixed(1)} dB`).join(" → ");
+                        }
+
+                        function determineTracerouteIsMqtt(rawSnrTowards, rawSnrBack) {
+                                const snrTowardsValues = normaliseNumericArray(rawSnrTowards);
+                                const snrBackValues = normaliseNumericArray(rawSnrBack);
+
+                                if (snrTowardsValues.length === 0 && snrBackValues.length === 0) {
+                                        return true;
+                                }
+
+                                const hasNonZeroValue =
+                                        snrTowardsValues.some((value) => value !== 0) ||
+                                        snrBackValues.some((value) => value !== 0);
+
+                                return !hasNonZeroValue;
+                        }
+
+                        function calculateTracerouteQualityMetrics(traceroute) {
+                                const rawSnrTowards = traceroute?.snr_towards ?? traceroute?.snrTowards;
+                                const rawSnrBack = traceroute?.snr_back ?? traceroute?.snrBack;
+
+                                const snrTowardsValues = convertSnrSeriesToDb(rawSnrTowards);
+                                const snrBackValues = convertSnrSeriesToDb(rawSnrBack);
+
+                                const snrTowardsLabel = formatSnrSeriesLabel(snrTowardsValues);
+                                const snrBackLabel = formatSnrSeriesLabel(snrBackValues);
+
+                                const isMqtt = determineTracerouteIsMqtt(rawSnrTowards, rawSnrBack);
+
+                                return {
+                                        snrTowardsValues: snrTowardsValues,
+                                        snrBackValues: snrBackValues,
+                                        snrTowardsLabel: snrTowardsLabel,
+                                        snrBackLabel: snrBackLabel,
+                                        isMqtt: isMqtt,
+                                };
+                        }
 
 			function cleanUpNodeNeighbours() {
 				// close tooltips and popups
@@ -4814,26 +5196,29 @@
                                         return;
                                 }
 
-                                // show overlay for node neighbours
-                                window._onShowNodeNeighboursWeHeardClick(node);
-
                                 // ensure we have neighbours to show
-				const neighbours = node.neighbours ?? [];
-				if (neighbours.length === 0) {
-					return;
-				}
+                                const neighbours = node.neighbours ?? [];
+                                const neighboursForModal = [];
 
-				// add node neighbours
-				for (const neighbour of neighbours) {
-					// fixme: skipping zero snr? saw some crazy long neighbours with zero snr...
-					if (neighbour.snr === 0) {
-						continue;
-					}
+                                if (neighbours.length === 0) {
+                                        window._onShowNodeNeighboursWeHeardClick(node, neighboursForModal);
+                                        return;
+                                }
 
-					// find neighbour node
-					const neighbourNode = findNodeById(neighbour.node_id);
-					if (!neighbourNode) {
-						continue;
+                                // add node neighbours
+                                for (const neighbour of neighbours) {
+                                        const neighbourQuality = getNeighbourQualityMetadata(neighbour);
+                                        if (
+                                                neighbourQuality.snr == null &&
+                                                neighbourQuality.rssi == null
+                                        ) {
+                                                continue;
+                                        }
+
+                                        // find neighbour node
+                                        const neighbourNode = findNodeById(neighbour.node_id);
+                                        if (!neighbourNode) {
+                                                continue;
 					}
 
 					// find neighbour node marker
@@ -4859,18 +5244,23 @@
 					}
 
 					// add neighbour line to map
-					const line = L.polyline(
-						[
-							neighbourNodeMarker.getLatLng(), // from neighbour
-							nodeMarker.getLatLng(), // to us
-						],
-						{
-							color: getColourForSnr(neighbour.snr),
-							opacity: 1,
-						}
-					)
-						.arrowheads({
-							size: "10px",
+                                        const lineColour = getNeighbourLinkColour(
+                                                neighbour,
+                                                neighbourQuality,
+                                        );
+
+                                        const line = L.polyline(
+                                                [
+                                                        neighbourNodeMarker.getLatLng(), // from neighbour
+                                                        nodeMarker.getLatLng(), // to us
+                                                ],
+                                                {
+                                                        color: lineColour,
+                                                        opacity: 1,
+                                                }
+                                        )
+                                                .arrowheads({
+                                                        size: "10px",
 							fill: true,
 							offsets: {
 								start: "25px",
@@ -4883,15 +5273,38 @@
 					var distance = `${distanceInMeters} meters`;
 
 					// scale to distance in kms
-					if (distanceInMeters >= 1000) {
-						const distanceInKilometers = (distanceInMeters / 1000).toFixed(2);
-						distance = `${distanceInKilometers} kilometers`;
-					}
+                                        if (distanceInMeters >= 1000) {
+                                                const distanceInKilometers = (distanceInMeters / 1000).toFixed(2);
+                                                distance = `${distanceInKilometers} kilometers`;
+                                        }
 
-					const terrainImageUrl = getTerrainProfileImage(node, neighbourNode);
+                                        const distanceInMetersNumber = parseFloat(distanceInMeters);
+                                        let distanceLabelForModal = `${Math.round(distanceInMetersNumber)} metri`;
+                                        if (distanceInMetersNumber >= 1000) {
+                                                distanceLabelForModal = `${(distanceInMetersNumber / 1000).toFixed(2)} km`;
+                                        }
+
+                                        neighboursForModal.push({
+                                                node: neighbourNode,
+                                                node_id: neighbourNode.node_id,
+                                                distance_in_meters: distanceInMetersNumber,
+                                                distance_label: distanceLabelForModal,
+                                                first_seen_at: node.neighbours_first_seen_at,
+                                                updated_at: node.neighbours_updated_at,
+                                                quality: neighbourQuality,
+                                                direction: "we_heard",
+                                        });
+
+                                        const terrainImageUrl = getTerrainProfileImage(node, neighbourNode);
+
+                                        const snrLabel =
+                                                neighbourQuality.snrLabel ?? "N/D";
+                                        const rssiLabel =
+                                                neighbourQuality.rssiLabel ?? "N/D";
 
                                         let tooltip = `<b>[${escapeString(node.short_name)}] ${escapeString(node.long_name)}</b> heard <b>[${escapeString(neighbourNode.short_name)}] ${escapeString(neighbourNode.long_name)}</b>`;
-                                        tooltip += `<br/>SNR: ${neighbour.snr}dB`;
+                                        tooltip += `<br/>SNR (ricezione): ${escapeString(snrLabel)}`;
+                                        tooltip += `<br/>RSSI (ricezione): ${escapeString(rssiLabel)}`;
                                         tooltip += `<br/>Distance: ${distance}`;
                                         tooltip += `<br/><br/>ID: ${node.node_id} heard ${neighbourNode.node_id}`;
                                         tooltip += `<br/>ID esadecimale: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`;
@@ -4912,6 +5325,10 @@
                                                 tooltip += `<br/>Aggiornamento vicini: ${escapeString(nodeNeighboursUpdatedLabel)}`;
                                         }
 
+                                        if (neighbourQuality.isMqtt) {
+                                                tooltip += `<br/>Qualità: Pacchetto MQTT`;
+                                        }
+
                                         tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;
                                         tooltip += `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
 
@@ -4925,9 +5342,21 @@
 						.on("click", function (event) {
 							// close tooltip on click to prevent tooltip and popup showing at same time
 							event.target.closeTooltip();
-						});
-				}
-			}
+                                                });
+                                }
+
+                                neighboursForModal.sort((a, b) => {
+                                        const distanceA = Number.isFinite(a.distance_in_meters)
+                                                ? a.distance_in_meters
+                                                : Number.POSITIVE_INFINITY;
+                                        const distanceB = Number.isFinite(b.distance_in_meters)
+                                                ? b.distance_in_meters
+                                                : Number.POSITIVE_INFINITY;
+                                        return distanceA - distanceB;
+                                });
+
+                                window._onShowNodeNeighboursWeHeardClick(node, neighboursForModal);
+                        }
 
 			function showNodeNeighboursThatHeardUs(id) {
 				cleanUpNodeNeighbours();
@@ -4947,9 +5376,6 @@
                                 const now = moment();
                                 const configNeighboursMaxAgeInSeconds =
                                         getConfigNeighboursMaxAgeInSeconds();
-
-                                // show overlay for node neighbours
-                                window._onShowNodeNeighboursHeardUsClick(node);
 
                                 // find all nodes that have us as a neighbour
                                 const neighbourNodeInfos = [];
@@ -4979,15 +5405,13 @@
 					}
 				}
 
-				// ensure we have neighbours to show
-				if (neighbourNodeInfos.length === 0) {
-					return;
-				}
+                                const neighboursForModal = [];
 
-				// add node neighbours
+                                // add node neighbours
                                 for (const neighbourNodeInfo of neighbourNodeInfos) {
                                         const neighbourNode = neighbourNodeInfo.node;
                                         const neighbour = neighbourNodeInfo.neighbour;
+                                        const neighbourQuality = getNeighbourQualityMetadata(neighbour);
 
                                         if (
                                                 hasNeighbourInfoExpired(
@@ -4999,8 +5423,10 @@
                                                 continue;
                                         }
 
-                                        // fixme: skipping zero snr? saw some crazy long neighbours with zero snr...
-                                        if (neighbour.snr === 0) {
+                                        if (
+                                                neighbourQuality.snr == null &&
+                                                neighbourQuality.rssi == null
+                                        ) {
                                                 continue;
                                         }
 
@@ -5027,18 +5453,23 @@
 					}
 
 					// add neighbour line to map
-					const line = L.polyline(
-						[
-							nodeMarker.getLatLng(), // from us
-							neighbourNodeMarker.getLatLng(), // to neighbour
-						],
-						{
-							color: getColourForSnr(neighbour.snr),
-							opacity: 1,
-						}
-					)
-						.arrowheads({
-							size: "10px",
+                                        const lineColour = getNeighbourLinkColour(
+                                                neighbour,
+                                                neighbourQuality,
+                                        );
+
+                                        const line = L.polyline(
+                                                [
+                                                        nodeMarker.getLatLng(), // from us
+                                                        neighbourNodeMarker.getLatLng(), // to neighbour
+                                                ],
+                                                {
+                                                        color: lineColour,
+                                                        opacity: 1,
+                                                }
+                                        )
+                                                .arrowheads({
+                                                        size: "10px",
 							fill: true,
 							offsets: {
 								start: "25px",
@@ -5051,15 +5482,38 @@
 					var distance = `${distanceInMeters} meters`;
 
 					// scale to distance in kms
-					if (distanceInMeters >= 1000) {
-						const distanceInKilometers = (distanceInMeters / 1000).toFixed(2);
-						distance = `${distanceInKilometers} kilometers`;
-					}
+                                        if (distanceInMeters >= 1000) {
+                                                const distanceInKilometers = (distanceInMeters / 1000).toFixed(2);
+                                                distance = `${distanceInKilometers} kilometers`;
+                                        }
 
-					const terrainImageUrl = getTerrainProfileImage(neighbourNode, node);
+                                        const distanceInMetersNumber = parseFloat(distanceInMeters);
+                                        let distanceLabelForModal = `${Math.round(distanceInMetersNumber)} metri`;
+                                        if (distanceInMetersNumber >= 1000) {
+                                                distanceLabelForModal = `${(distanceInMetersNumber / 1000).toFixed(2)} km`;
+                                        }
+
+                                        neighboursForModal.push({
+                                                node: neighbourNode,
+                                                node_id: neighbourNode.node_id,
+                                                distance_in_meters: distanceInMetersNumber,
+                                                distance_label: distanceLabelForModal,
+                                                first_seen_at: neighbourNode.neighbours_first_seen_at,
+                                                updated_at: neighbourNode.neighbours_updated_at,
+                                                quality: neighbourQuality,
+                                                direction: "heard_us",
+                                        });
+
+                                        const terrainImageUrl = getTerrainProfileImage(neighbourNode, node);
+
+                                        const snrLabel =
+                                                neighbourQuality.snrLabel ?? "N/D";
+                                        const rssiLabel =
+                                                neighbourQuality.rssiLabel ?? "N/D";
 
                                         let tooltip = `<b>[${escapeString(neighbourNode.short_name)}] ${escapeString(neighbourNode.long_name)}</b> heard <b>[${escapeString(node.short_name)}] ${escapeString(node.long_name)}</b>`;
-                                        tooltip += `<br/>SNR: ${neighbour.snr}dB`;
+                                        tooltip += `<br/>SNR (trasmissione): ${escapeString(snrLabel)}`;
+                                        tooltip += `<br/>RSSI (trasmissione): ${escapeString(rssiLabel)}`;
                                         tooltip += `<br/>Distance: ${distance}`;
                                         tooltip += `<br/><br/>ID: ${neighbourNode.node_id} heard ${node.node_id}`;
                                         tooltip += `<br/>ID esadecimale: ${neighbourNode.node_id_hex} heard ${node.node_id_hex}`;
@@ -5080,6 +5534,10 @@
                                                 tooltip += `<br/>Aggiornamento vicini: ${escapeString(neighbourUpdatedLabel)}`;
                                         }
 
+                                        if (neighbourQuality.isMqtt) {
+                                                tooltip += `<br/>Qualità: Pacchetto MQTT`;
+                                        }
+
                                         tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;
                                         tooltip += `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
 
@@ -5093,9 +5551,21 @@
 						.on("click", function (event) {
 							// close tooltip on click to prevent tooltip and popup showing at same time
 							event.target.closeTooltip();
-						});
-				}
-			}
+                                                });
+                                }
+
+                                neighboursForModal.sort((a, b) => {
+                                        const distanceA = Number.isFinite(a.distance_in_meters)
+                                                ? a.distance_in_meters
+                                                : Number.POSITIVE_INFINITY;
+                                        const distanceB = Number.isFinite(b.distance_in_meters)
+                                                ? b.distance_in_meters
+                                                : Number.POSITIVE_INFINITY;
+                                        return distanceA - distanceB;
+                                });
+
+                                window._onShowNodeNeighboursHeardUsClick(node, neighboursForModal);
+                        }
 
                         function clearMap() {
                                 closeAllPopups();
@@ -5262,6 +5732,13 @@
                                                 traceroute.total_distance_label = totalDistanceLabel;
                                         }
 
+                                        const quality = calculateTracerouteQualityMetrics(traceroute);
+                                        traceroute.is_mqtt = quality.isMqtt;
+                                        traceroute.snr_towards_label = quality.snrTowardsLabel ?? null;
+                                        traceroute.snr_back_label = quality.snrBackLabel ?? null;
+                                        traceroute.snr_towards_values = quality.snrTowardsValues;
+                                        traceroute.snr_back_values = quality.snrBackValues;
+
                                         const tooltipRoute = routeNodeInfos
                                                 .map((info) => {
                                                         if (info.node) {
@@ -5301,6 +5778,13 @@
                                                 tooltip += `<br/>Distanza totale: ${escapeString(traceroute.total_distance_label)}`;
                                         }
 
+                                        const snrTowardsLabel =
+                                                quality.snrTowardsLabel ?? "N/D";
+                                        const snrBackLabel =
+                                                quality.snrBackLabel ?? "N/D";
+                                        tooltip += `<br/>SNR andata: ${escapeString(snrTowardsLabel)}`;
+                                        tooltip += `<br/>SNR ritorno: ${escapeString(snrBackLabel)}`;
+
                                         if (traceroute.channel_id) {
                                                 tooltip += `<br/>Canale MQTT: ${escapeString(traceroute.channel_id)}`;
                                         }
@@ -5315,6 +5799,10 @@
                                                         ? `[${escapeString(gatewayNode.short_name)}] ${escapeString(gatewayNode.long_name)}`
                                                         : `Nodo ${formatNodeIdAsHex(traceroute.gateway_id)}`;
                                                 tooltip += `<br/>Instradato su MQTT da: ${gatewayLabel}`;
+                                        }
+
+                                        if (quality.isMqtt) {
+                                                tooltip += `<br/>Qualità: Pacchetto MQTT`;
                                         }
 
                                         const segments = [];
@@ -5343,9 +5831,13 @@
                                                 continue;
                                         }
 
+                                        const tracerouteLineColour = quality.isMqtt
+                                                ? mqttLinkColour
+                                                : "#ef4444";
+
                                         for (const latLngs of segments) {
                                                 const line = L.polyline(latLngs, {
-                                                        color: "#ef4444",
+                                                        color: tracerouteLineColour,
                                                         opacity: 0.85,
                                                         weight: 3,
                                                 })
@@ -5374,7 +5866,17 @@
 
                         function onTraceroutesUpdated(updatedTraceroutes) {
                                 traceroutes = Array.isArray(updatedTraceroutes)
-                                        ? updatedTraceroutes
+                                        ? updatedTraceroutes.map((traceroute) => {
+                                                const quality = calculateTracerouteQualityMetrics(traceroute);
+                                                return {
+                                                        ...traceroute,
+                                                        is_mqtt: quality.isMqtt,
+                                                        snr_towards_label: quality.snrTowardsLabel ?? null,
+                                                        snr_back_label: quality.snrBackLabel ?? null,
+                                                        snr_towards_values: quality.snrTowardsValues,
+                                                        snr_back_values: quality.snrBackValues,
+                                                };
+                                        })
                                         : [];
 
                                 renderTraceroutes();
@@ -5433,15 +5935,17 @@
 				// add nodes
 				for (const node of updatedNodes) {
 					// skip nodes older than configured node max age
-					if (configNodesMaxAgeInSeconds) {
-						const lastUpdatedAgeInMillis = now.diff(moment(node.updated_at));
-						if (lastUpdatedAgeInMillis > configNodesMaxAgeInSeconds * 1000) {
-							continue;
-						}
-					}
+                                        if (configNodesMaxAgeInSeconds) {
+                                                const lastUpdatedAgeInMillis = now.diff(moment(node.updated_at));
+                                                if (lastUpdatedAgeInMillis > configNodesMaxAgeInSeconds * 1000) {
+                                                        continue;
+                                                }
+                                        }
 
-					// add to cache
-					nodes.push(node);
+                                        enhanceNodeWithNeighbourQuality(node);
+
+                                        // add to cache
+                                        nodes.push(node);
 
 					// skip nodes without position
 					if (!node.latitude || !node.longitude) {
@@ -5565,10 +6069,13 @@
                                         // add node neighbours
                                         const neighbours = node.neighbours ?? [];
                                         for (const neighbour of neighbours) {
-						// fixme: skipping zero snr? saw some crazy long neighbours with zero snr...
-						if (neighbour.snr === 0) {
-							continue;
-						}
+                                                const neighbourQuality = getNeighbourQualityMetadata(neighbour);
+                                                if (
+                                                        neighbourQuality.snr == null &&
+                                                        neighbourQuality.rssi == null
+                                                ) {
+                                                        continue;
+                                                }
 
 						const neighbourNode = findNodeById(neighbour.node_id);
 						if (!neighbourNode) {
@@ -5602,14 +6109,19 @@
 							}
 
 							// add neighbour line to map
-							const line = L.polyline(
-								[currentNode.getLatLng(), neighbourNodeMarker.getLatLng()],
-								{
-									color: "#2563eb",
-									opacity: 0.75,
-									offset: polylineOffset,
-								}
-							).addTo(neighboursLayerGroup);
+                                                        const lineColour = getNeighbourLinkColour(
+                                                                neighbour,
+                                                                neighbourQuality,
+                                                        );
+
+                                                        const line = L.polyline(
+                                                                [currentNode.getLatLng(), neighbourNodeMarker.getLatLng()],
+                                                                {
+                                                                        color: lineColour,
+                                                                        opacity: 0.75,
+                                                                        offset: polylineOffset,
+                                                                }
+                                                        ).addTo(neighboursLayerGroup);
 
 							// default to showing distance in meters
 							var distance = `${distanceInMeters} meters`;
@@ -5624,8 +6136,14 @@
 
 							const terrainImageUrl = getTerrainProfileImage(node, neighbourNode);
 
+                                                        const snrLabel =
+                                                                neighbourQuality.snrLabel ?? "N/D";
+                                                        const rssiLabel =
+                                                                neighbourQuality.rssiLabel ?? "N/D";
+
                                                         let tooltip = `<b>[${escapeString(node.short_name)}] ${escapeString(node.long_name)}</b> heard <b>[${escapeString(neighbourNode.short_name)}] ${escapeString(neighbourNode.long_name)}</b>`;
-                                                        tooltip += `<br/>SNR: ${neighbour.snr}dB`;
+                                                        tooltip += `<br/>SNR (ricezione): ${escapeString(snrLabel)}`;
+                                                        tooltip += `<br/>RSSI (ricezione): ${escapeString(rssiLabel)}`;
                                                         tooltip += `<br/>Distance: ${distance}`;
                                                         tooltip += `<br/><br/>ID: ${node.node_id} heard ${neighbourNode.node_id}`;
                                                         tooltip += `<br/>ID esadecimale: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`;
@@ -5644,6 +6162,10 @@
                                                         );
                                                         if (nodeUpdatedLabel) {
                                                                 tooltip += `<br/>Aggiornamento: ${nodeUpdatedLabel}`;
+                                                        }
+
+                                                        if (neighbourQuality.isMqtt) {
+                                                                tooltip += `<br/>Qualità: Pacchetto MQTT`;
                                                         }
 
                                                         tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;

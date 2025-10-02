@@ -1,6 +1,7 @@
 import {
 	type Data,
 	type MeshPacket,
+	type Neighbor,
 	type NeighborInfo,
 	NeighborInfoSchema,
 } from "@buf/meshtastic_protobufs.bufbuild_es/meshtastic/mesh_pb.js";
@@ -47,6 +48,23 @@ export async function handleNeighbourInfo(
 			},
 		});
 
+		const mapNeighbour = (neighbour: Neighbor) => {
+			const neighbourWithRssi = neighbour as Neighbor & {
+				rssi?: number | null;
+			};
+
+			const neighbourRssi =
+				typeof neighbourWithRssi.rssi === "number"
+					? neighbourWithRssi.rssi
+					: null;
+
+			return {
+				node_id: neighbour.nodeId,
+				snr: neighbour.snr,
+				rssi: neighbourRssi,
+			};
+		};
+
 		if (existingNode) {
 			await prisma.node.update({
 				where: {
@@ -58,12 +76,7 @@ export async function handleNeighbourInfo(
 					neighbours_updated_at: now,
 					neighbour_broadcast_interval_secs:
 						neighbourInfo.nodeBroadcastIntervalSecs,
-					neighbours: neighbourInfo.neighbors.map((neighbour) => {
-						return {
-							node_id: neighbour.nodeId,
-							snr: neighbour.snr,
-						};
-					}),
+					neighbours: neighbourInfo.neighbors.map(mapNeighbour),
 				},
 			});
 		}
@@ -74,12 +87,7 @@ export async function handleNeighbourInfo(
 					node_id: packet.from,
 					node_broadcast_interval_secs:
 						neighbourInfo.nodeBroadcastIntervalSecs,
-					neighbours: neighbourInfo.neighbors.map((neighbour) => {
-						return {
-							node_id: neighbour.nodeId,
-							snr: neighbour.snr,
-						};
-					}),
+					neighbours: neighbourInfo.neighbors.map(mapNeighbour),
 				},
 			});
 		}
