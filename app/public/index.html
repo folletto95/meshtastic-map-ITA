@@ -3124,52 +3124,6 @@
                                 return `${momentInstance.fromNow()} (${momentInstance.format("DD/MM/YYYY HH:mm")})`;
                         }
 
-                        function buildPacketSeenTooltipSection({
-                                firstSeenAt,
-                                lastSeenAt,
-                                packetTypeLabel,
-                                sourceName,
-                                sourceDetail = "",
-                                momentLib = moment,
-                                includeLeadingBreak = true,
-                        } = {}) {
-                                const firstSeenLabel = formatRelativeAndExactTimestampLabel(
-                                        firstSeenAt,
-                                        momentLib,
-                                );
-                                const lastSeenLabel = formatRelativeAndExactTimestampLabel(
-                                        lastSeenAt,
-                                        momentLib,
-                                );
-
-                                if (!firstSeenLabel && !lastSeenLabel) {
-                                        return "";
-                                }
-
-                                const safePacketTypeLabel = escapeString(
-                                        String(packetTypeLabel ?? "Pacchetti"),
-                                );
-                                const safeSourceName = sourceName
-                                        ? escapeString(String(sourceName))
-                                        : escapeString("Nodo sconosciuto");
-                                const safeSourceDetail = sourceDetail
-                                        ? ` ${escapeString(String(sourceDetail))}`
-                                        : "";
-
-                                let tooltipSection = includeLeadingBreak ? "<br/><br/>" : "";
-                                tooltipSection += `${safePacketTypeLabel} da ${safeSourceName}${safeSourceDetail}`;
-
-                                if (firstSeenLabel) {
-                                        tooltipSection += `<br/>- Primo pacchetto ricevuto: ${escapeString(firstSeenLabel)}`;
-                                }
-
-                                if (lastSeenLabel) {
-                                        tooltipSection += `<br/>- Ultimo pacchetto ricevuto: ${escapeString(lastSeenLabel)}`;
-                                }
-
-                                return tooltipSection;
-                        }
-
                         function hasNeighbourInfoExpired(
                                 neighboursUpdatedAt,
                                 maxAgeInSeconds,
@@ -4942,13 +4896,21 @@
                                         tooltip += `<br/><br/>ID: ${node.node_id} heard ${neighbourNode.node_id}`;
                                         tooltip += `<br/>ID esadecimale: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`;
 
-                                        tooltip += buildPacketSeenTooltipSection({
-                                                firstSeenAt: node.neighbours_first_seen_at,
-                                                lastSeenAt: node.neighbours_updated_at,
-                                                packetTypeLabel: "Pacchetti vicini ricevuti",
-                                                sourceName: getNodeDisplayLabel(node, node.node_id),
-                                                momentLib: moment,
-                                        });
+                                        const nodeNeighboursFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                                node.neighbours_first_seen_at,
+                                                moment,
+                                        );
+                                        if (nodeNeighboursFirstSeenLabel) {
+                                                tooltip += `<br/>Prima info vicini: ${escapeString(nodeNeighboursFirstSeenLabel)}`;
+                                        }
+
+                                        const nodeNeighboursUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                                node.neighbours_updated_at,
+                                                moment,
+                                        );
+                                        if (nodeNeighboursUpdatedLabel) {
+                                                tooltip += `<br/>Aggiornamento vicini: ${escapeString(nodeNeighboursUpdatedLabel)}`;
+                                        }
 
                                         tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;
                                         tooltip += `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
@@ -5102,16 +5064,21 @@
                                         tooltip += `<br/><br/>ID: ${neighbourNode.node_id} heard ${node.node_id}`;
                                         tooltip += `<br/>ID esadecimale: ${neighbourNode.node_id_hex} heard ${node.node_id_hex}`;
 
-                                        tooltip += buildPacketSeenTooltipSection({
-                                                firstSeenAt: neighbourNode.neighbours_first_seen_at,
-                                                lastSeenAt: neighbourNode.neighbours_updated_at,
-                                                packetTypeLabel: "Pacchetti vicini ricevuti",
-                                                sourceName: getNodeDisplayLabel(
-                                                        neighbourNode,
-                                                        neighbourNode.node_id,
-                                                ),
-                                                momentLib: moment,
-                                        });
+                                        const neighbourFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                                neighbourNode.neighbours_first_seen_at,
+                                                moment,
+                                        );
+                                        if (neighbourFirstSeenLabel) {
+                                                tooltip += `<br/>Prima info vicini: ${escapeString(neighbourFirstSeenLabel)}`;
+                                        }
+
+                                        const neighbourUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                                neighbourNode.neighbours_updated_at,
+                                                moment,
+                                        );
+                                        if (neighbourUpdatedLabel) {
+                                                tooltip += `<br/>Aggiornamento vicini: ${escapeString(neighbourUpdatedLabel)}`;
+                                        }
 
                                         tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;
                                         tooltip += `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
@@ -5256,27 +5223,6 @@
                                 }
                         }
 
-                        function getNodeDisplayLabel(node, fallbackNodeId) {
-                                if (node?.long_name && node?.short_name) {
-                                        return `[${node.short_name}] ${node.long_name}`;
-                                }
-
-                                if (node?.long_name) {
-                                        return node.long_name;
-                                }
-
-                                if (node?.short_name) {
-                                        return node.short_name;
-                                }
-
-                                const nodeIdToUse = node?.node_id ?? fallbackNodeId;
-                                if (nodeIdToUse != null) {
-                                        return `Nodo ${formatNodeIdAsHex(nodeIdToUse)}`;
-                                }
-
-                                return "Nodo sconosciuto";
-                        }
-
                         function renderTraceroutes() {
                                 traceroutesLayerGroup.clearLayers();
 
@@ -5348,56 +5294,6 @@
                                         );
                                         if (tracerouteUpdatedLabel) {
                                                 tooltip += `<br/>Aggiornamento traceroute: ${escapeString(tracerouteUpdatedLabel)}`;
-                                        }
-
-                                        if (traceroute.from != null) {
-                                                const tracerouteInitiatorNode = findNodeById(traceroute.from);
-                                                const initiatorDetail =
-                                                        traceroute.to != null &&
-                                                        traceroute.to === traceroute.from
-                                                                ? "(nodo che ha avviato e risposto al traceroute)"
-                                                                : "(nodo che ha avviato il traceroute)";
-                                                const initiatorSection = buildPacketSeenTooltipSection({
-                                                        firstSeenAt:
-                                                                tracerouteInitiatorNode?.traceroutes_first_seen_at,
-                                                        lastSeenAt:
-                                                                tracerouteInitiatorNode?.traceroutes_updated_at,
-                                                        packetTypeLabel: "Pacchetti traceroute ricevuti",
-                                                        sourceName: getNodeDisplayLabel(
-                                                                tracerouteInitiatorNode,
-                                                                traceroute.from,
-                                                        ),
-                                                        sourceDetail: initiatorDetail,
-                                                        momentLib: moment,
-                                                });
-
-                                                if (initiatorSection) {
-                                                        tooltip += initiatorSection;
-                                                }
-                                        }
-
-                                        if (
-                                                traceroute.to != null &&
-                                                traceroute.to !== traceroute.from
-                                        ) {
-                                                const tracerouteDestinationNode = findNodeById(traceroute.to);
-                                                const destinationSection = buildPacketSeenTooltipSection({
-                                                        firstSeenAt:
-                                                                tracerouteDestinationNode?.traceroutes_first_seen_at,
-                                                        lastSeenAt:
-                                                                tracerouteDestinationNode?.traceroutes_updated_at,
-                                                        packetTypeLabel: "Pacchetti traceroute ricevuti",
-                                                        sourceName: getNodeDisplayLabel(
-                                                                tracerouteDestinationNode,
-                                                                traceroute.to,
-                                                        ),
-                                                        sourceDetail: "(nodo destinazione del traceroute)",
-                                                        momentLib: moment,
-                                                });
-
-                                                if (destinationSection) {
-                                                        tooltip += destinationSection;
-                                                }
                                         }
                                         tooltip += `<br/><br/>${tooltipRoute}`;
                                         tooltip += `<br/>Salti: ${hopCount}`;
