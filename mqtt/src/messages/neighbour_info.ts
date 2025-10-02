@@ -36,22 +36,37 @@ export async function handleNeighbourInfo(
 			});
 		}
 
-		await prisma.node.updateMany({
+		const now = new Date();
+
+		const existingNode = await prisma.node.findUnique({
 			where: {
 				node_id: packet.from,
 			},
-			data: {
-				neighbours_updated_at: new Date(),
-				neighbour_broadcast_interval_secs:
-					neighbourInfo.nodeBroadcastIntervalSecs,
-				neighbours: neighbourInfo.neighbors.map((neighbour) => {
-					return {
-						node_id: neighbour.nodeId,
-						snr: neighbour.snr,
-					};
-				}),
+			select: {
+				neighbours_first_seen_at: true,
 			},
 		});
+
+		if (existingNode) {
+			await prisma.node.update({
+				where: {
+					node_id: packet.from,
+				},
+				data: {
+					neighbours_first_seen_at:
+						existingNode.neighbours_first_seen_at ?? now,
+					neighbours_updated_at: now,
+					neighbour_broadcast_interval_secs:
+						neighbourInfo.nodeBroadcastIntervalSecs,
+					neighbours: neighbourInfo.neighbors.map((neighbour) => {
+						return {
+							node_id: neighbour.nodeId,
+							snr: neighbour.snr,
+						};
+					}),
+				},
+			});
+		}
 
 		if (COLLECT_NEIGHBOUR_INFO) {
 			await prisma.neighbourInfo.create({
