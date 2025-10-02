@@ -4901,7 +4901,7 @@
                                                 moment,
                                         );
                                         if (nodeNeighboursFirstSeenLabel) {
-                                                tooltip += `<br/>Prima info: ${nodeNeighboursFirstSeenLabel}`;
+                                                tooltip += `<br/>Prima info vicini: ${escapeString(nodeNeighboursFirstSeenLabel)}`;
                                         }
 
                                         const nodeNeighboursUpdatedLabel = formatRelativeAndExactTimestampLabel(
@@ -4909,7 +4909,7 @@
                                                 moment,
                                         );
                                         if (nodeNeighboursUpdatedLabel) {
-                                                tooltip += `<br/>Aggiornamento: ${nodeNeighboursUpdatedLabel}`;
+                                                tooltip += `<br/>Aggiornamento vicini: ${escapeString(nodeNeighboursUpdatedLabel)}`;
                                         }
 
                                         tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;
@@ -5069,7 +5069,7 @@
                                                 moment,
                                         );
                                         if (neighbourFirstSeenLabel) {
-                                                tooltip += `<br/>Prima info: ${neighbourFirstSeenLabel}`;
+                                                tooltip += `<br/>Prima info vicini: ${escapeString(neighbourFirstSeenLabel)}`;
                                         }
 
                                         const neighbourUpdatedLabel = formatRelativeAndExactTimestampLabel(
@@ -5077,7 +5077,7 @@
                                                 moment,
                                         );
                                         if (neighbourUpdatedLabel) {
-                                                tooltip += `<br/>Aggiornamento: ${neighbourUpdatedLabel}`;
+                                                tooltip += `<br/>Aggiornamento vicini: ${escapeString(neighbourUpdatedLabel)}`;
                                         }
 
                                         tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;
@@ -5278,6 +5278,22 @@
                                         const tracerouteAgeLabel = getTracerouteAgeLabel(traceroute, moment);
                                         if (tracerouteAgeLabel) {
                                                 tooltip += `<br/>Età: ${escapeString(tracerouteAgeLabel)}`;
+                                        }
+
+                                        const tracerouteFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                                traceroute.created_at,
+                                                moment,
+                                        );
+                                        if (tracerouteFirstSeenLabel) {
+                                                tooltip += `<br/>Prima info traceroute: ${escapeString(tracerouteFirstSeenLabel)}`;
+                                        }
+
+                                        const tracerouteUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                                traceroute.updated_at,
+                                                moment,
+                                        );
+                                        if (tracerouteUpdatedLabel) {
+                                                tooltip += `<br/>Aggiornamento traceroute: ${escapeString(tracerouteUpdatedLabel)}`;
                                         }
                                         tooltip += `<br/><br/>${tooltipRoute}`;
                                         tooltip += `<br/>Salti: ${hopCount}`;
