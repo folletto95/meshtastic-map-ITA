@@ -3180,16 +3180,52 @@
                                         return null;
                                 }
 
-                                const tracerouteAge = traceroute.age_in_seconds;
-                                if (
-                                        typeof tracerouteAge === "number" &&
+                                const momentToUse = momentLib ?? moment;
+                                const rawTracerouteAge = traceroute.age_in_seconds;
+                                const tracerouteAge =
+                                        typeof rawTracerouteAge === "number"
+                                                ? rawTracerouteAge
+                                                : Number(rawTracerouteAge);
+                                const hasTracerouteAge =
+                                        rawTracerouteAge != null &&
+                                        rawTracerouteAge !== "" &&
                                         Number.isFinite(tracerouteAge) &&
-                                        tracerouteAge >= 0
-                                ) {
+                                        tracerouteAge >= 0;
+                                if (hasTracerouteAge) {
+                                        const ageRetrievedAtMs = traceroute.age_in_seconds_retrieved_at_ms;
+                                        if (
+                                                typeof ageRetrievedAtMs === "number" &&
+                                                Number.isFinite(ageRetrievedAtMs)
+                                        ) {
+                                                const additionalMillis = Date.now() - ageRetrievedAtMs;
+                                                if (
+                                                        Number.isFinite(additionalMillis) &&
+                                                        additionalMillis >= 0
+                                                ) {
+                                                        return tracerouteAge + additionalMillis / 1000;
+                                                }
+                                        }
+
+                                        const ageRetrievedAt = traceroute.age_in_seconds_retrieved_at;
+                                        if (ageRetrievedAt != null) {
+                                                const ageRetrievedAtMoment = momentToUse(ageRetrievedAt);
+                                                if (ageRetrievedAtMoment?.isValid?.()) {
+                                                        const additionalSeconds = momentToUse().diff(
+                                                                ageRetrievedAtMoment,
+                                                                "seconds",
+                                                        );
+                                                        if (
+                                                                Number.isFinite(additionalSeconds) &&
+                                                                additionalSeconds >= 0
+                                                        ) {
+                                                                return tracerouteAge + additionalSeconds;
+                                                        }
+                                                }
+                                        }
+
                                         return tracerouteAge;
                                 }
 
-                                const momentToUse = momentLib ?? moment;
                                 const updatedAt = traceroute?.updated_at ?? traceroute?.created_at;
                                 if (!updatedAt) {
                                         return null;
@@ -3723,8 +3759,10 @@
 								params: {
 									count: 5,
 								},
-							})
+                                                        })
                                                         .then((response) => {
+                                                                const ageRetrievedAtMs = Date.now();
+                                                                const ageRetrievedAt = new Date(ageRetrievedAtMs).toISOString();
                                                                 const traceroutes = Array.isArray(response.data.traceroutes)
                                                                         ? response.data.traceroutes
                                                                         : [];
@@ -3737,6 +3775,8 @@
 
                                                                         return {
                                                                                 ...traceroute,
+                                                                                age_in_seconds_retrieved_at: ageRetrievedAt,
+                                                                                age_in_seconds_retrieved_at_ms: ageRetrievedAtMs,
                                                                                 total_distance_meters: totalDistanceInMeters,
                                                                                 total_distance_label: totalDistanceLabel,
                                                                                 snr_towards_label:
@@ -5805,109 +5845,115 @@
 
                                         const hopCount = Math.max(pathNodeIds.length - 1, 0);
 
-                                        let tooltip = `<b>Traceroute #${traceroute.id}</b>`;
-                                        const tracerouteAgeLabel = getTracerouteAgeLabel(traceroute, moment);
-                                        if (tracerouteAgeLabel) {
-                                                tooltip += `<br/>Età: ${escapeString(tracerouteAgeLabel)}`;
-                                        }
+                                        const buildTracerouteTooltipContent = () => {
+                                                let tooltip = `<b>Traceroute #${traceroute.id}</b>`;
+                                                const tracerouteAgeLabel = getTracerouteAgeLabel(traceroute, moment);
+                                                if (tracerouteAgeLabel) {
+                                                        tooltip += `<br/>Età: ${escapeString(tracerouteAgeLabel)}`;
+                                                }
 
-                                        const tracerouteFirstSeenLabel = formatRelativeAndExactTimestampLabel(
-                                                traceroute.created_at,
-                                                moment,
-                                        );
-                                        if (tracerouteFirstSeenLabel) {
-                                                tooltip += `<br/>Prima info traceroute: ${escapeString(tracerouteFirstSeenLabel)}`;
-                                        }
+                                                const tracerouteFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                                        traceroute.created_at,
+                                                        moment,
+                                                );
+                                                if (tracerouteFirstSeenLabel) {
+                                                        tooltip += `<br/>Prima info traceroute: ${escapeString(tracerouteFirstSeenLabel)}`;
+                                                }
 
-                                        const tracerouteUpdatedLabel = formatRelativeAndExactTimestampLabel(
-                                                traceroute.updated_at,
-                                                moment,
-                                        );
-                                        if (tracerouteUpdatedLabel) {
-                                                tooltip += `<br/>Aggiornamento traceroute: ${escapeString(tracerouteUpdatedLabel)}`;
-                                        }
+                                                const tracerouteUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                                        traceroute.updated_at,
+                                                        moment,
+                                                );
+                                                if (tracerouteUpdatedLabel) {
+                                                        tooltip += `<br/>Aggiornamento traceroute: ${escapeString(tracerouteUpdatedLabel)}`;
+                                                }
 
-                                        if (traceroute.from != null) {
-                                                const tracerouteInitiatorNode = findNodeById(traceroute.from);
-                                                const initiatorDetail =
+                                                if (traceroute.from != null) {
+                                                        const tracerouteInitiatorNode = findNodeById(traceroute.from);
+                                                        const initiatorDetail =
+                                                                traceroute.to != null &&
+                                                                traceroute.to === traceroute.from
+                                                                        ? "(nodo che ha avviato e risposto al traceroute)"
+                                                                        : "(nodo che ha avviato il traceroute)";
+                                                        const initiatorSection = buildPacketSeenTooltipSection({
+                                                                firstSeenAt:
+                                                                        tracerouteInitiatorNode?.traceroutes_first_seen_at,
+                                                                lastSeenAt:
+                                                                        tracerouteInitiatorNode?.traceroutes_updated_at,
+                                                                packetTypeLabel: "Pacchetti traceroute ricevuti",
+                                                                sourceName: getNodeDisplayLabel(
+                                                                        tracerouteInitiatorNode,
+                                                                        traceroute.from,
+                                                                ),
+                                                                sourceDetail: initiatorDetail,
+                                                                momentLib: moment,
+                                                        });
+
+                                                        if (initiatorSection) {
+                                                                tooltip += initiatorSection;
+                                                        }
+                                                }
+
+                                                if (
                                                         traceroute.to != null &&
-                                                        traceroute.to === traceroute.from
-                                                                ? "(nodo che ha avviato e risposto al traceroute)"
-                                                                : "(nodo che ha avviato il traceroute)";
-                                                const initiatorSection = buildPacketSeenTooltipSection({
-                                                        firstSeenAt:
-                                                                tracerouteInitiatorNode?.traceroutes_first_seen_at,
-                                                        lastSeenAt:
-                                                                tracerouteInitiatorNode?.traceroutes_updated_at,
-                                                        packetTypeLabel: "Pacchetti traceroute ricevuti",
-                                                        sourceName: getNodeDisplayLabel(
-                                                                tracerouteInitiatorNode,
-                                                                traceroute.from,
-                                                        ),
-                                                        sourceDetail: initiatorDetail,
-                                                        momentLib: moment,
-                                                });
+                                                        traceroute.to !== traceroute.from
+                                                ) {
+                                                        const tracerouteDestinationNode = findNodeById(traceroute.to);
+                                                        const destinationSection = buildPacketSeenTooltipSection({
+                                                                firstSeenAt:
+                                                                        tracerouteDestinationNode?.traceroutes_first_seen_at,
+                                                                lastSeenAt:
+                                                                        tracerouteDestinationNode?.traceroutes_updated_at,
+                                                                packetTypeLabel: "Pacchetti traceroute ricevuti",
+                                                                sourceName: getNodeDisplayLabel(
+                                                                        tracerouteDestinationNode,
+                                                                        traceroute.to,
+                                                                ),
+                                                                sourceDetail: "(nodo destinazione del traceroute)",
+                                                                momentLib: moment,
+                                                        });
 
-                                                if (initiatorSection) {
-                                                        tooltip += initiatorSection;
+                                                        if (destinationSection) {
+                                                                tooltip += destinationSection;
+                                                        }
                                                 }
-                                        }
-
-                                        if (
-                                                traceroute.to != null &&
-                                                traceroute.to !== traceroute.from
-                                        ) {
-                                                const tracerouteDestinationNode = findNodeById(traceroute.to);
-                                                const destinationSection = buildPacketSeenTooltipSection({
-                                                        firstSeenAt:
-                                                                tracerouteDestinationNode?.traceroutes_first_seen_at,
-                                                        lastSeenAt:
-                                                                tracerouteDestinationNode?.traceroutes_updated_at,
-                                                        packetTypeLabel: "Pacchetti traceroute ricevuti",
-                                                        sourceName: getNodeDisplayLabel(
-                                                                tracerouteDestinationNode,
-                                                                traceroute.to,
-                                                        ),
-                                                        sourceDetail: "(nodo destinazione del traceroute)",
-                                                        momentLib: moment,
-                                                });
-
-                                                if (destinationSection) {
-                                                        tooltip += destinationSection;
+                                                tooltip += `<br/><br/>${tooltipRoute}`;
+                                                tooltip += `<br/>Salti: ${hopCount}`;
+                                                if (traceroute.total_distance_label) {
+                                                        tooltip += `<br/>Distanza totale: ${escapeString(traceroute.total_distance_label)}`;
                                                 }
-                                        }
-                                        tooltip += `<br/><br/>${tooltipRoute}`;
-                                        tooltip += `<br/>Salti: ${hopCount}`;
-                                        if (traceroute.total_distance_label) {
-                                                tooltip += `<br/>Distanza totale: ${escapeString(traceroute.total_distance_label)}`;
-                                        }
 
-                                        const snrTowardsLabel =
-                                                quality.snrTowardsLabel ?? "N/D";
-                                        const snrBackLabel =
-                                                quality.snrBackLabel ?? "N/D";
-                                        tooltip += `<br/>SNR andata: ${escapeString(snrTowardsLabel)}`;
-                                        tooltip += `<br/>SNR ritorno: ${escapeString(snrBackLabel)}`;
+                                                const snrTowardsLabel =
+                                                        quality.snrTowardsLabel ?? "N/D";
+                                                const snrBackLabel =
+                                                        quality.snrBackLabel ?? "N/D";
+                                                tooltip += `<br/>SNR andata: ${escapeString(snrTowardsLabel)}`;
+                                                tooltip += `<br/>SNR ritorno: ${escapeString(snrBackLabel)}`;
 
-                                        if (traceroute.channel_id) {
-                                                tooltip += `<br/>Canale MQTT: ${escapeString(traceroute.channel_id)}`;
-                                        }
+                                                if (traceroute.channel_id) {
+                                                        tooltip += `<br/>Canale MQTT: ${escapeString(traceroute.channel_id)}`;
+                                                }
 
-                                        if (traceroute.channel != null) {
-                                                tooltip += `<br/>Canale: ${escapeString(String(traceroute.channel))}`;
-                                        }
+                                                if (traceroute.channel != null) {
+                                                        tooltip += `<br/>Canale: ${escapeString(String(traceroute.channel))}`;
+                                                }
 
-                                        if (traceroute.gateway_id != null) {
-                                                const gatewayNode = findNodeById(traceroute.gateway_id);
-                                                const gatewayLabel = gatewayNode
-                                                        ? `[${escapeString(gatewayNode.short_name)}] ${escapeString(gatewayNode.long_name)}`
-                                                        : `Nodo ${formatNodeIdAsHex(traceroute.gateway_id)}`;
-                                                tooltip += `<br/>Instradato su MQTT da: ${gatewayLabel}`;
-                                        }
+                                                if (traceroute.gateway_id != null) {
+                                                        const gatewayNode = findNodeById(traceroute.gateway_id);
+                                                        const gatewayLabel = gatewayNode
+                                                                ? `[${escapeString(gatewayNode.short_name)}] ${escapeString(gatewayNode.long_name)}`
+                                                                : `Nodo ${formatNodeIdAsHex(traceroute.gateway_id)}`;
+                                                        tooltip += `<br/>Instradato su MQTT da: ${gatewayLabel}`;
+                                                }
 
-                                        if (quality.isMqtt) {
-                                                tooltip += `<br/>Qualità: Pacchetto MQTT`;
-                                        }
+                                                if (quality.isMqtt) {
+                                                        tooltip += `<br/>Qualità: Pacchetto MQTT`;
+                                                }
+
+                                                return tooltip;
+                                        };
+
+                                        const initialTooltipContent = buildTracerouteTooltipContent();
 
                                         const segments = [];
                                         let currentSegment = [];
@@ -5954,13 +6000,75 @@
                                                         })
                                                         .addTo(traceroutesLayerGroup);
 
+                                                let tracerouteTooltipRefreshIntervalId = null;
+
+                                                function stopTracerouteTooltipContentUpdates() {
+                                                        if (tracerouteTooltipRefreshIntervalId != null) {
+                                                                window.clearInterval(tracerouteTooltipRefreshIntervalId);
+                                                                tracerouteTooltipRefreshIntervalId = null;
+                                                        }
+                                                }
+
+                                                function refreshTracerouteTooltipContent() {
+                                                        const updatedContent = buildTracerouteTooltipContent();
+
+                                                        if (typeof line.setTooltipContent === "function") {
+                                                                line.setTooltipContent(updatedContent);
+                                                        }
+
+                                                        const tooltipInstance =
+                                                                typeof line.getTooltip === "function"
+                                                                        ? line.getTooltip()
+                                                                        : null;
+                                                        if (tooltipInstance?.setContent) {
+                                                                tooltipInstance.setContent(updatedContent);
+                                                        }
+
+                                                        if (typeof line.setPopupContent === "function") {
+                                                                line.setPopupContent(updatedContent);
+                                                        }
+
+                                                        const popupInstance =
+                                                                typeof line.getPopup === "function" ? line.getPopup() : null;
+                                                        if (popupInstance?.isOpen?.() && popupInstance?.setContent) {
+                                                                popupInstance.setContent(updatedContent);
+                                                        }
+
+                                                        return updatedContent;
+                                                }
+
+                                                function startTracerouteTooltipContentUpdates() {
+                                                        stopTracerouteTooltipContentUpdates();
+                                                        tracerouteTooltipRefreshIntervalId = window.setInterval(
+                                                                refreshTracerouteTooltipContent,
+                                                                30 * 1000,
+                                                        );
+                                                }
+
                                                 line
-                                                        .bindTooltip(tooltip, {
+                                                        .bindTooltip(initialTooltipContent, {
                                                                 sticky: true,
                                                                 opacity: 1,
                                                                 interactive: true,
                                                         })
-                                                        .bindPopup(tooltip)
+                                                        .bindPopup(initialTooltipContent)
+                                                        .on("tooltipopen", function () {
+                                                                refreshTracerouteTooltipContent();
+                                                                startTracerouteTooltipContentUpdates();
+                                                        })
+                                                        .on("tooltipclose", function () {
+                                                                stopTracerouteTooltipContentUpdates();
+                                                        })
+                                                        .on("popupopen", function () {
+                                                                refreshTracerouteTooltipContent();
+                                                                startTracerouteTooltipContentUpdates();
+                                                        })
+                                                        .on("popupclose", function () {
+                                                                stopTracerouteTooltipContentUpdates();
+                                                        })
+                                                        .on("remove", function () {
+                                                                stopTracerouteTooltipContentUpdates();
+                                                        })
                                                         .on("click", function (event) {
                                                                 event.target.closeTooltip();
                                                         });
@@ -5969,11 +6077,15 @@
                         }
 
                         function onTraceroutesUpdated(updatedTraceroutes) {
+                                const ageRetrievedAtMs = Date.now();
+                                const ageRetrievedAt = new Date(ageRetrievedAtMs).toISOString();
                                 traceroutes = Array.isArray(updatedTraceroutes)
                                         ? updatedTraceroutes.map((traceroute) => {
                                                 const quality = calculateTracerouteQualityMetrics(traceroute);
                                                 return {
                                                         ...traceroute,
+                                                        age_in_seconds_retrieved_at: ageRetrievedAt,
+                                                        age_in_seconds_retrieved_at_ms: ageRetrievedAtMs,
                                                         is_mqtt: quality.isMqtt,
                                                         snr_towards_label: quality.snrTowardsLabel ?? null,
                                                         snr_back_label: quality.snrBackLabel ?? null,
