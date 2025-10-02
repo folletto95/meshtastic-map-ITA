@@ -49,6 +49,7 @@ express.get("/api/v1/nodes/:nodeId/neighbours", async (req, res) => {
 			nodes_that_we_heard: node.neighbours.map((neighbour) => {
 				return {
 					...(neighbour as object),
+					first_seen_at: node.neighbours_first_seen_at,
 					updated_at: node.neighbours_updated_at,
 				};
 			}),
@@ -82,6 +83,7 @@ express.get("/api/v1/nodes/:nodeId/neighbours", async (req, res) => {
 				return {
 					node_id: Number(nodeThatHeardUs.node_id),
 					snr: neighbourInfo.snr,
+					first_seen_at: nodeThatHeardUs.neighbours_first_seen_at,
 					updated_at: nodeThatHeardUs.neighbours_updated_at,
 				};
 			}),

@@ -10,6 +10,39 @@ import { prisma } from "../db.js";
 import { COLLECT_TRACEROUTES, LOG_KNOWN_PACKET_TYPES } from "../settings.js";
 import { convertHexIdToNumericId, extractMetaData } from "../tools/decrypt.js";
 
+async function touchTracerouteTimestamps(
+	nodeId: MeshPacket["to"],
+	timestamp: Date,
+): Promise<void> {
+	if (nodeId == null) {
+		return;
+	}
+
+	const existingNode = await prisma.node.findUnique({
+		where: {
+			node_id: nodeId,
+		},
+		select: {
+			traceroutes_first_seen_at: true,
+		},
+	});
+
+	if (!existingNode) {
+		return;
+	}
+
+	await prisma.node.update({
+		where: {
+			node_id: nodeId,
+		},
+		data: {
+			traceroutes_first_seen_at:
+				existingNode.traceroutes_first_seen_at ?? timestamp,
+			traceroutes_updated_at: timestamp,
+		},
+	});
+}
+
 export async function handleTraceroute(
 	envelope: ServiceEnvelope,
 	packet: MeshPacket,
@@ -36,6 +69,8 @@ export async function handleTraceroute(
 			});
 		}
 
+		const now = new Date();
+
 		if (COLLECT_TRACEROUTES) {
 			await prisma.traceRoute.create({
 				data: {
@@ -55,6 +90,11 @@ export async function handleTraceroute(
 				},
 			});
 		}
+
+		await Promise.all([
+			touchTracerouteTimestamps(packet.to, now),
+			touchTracerouteTimestamps(packet.from, now),
+		]);
 	} catch (err) {
 		console.error(err);
 	}
