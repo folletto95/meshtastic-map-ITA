@@ -3056,6 +3056,8 @@
                                                         return tracerouteAge + additionalMillis / 1000;
                                                 }
                                         }
+
+
                                         const ageRetrievedAt = traceroute.age_in_seconds_retrieved_at;
                                         if (ageRetrievedAt != null) {
                                                 const ageRetrievedAtMoment = momentToUse(ageRetrievedAt);
@@ -3156,7 +3158,106 @@
                                         return null;
                                 }
 
-                                return `${momentInstance.fromNow()} (${momentInstance.format("DD/MM/YYYY HH:mm")})`;
+                                const relativeLabel = momentInstance.fromNow();
+                                const exactLabel = momentInstance.format("DD/MM/YYYY HH:mm:ss");
+                                const utcOffset = momentInstance.format("Z");
+
+                                return `${relativeLabel} (${exactLabel} UTC${utcOffset})`;
+                        }
+                  
+                        function buildPacketSeenTooltipSection({
+                                firstSeenAt,
+                                lastSeenAt,
+                                packetTypeLabel,
+                                sourceName,
+                                sourceDetail = "",
+                                momentLib = moment,
+                                includeLeadingBreak = true,
+                        } = {}) {
+                                const firstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                        firstSeenAt,
+                                        momentLib,
+                                );
+                                const lastSeenLabel = formatRelativeAndExactTimestampLabel(
+                                        lastSeenAt,
+                                        momentLib,
+                                );
+
+                                if (!firstSeenLabel && !lastSeenLabel) {
+                                        return "";
+                                }
+
+                                const safePacketTypeLabel = escapeString(
+                                        String(packetTypeLabel ?? "Pacchetti"),
+                                );
+                                const safeSourceName = sourceName
+                                        ? escapeString(String(sourceName))
+                                        : escapeString("Nodo sconosciuto");
+                                const safeSourceDetail = sourceDetail
+                                        ? ` ${escapeString(String(sourceDetail))}`
+                                        : "";
+
+                                let tooltipSection = includeLeadingBreak ? "<br/><br/>" : "";
+                                tooltipSection += `${safePacketTypeLabel} da ${safeSourceName}${safeSourceDetail}`;
+
+                                if (firstSeenLabel) {
+                                        tooltipSection += `<br/>- Primo pacchetto ricevuto: ${escapeString(firstSeenLabel)}`;
+                                }
+
+                                if (lastSeenLabel) {
+                                        tooltipSection += `<br/>- Ultimo pacchetto ricevuto: ${escapeString(lastSeenLabel)}`;
+                                }
+
+                                return tooltipSection;
+                        }
+
+                        function getFirstNonEmptyTimestampValue(...values) {
+                                for (const value of values) {
+                                        if (value == null) {
+                                                continue;
+                                        }
+
+                                        if (typeof value === "string" && value.trim() === "") {
+                                                continue;
+                                        }
+
+                                        return value;
+                                }
+
+                                return null;
+                        }
+
+                        function getNeighbourConnectionTimestamps({
+                                neighbour = null,
+                                sourceNode = null,
+                                targetNode = null,
+                        } = {}) {
+                                const firstSeenAt = getFirstNonEmptyTimestampValue(
+                                        neighbour?.first_seen_at,
+                                        neighbour?.firstSeenAt,
+                                        neighbour?.first_seen,
+                                        neighbour?.firstSeen,
+                                        neighbour?.first_heard_at,
+                                        neighbour?.firstHeardAt,
+                                        sourceNode?.neighbours_first_seen_at,
+                                        targetNode?.neighbours_first_seen_at,
+                                );
+
+                                const updatedAt = getFirstNonEmptyTimestampValue(
+                                        neighbour?.updated_at,
+                                        neighbour?.updatedAt,
+                                        neighbour?.last_seen_at,
+                                        neighbour?.lastSeenAt,
+                                        neighbour?.last_heard_at,
+                                        neighbour?.lastHeardAt,
+                                        sourceNode?.neighbours_updated_at,
+                                        targetNode?.neighbours_updated_at,
+                                );
+
+                                return {
+                                        firstSeenAt,
+                                        updatedAt,
+                                };
                         }
 
                         function hasNeighbourInfoExpired(
@@ -4922,12 +5023,46 @@
 					var distance = `${distanceInMeters} meters`;
 
 					// scale to distance in kms
-					if (distanceInMeters >= 1000) {
-						const distanceInKilometers = (distanceInMeters / 1000).toFixed(2);
-						distance = `${distanceInKilometers} kilometers`;
-					}
+                                        if (distanceInMeters >= 1000) {
+                                                const distanceInKilometers = (distanceInMeters / 1000).toFixed(2);
+                                                distance = `${distanceInKilometers} kilometers`;
+                                        }
+
+                                        const distanceInMetersNumber = parseFloat(distanceInMeters);
+                                        let distanceLabelForModal = `${Math.round(distanceInMetersNumber)} metri`;
+                                        if (distanceInMetersNumber >= 1000) {
+                                                distanceLabelForModal = `${(distanceInMetersNumber / 1000).toFixed(2)} km`;
+                                        }
+
+                                        const neighbourTimestamps = getNeighbourConnectionTimestamps({
+                                                neighbour: neighbour,
+                                                sourceNode: node,
+                                                targetNode: neighbourNode,
+                                        });
+
+                                        neighboursForModal.push({
+                                                node: neighbourNode,
+                                                node_id: neighbourNode.node_id,
+                                                distance_in_meters: distanceInMetersNumber,
+                                                distance_label: distanceLabelForModal,
+                                                first_seen_at: neighbourTimestamps.firstSeenAt,
+                                                updated_at: neighbourTimestamps.updatedAt,
+                                                quality: neighbourQuality,
+                                                direction: "we_heard",
+                                        });
+
+                                        const terrainImageUrl = getTerrainProfileImage(node, neighbourNode);
 
 					const terrainImageUrl = getTerrainProfileImage(node, neighbourNode);
+
+                                        const neighbourFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                                neighbourTimestamps.firstSeenAt,
+                                                moment,
+                                        );
+                                        const neighbourUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                                neighbourTimestamps.updatedAt,
+                                                moment,
+                                        );
 
                                         let tooltip = `<b>[${escapeString(node.short_name)}] ${escapeString(node.long_name)}</b> heard <b>[${escapeString(neighbourNode.short_name)}] ${escapeString(neighbourNode.long_name)}</b>`;
                                         tooltip += `<br/>SNR: ${neighbour.snr}dB`;
@@ -4935,13 +5070,21 @@
                                         tooltip += `<br/><br/>ID: ${node.node_id} heard ${neighbourNode.node_id}`;
                                         tooltip += `<br/>ID esadecimale: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`;
 
-                                        const nodeNeighboursFirstSeenLabel = formatRelativeAndExactTimestampLabel(
-                                                node.neighbours_first_seen_at,
-                                                moment,
-                                        );
-                                        if (nodeNeighboursFirstSeenLabel) {
-                                                tooltip += `<br/>Prima info vicini: ${escapeString(nodeNeighboursFirstSeenLabel)}`;
+                                        if (neighbourFirstSeenLabel) {
+                                                tooltip += `<br/>Creazione vicini: ${escapeString(neighbourFirstSeenLabel)}`;
                                         }
+
+                                        if (neighbourUpdatedLabel) {
+                                                tooltip += `<br/>Ultimo aggiornamento vicini: ${escapeString(neighbourUpdatedLabel)}`;
+                                        }
+
+                                        tooltip += buildPacketSeenTooltipSection({
+                                                firstSeenAt: neighbourTimestamps.firstSeenAt,
+                                                lastSeenAt: neighbourTimestamps.updatedAt,
+                                                packetTypeLabel: "Pacchetti vicini ricevuti",
+                                                sourceName: getNodeDisplayLabel(node, node.node_id),
+                                                momentLib: moment,
+                                        });
 
                                         const nodeNeighboursUpdatedLabel = formatRelativeAndExactTimestampLabel(
                                                 node.neighbours_updated_at,
@@ -4954,19 +5097,32 @@
                                         tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;
                                         tooltip += `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
 
-					line
-						.bindTooltip(tooltip, {
-							sticky: true,
-							opacity: 1,
-							interactive: true,
-						})
-						.bindPopup(tooltip)
-						.on("click", function (event) {
-							// close tooltip on click to prevent tooltip and popup showing at same time
-							event.target.closeTooltip();
-						});
-				}
-			}
+
+                                        line
+                                                .bindTooltip(tooltip, {
+                                                        sticky: true,
+                                                        opacity: 1,
+                                                        interactive: true,
+                                                })
+                                                .bindPopup(tooltip)
+                                                .on("click", function (event) {
+                                                        // close tooltip on click to prevent tooltip and popup showing at same time
+                                                        event.target.closeTooltip();
+                                                });
+                                }
+
+                                neighboursForModal.sort((a, b) => {
+                                        const distanceA = Number.isFinite(a.distance_in_meters)
+                                                ? a.distance_in_meters
+                                                : Number.POSITIVE_INFINITY;
+                                        const distanceB = Number.isFinite(b.distance_in_meters)
+                                                ? b.distance_in_meters
+                                                : Number.POSITIVE_INFINITY;
+                                        return distanceA - distanceB;
+                                });
+
+                                window._onShowNodeNeighboursWeHeardClick(node, neighboursForModal);
+                        }
 
 			function showNodeNeighboursThatHeardUs(id) {
 				cleanUpNodeNeighbours();
@@ -5090,12 +5246,46 @@
 					var distance = `${distanceInMeters} meters`;
 
 					// scale to distance in kms
-					if (distanceInMeters >= 1000) {
-						const distanceInKilometers = (distanceInMeters / 1000).toFixed(2);
-						distance = `${distanceInKilometers} kilometers`;
-					}
+                                        if (distanceInMeters >= 1000) {
+                                                const distanceInKilometers = (distanceInMeters / 1000).toFixed(2);
+                                                distance = `${distanceInKilometers} kilometers`;
+                                        }
+
+                                        const distanceInMetersNumber = parseFloat(distanceInMeters);
+                                        let distanceLabelForModal = `${Math.round(distanceInMetersNumber)} metri`;
+                                        if (distanceInMetersNumber >= 1000) {
+                                                distanceLabelForModal = `${(distanceInMetersNumber / 1000).toFixed(2)} km`;
+                                        }
+
+                                        const neighbourTimestamps = getNeighbourConnectionTimestamps({
+                                                neighbour: neighbour,
+                                                sourceNode: neighbourNode,
+                                                targetNode: node,
+                                        });
+
+                                        neighboursForModal.push({
+                                                node: neighbourNode,
+                                                node_id: neighbourNode.node_id,
+                                                distance_in_meters: distanceInMetersNumber,
+                                                distance_label: distanceLabelForModal,
+                                                first_seen_at: neighbourTimestamps.firstSeenAt,
+                                                updated_at: neighbourTimestamps.updatedAt,
+                                                quality: neighbourQuality,
+                                                direction: "heard_us",
+                                        });
+
+                                        const terrainImageUrl = getTerrainProfileImage(neighbourNode, node);
 
 					const terrainImageUrl = getTerrainProfileImage(neighbourNode, node);
+
+                                        const neighbourFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                                neighbourTimestamps.firstSeenAt,
+                                                moment,
+                                        );
+                                        const neighbourUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                                neighbourTimestamps.updatedAt,
+                                                moment,
+                                        );
 
                                         let tooltip = `<b>[${escapeString(neighbourNode.short_name)}] ${escapeString(neighbourNode.long_name)}</b> heard <b>[${escapeString(node.short_name)}] ${escapeString(node.long_name)}</b>`;
                                         tooltip += `<br/>SNR: ${neighbour.snr}dB`;
@@ -5103,13 +5293,24 @@
                                         tooltip += `<br/><br/>ID: ${neighbourNode.node_id} heard ${node.node_id}`;
                                         tooltip += `<br/>ID esadecimale: ${neighbourNode.node_id_hex} heard ${node.node_id_hex}`;
 
-                                        const neighbourFirstSeenLabel = formatRelativeAndExactTimestampLabel(
-                                                neighbourNode.neighbours_first_seen_at,
-                                                moment,
-                                        );
                                         if (neighbourFirstSeenLabel) {
-                                                tooltip += `<br/>Prima info vicini: ${escapeString(neighbourFirstSeenLabel)}`;
+                                                tooltip += `<br/>Creazione vicini: ${escapeString(neighbourFirstSeenLabel)}`;
                                         }
+
+                                        if (neighbourUpdatedLabel) {
+                                                tooltip += `<br/>Ultimo aggiornamento vicini: ${escapeString(neighbourUpdatedLabel)}`;
+                                        }
+
+                                        tooltip += buildPacketSeenTooltipSection({
+                                                firstSeenAt: neighbourTimestamps.firstSeenAt,
+                                                lastSeenAt: neighbourTimestamps.updatedAt,
+                                                packetTypeLabel: "Pacchetti vicini ricevuti",
+                                                sourceName: getNodeDisplayLabel(
+                                                        neighbourNode,
+                                                        neighbourNode.node_id,
+                                                ),
+                                                momentLib: moment,
+                                        });
 
                                         const neighbourUpdatedLabel = formatRelativeAndExactTimestampLabel(
                                                 neighbourNode.neighbours_updated_at,
@@ -5122,19 +5323,31 @@
                                         tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;
                                         tooltip += `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
 
-					line
-						.bindTooltip(tooltip, {
-							sticky: true,
-							opacity: 1,
-							interactive: true,
-						})
-						.bindPopup(tooltip)
-						.on("click", function (event) {
-							// close tooltip on click to prevent tooltip and popup showing at same time
-							event.target.closeTooltip();
-						});
-				}
-			}
+                                        line
+                                                .bindTooltip(tooltip, {
+                                                        sticky: true,
+                                                        opacity: 1,
+                                                        interactive: true,
+                                                })
+                                                .bindPopup(tooltip)
+                                                .on("click", function (event) {
+                                                        // close tooltip on click to prevent tooltip and popup showing at same time
+                                                        event.target.closeTooltip();
+                                                });
+                                }
+
+                                neighboursForModal.sort((a, b) => {
+                                        const distanceA = Number.isFinite(a.distance_in_meters)
+                                                ? a.distance_in_meters
+                                                : Number.POSITIVE_INFINITY;
+                                        const distanceB = Number.isFinite(b.distance_in_meters)
+                                                ? b.distance_in_meters
+                                                : Number.POSITIVE_INFINITY;
+                                        return distanceA - distanceB;
+                                });
+
+                                window._onShowNodeNeighboursHeardUsClick(node, neighboursForModal);
+                        }
 
                         function clearMap() {
                                 closeAllPopups();
@@ -5325,7 +5538,7 @@
                                                         moment,
                                                 );
                                                 if (tracerouteFirstSeenLabel) {
-                                                        tooltip += `<br/>Prima info traceroute: ${escapeString(tracerouteFirstSeenLabel)}`;
+                                                        tooltip += `<br/>Creazione traceroute: ${escapeString(tracerouteFirstSeenLabel)}`;
                                                 }
 
                                                 const tracerouteUpdatedLabel = formatRelativeAndExactTimestampLabel(
@@ -5333,7 +5546,7 @@
                                                         moment,
                                                 );
                                                 if (tracerouteUpdatedLabel) {
-                                                        tooltip += `<br/>Aggiornamento traceroute: ${escapeString(tracerouteUpdatedLabel)}`;
+                                                        tooltip += `<br/>Ultimo aggiornamento traceroute: ${escapeString(tracerouteUpdatedLabel)}`;
                                                 }
 
                                                 if (traceroute.from != null) {
@@ -5806,42 +6019,66 @@
 
 							const terrainImageUrl = getTerrainProfileImage(node, neighbourNode);
 
+                                                        const snrLabel =
+                                                                neighbourQuality.snrLabel ?? "N/D";
+                                                        const rssiLabel =
+                                                                neighbourQuality.rssiLabel ?? "N/D";
+
+                                                        const neighbourTimestamps = getNeighbourConnectionTimestamps({
+                                                                neighbour: neighbour,
+                                                                sourceNode: node,
+                                                                targetNode: neighbourNode,
+                                                        });
+
+                                                        const neighbourFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                                                neighbourTimestamps.firstSeenAt,
+                                                                moment,
+                                                        );
+                                                        const neighbourUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                                                neighbourTimestamps.updatedAt,
+                                                                moment,
+                                                        );
+
                                                         let tooltip = `<b>[${escapeString(node.short_name)}] ${escapeString(node.long_name)}</b> heard <b>[${escapeString(neighbourNode.short_name)}] ${escapeString(neighbourNode.long_name)}</b>`;
                                                         tooltip += `<br/>SNR: ${neighbour.snr}dB`;
                                                         tooltip += `<br/>Distance: ${distance}`;
                                                         tooltip += `<br/><br/>ID: ${node.node_id} heard ${neighbourNode.node_id}`;
                                                         tooltip += `<br/>ID esadecimale: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`;
 
-                                                        const nodeFirstSeenLabel = formatRelativeAndExactTimestampLabel(
-                                                                node.neighbours_first_seen_at,
-                                                                moment,
-                                                        );
-                                                        if (nodeFirstSeenLabel) {
-                                                                tooltip += `<br/>Prima info: ${nodeFirstSeenLabel}`;
+                                                        if (neighbourFirstSeenLabel) {
+                                                                tooltip += `<br/>Creazione vicini: ${escapeString(neighbourFirstSeenLabel)}`;
                                                         }
 
-                                                        const nodeUpdatedLabel = formatRelativeAndExactTimestampLabel(
-                                                                node.neighbours_updated_at,
-                                                                moment,
-                                                        );
-                                                        if (nodeUpdatedLabel) {
-                                                                tooltip += `<br/>Aggiornamento: ${nodeUpdatedLabel}`;
+                                                        if (neighbourUpdatedLabel) {
+                                                                tooltip += `<br/>Ultimo aggiornamento vicini: ${escapeString(neighbourUpdatedLabel)}`;
+                                                        }
+
+                                                        tooltip += buildPacketSeenTooltipSection({
+                                                                firstSeenAt: neighbourTimestamps.firstSeenAt,
+                                                                lastSeenAt: neighbourTimestamps.updatedAt,
+                                                                packetTypeLabel: "Pacchetti vicini ricevuti",
+                                                                sourceName: getNodeDisplayLabel(node, node.node_id),
+                                                                momentLib: moment,
+                                                        });
+
+                                                        if (neighbourQuality.isMqtt) {
+                                                                tooltip += `<br/>Qualità: Pacchetto MQTT`;
                                                         }
 
                                                         tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;
                                                         tooltip += `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
 
-							line
-								.bindTooltip(tooltip, {
-									sticky: true,
-									opacity: 1,
-									interactive: true,
-								})
-								.bindPopup(tooltip)
-								.on("click", function (event) {
-									// close tooltip on click to prevent tooltip and popup showing at same time
-									event.target.closeTooltip();
-								});
+                                                        line
+                                                                .bindTooltip(tooltip, {
+                                                                        sticky: true,
+                                                                        opacity: 1,
+                                                                        interactive: true,
+                                                                })
+                                                                .bindPopup(tooltip)
+                                                                .on("click", function (event) {
+                                                                        // close tooltip on click to prevent tooltip and popup showing at same time
+                                                                        event.target.closeTooltip();
+                                                                });
 						}
 					}
 				}
