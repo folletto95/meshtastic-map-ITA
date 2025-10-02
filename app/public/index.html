@@ -1747,6 +1747,24 @@
                                                                                                 Sono mostrati solo i 5 più recenti che rispettano l'età massima configurata.
                                                                                         </div>
                                                                                 </div>
+                                                                                <div
+                                                                                        class="px-4 py-2 text-xs text-gray-600 border-b border-gray-200 space-y-1"
+                                                                                        v-if="selectedNode?.traceroutes_first_seen_at || selectedNode?.traceroutes_updated_at">
+                                                                                        <div v-if="selectedNode?.traceroutes_first_seen_at">
+                                                                                                Prima info: {{
+                                                                                                        formatRelativeAndExactTimestampText(
+                                                                                                                selectedNode.traceroutes_first_seen_at,
+                                                                                                        )
+                                                                                                }}
+                                                                                        </div>
+                                                                                        <div v-if="selectedNode?.traceroutes_updated_at">
+                                                                                                Aggiornamento: {{
+                                                                                                        formatRelativeAndExactTimestampText(
+                                                                                                                selectedNode.traceroutes_updated_at,
+                                                                                                        )
+                                                                                                }}
+                                                                                        </div>
+                                                                                </div>
                                                                                 <div class="p-2 space-y-1 border-b border-gray-200">
                                                                                         <label class="block text-xs font-medium text-gray-700"
                                                                                                 >Età massima tracce</label
@@ -1787,11 +1805,34 @@
 																			|| '???' }}</span
 																		>
 																	</p>
-      <div class="text-sm text-gray-700">
-        <span>Età: {{ formatTracerouteAgeLabel(traceroute) }} - {{ getTracerouteHopCount(traceroute) }} salti</span>
-        <span v-if="traceroute.total_distance_label"> - Distanza totale: {{ traceroute.total_distance_label }}</span>
-        <span v-if="traceroute.channel_id"> on {{ traceroute.channel_id }}</span>
-      </div>
+                                                                                                                               <div class="text-sm text-gray-700">
+                                                                                                                                        <span>Età: {{
+                                                                                                                                                formatTracerouteAgeLabel(traceroute)
+                                                                                                                                        }} - {{ getTracerouteHopCount(traceroute) }} salti</span>
+                                                                                                                                        <span v-if="traceroute.total_distance_label">
+                                                                                                                                                - Distanza totale: {{ traceroute.total_distance_label }}</span>
+                                                                                                                                        <span v-if="traceroute.channel_id"> on {{ traceroute.channel_id }}</span>
+                                                                                                                               </div>
+                                                                                                                               <div
+                                                                                                                                       class="mt-1 text-xs text-gray-500 space-y-1"
+                                                                                                                                       v-if="traceroute.created_at || traceroute.updated_at">
+                                                                                                                                        <div v-if="traceroute.created_at">
+                                                                                                                                                Prima info:
+                                                                                                                                                {{
+                                                                                                                                                        formatRelativeAndExactTimestampText(
+                                                                                                                                                                traceroute.created_at,
+                                                                                                                                                        )
+                                                                                                                                                }}
+                                                                                                                                        </div>
+                                                                                                                                        <div v-if="traceroute.updated_at">
+                                                                                                                                                Aggiornamento:
+                                                                                                                                                {{
+                                                                                                                                                        formatRelativeAndExactTimestampText(
+                                                                                                                                                                traceroute.updated_at,
+                                                                                                                                                        )
+                                                                                                                                                }}
+                                                                                                                                        </div>
+                                                                                                                               </div>
 								</div>
 															</div>
 														</div>
@@ -1971,6 +2012,26 @@
                                                                                                   <span>Età: {{ formatTracerouteAgeLabel(selectedTraceRoute) }} - {{ getTracerouteHopCount(selectedTraceRoute) }} salti</span>
                                                                                                   <span v-if="selectedTraceRoute.total_distance_label"> - Distanza totale: {{ selectedTraceRoute.total_distance_label }}</span>
                                                                                                   <span v-if="selectedTraceRoute.channel_id"> on {{ selectedTraceRoute.channel_id }}</span>
+                                                                                                  <div
+                                                                                                          class="mt-1 text-xs text-gray-500 space-y-1"
+                                                                                                          v-if="selectedTraceRoute.created_at || selectedTraceRoute.updated_at">
+                                                                                                          <div v-if="selectedTraceRoute.created_at">
+                                                                                                                  Prima info:
+                                                                                                                  {{
+                                                                                                                          formatRelativeAndExactTimestampText(
+                                                                                                                                  selectedTraceRoute.created_at,
+                                                                                                                          )
+                                                                                                                  }}
+                                                                                                          </div>
+                                                                                                          <div v-if="selectedTraceRoute.updated_at">
+                                                                                                                  Aggiornamento:
+                                                                                                                  {{
+                                                                                                                          formatRelativeAndExactTimestampText(
+                                                                                                                                  selectedTraceRoute.updated_at,
+                                                                                                                          )
+                                                                                                                  }}
+                                                                                                          </div>
+                                                                                                  </div>
                                                                                           </h3>
 										</div>
 										<div class="my-auto ml-3 flex h-7 items-center">
@@ -2506,53 +2567,71 @@
 							class="mx-auto w-screen max-w-md p-4">
 							<div
 								class="flex h-full flex-col bg-white shadow-xl rounded-xl border">
-								<div class="p-2">
-									<div class="flex items-start justify-between">
-										<div>
+                                                                <div class="p-2">
+                                                                        <div class="flex items-start justify-between">
+                                                                                <div>
                                                                                         <h2 class="font-bold">
                                                                                                 Vicini di {{ selectedNodeToShowNeighbours.short_name }}
                                                                                         </h2>
-											<h3
-												v-if="selectedNodeToShowNeighboursType === 'we_heard'"
-												class="text-sm">
+                                                                                        <h3
+                                                                                                v-if="selectedNodeToShowNeighboursType === 'we_heard'"
+                                                                                                class="text-sm">
                                                                                                 Nodi ascoltati da {{
                                                                                                 selectedNodeToShowNeighbours.short_name }}
-											</h3>
-											<h3
-												v-if="selectedNodeToShowNeighboursType === 'heard_us'"
-												class="text-sm">
+                                                                                        </h3>
+                                                                                        <h3
+                                                                                                v-if="selectedNodeToShowNeighboursType === 'heard_us'"
+                                                                                                class="text-sm">
                                                                                                 Nodi che hanno ascoltato {{
                                                                                                 selectedNodeToShowNeighbours.short_name }}
-											</h3>
-										</div>
-										<div class="my-auto ml-3 flex h-7 items-center">
-											<a
-												href="javascript:void(0)"
-												class="rounded-full"
-												@click="dismissShowingNodeNeighbours">
-												<div
-													class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full">
-													<svg
-														class="w-6 h-6"
-														xmlns="http://www.w3.org/2000/svg"
-														viewBox="0 0 24 24"
-														stroke-width="1.5"
-														stroke="currentColor"
-														fill="none"
-														stroke-linecap="round"
-														stroke-linejoin="round">
-														<path
-															stroke="none"
-															d="M0 0h24v24H0z"
-															fill="none"></path>
-														<path d="M18 6l-12 12"></path>
-														<path d="M6 6l12 12"></path>
-													</svg>
-												</div>
-											</a>
-										</div>
-									</div>
-								</div>
+                                                                                        </h3>
+                                                                                </div>
+                                                                                <div class="my-auto ml-3 flex h-7 items-center">
+                                                                                        <a
+                                                                                                href="javascript:void(0)"
+                                                                                                class="rounded-full"
+                                                                                                @click="dismissShowingNodeNeighbours">
+                                                                                                <div
+                                                                                                        class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full">
+                                                                                                        <svg
+                                                                                                                class="w-6 h-6"
+                                                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                                                                viewBox="0 0 24 24"
+                                                                                                                stroke-width="1.5"
+                                                                                                                stroke="currentColor"
+                                                                                                                fill="none"
+                                                                                                                stroke-linecap="round"
+                                                                                                                stroke-linejoin="round">
+                                                                                                                <path
+                                                                                                                        stroke="none"
+                                                                                                                        d="M0 0h24v24H0z"
+                                                                                                                        fill="none"></path>
+                                                                                                                <path d="M18 6l-12 12"></path>
+                                                                                                                <path d="M6 6l12 12"></path>
+                                                                                                        </svg>
+                                                                                                </div>
+                                                                                        </a>
+                                                                                </div>
+                                                                        </div>
+                                                                        <div
+                                                                                class="mt-2 text-xs text-gray-600 space-y-1"
+                                                                                v-if="selectedNodeToShowNeighbours?.neighbours_first_seen_at || selectedNodeToShowNeighbours?.neighbours_updated_at">
+                                                                                <div v-if="selectedNodeToShowNeighbours?.neighbours_first_seen_at">
+                                                                                        Prima info: {{
+                                                                                                formatRelativeAndExactTimestampText(
+                                                                                                        selectedNodeToShowNeighbours.neighbours_first_seen_at,
+                                                                                                )
+                                                                                        }}
+                                                                                </div>
+                                                                                <div v-if="selectedNodeToShowNeighbours?.neighbours_updated_at">
+                                                                                        Aggiornamento: {{
+                                                                                                formatRelativeAndExactTimestampText(
+                                                                                                        selectedNodeToShowNeighbours.neighbours_updated_at,
+                                                                                                )
+                                                                                        }}
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
 							</div>
 						</div>
 					</div>
