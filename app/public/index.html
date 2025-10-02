@@ -3180,16 +3180,33 @@
                                         return null;
                                 }
 
+                                const momentToUse = momentLib ?? moment;
                                 const tracerouteAge = traceroute.age_in_seconds;
                                 if (
                                         typeof tracerouteAge === "number" &&
                                         Number.isFinite(tracerouteAge) &&
                                         tracerouteAge >= 0
                                 ) {
+                                        const ageRetrievedAt = traceroute.age_in_seconds_retrieved_at;
+                                        if (ageRetrievedAt != null) {
+                                                const ageRetrievedAtMoment = momentToUse(ageRetrievedAt);
+                                                if (ageRetrievedAtMoment?.isValid?.()) {
+                                                        const additionalSeconds = momentToUse().diff(
+                                                                ageRetrievedAtMoment,
+                                                                "seconds",
+                                                        );
+                                                        if (
+                                                                Number.isFinite(additionalSeconds) &&
+                                                                additionalSeconds >= 0
+                                                        ) {
+                                                                return tracerouteAge + additionalSeconds;
+                                                        }
+                                                }
+                                        }
+
                                         return tracerouteAge;
                                 }
 
-                                const momentToUse = momentLib ?? moment;
                                 const updatedAt = traceroute?.updated_at ?? traceroute?.created_at;
                                 if (!updatedAt) {
                                         return null;
@@ -3725,6 +3742,7 @@
 								},
 							})
                                                         .then((response) => {
+                                                                const ageRetrievedAt = new Date().toISOString();
                                                                 const traceroutes = Array.isArray(response.data.traceroutes)
                                                                         ? response.data.traceroutes
                                                                         : [];
@@ -3737,6 +3755,7 @@
 
                                                                         return {
                                                                                 ...traceroute,
+                                                                                age_in_seconds_retrieved_at: ageRetrievedAt,
                                                                                 total_distance_meters: totalDistanceInMeters,
                                                                                 total_distance_label: totalDistanceLabel,
                                                                                 snr_towards_label:
@@ -5969,11 +5988,13 @@
                         }
 
                         function onTraceroutesUpdated(updatedTraceroutes) {
+                                const ageRetrievedAt = new Date().toISOString();
                                 traceroutes = Array.isArray(updatedTraceroutes)
                                         ? updatedTraceroutes.map((traceroute) => {
                                                 const quality = calculateTracerouteQualityMetrics(traceroute);
                                                 return {
                                                         ...traceroute,
+                                                        age_in_seconds_retrieved_at: ageRetrievedAt,
                                                         is_mqtt: quality.isMqtt,
                                                         snr_towards_label: quality.snrTowardsLabel ?? null,
                                                         snr_back_label: quality.snrBackLabel ?? null,
