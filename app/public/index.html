@@ -1747,6 +1747,24 @@
                                                                                                 Sono mostrati solo i 5 più recenti che rispettano l'età massima configurata.
                                                                                         </div>
                                                                                 </div>
+                                                                                <div
+                                                                                        class="px-4 py-2 text-xs text-gray-600 border-b border-gray-200 space-y-1"
+                                                                                        v-if="selectedNode?.traceroutes_first_seen_at || selectedNode?.traceroutes_updated_at">
+                                                                                        <div v-if="selectedNode?.traceroutes_first_seen_at">
+                                                                                                Prima info: {{
+                                                                                                        formatRelativeAndExactTimestampText(
+                                                                                                                selectedNode.traceroutes_first_seen_at,
+                                                                                                        )
+                                                                                                }}
+                                                                                        </div>
+                                                                                        <div v-if="selectedNode?.traceroutes_updated_at">
+                                                                                                Aggiornamento: {{
+                                                                                                        formatRelativeAndExactTimestampText(
+                                                                                                                selectedNode.traceroutes_updated_at,
+                                                                                                        )
+                                                                                                }}
+                                                                                        </div>
+                                                                                </div>
                                                                                 <div class="p-2 space-y-1 border-b border-gray-200">
                                                                                         <label class="block text-xs font-medium text-gray-700"
                                                                                                 >Età massima tracce</label
@@ -1787,11 +1805,34 @@
 																			|| '???' }}</span
 																		>
 																	</p>
-      <div class="text-sm text-gray-700">
-        <span>Età: {{ formatTracerouteAgeLabel(traceroute) }} - {{ getTracerouteHopCount(traceroute) }} salti</span>
-        <span v-if="traceroute.total_distance_label"> - Distanza totale: {{ traceroute.total_distance_label }}</span>
-        <span v-if="traceroute.channel_id"> on {{ traceroute.channel_id }}</span>
-      </div>
+                                                                                                                               <div class="text-sm text-gray-700">
+                                                                                                                                        <span>Età: {{
+                                                                                                                                                formatTracerouteAgeLabel(traceroute)
+                                                                                                                                        }} - {{ getTracerouteHopCount(traceroute) }} salti</span>
+                                                                                                                                        <span v-if="traceroute.total_distance_label">
+                                                                                                                                                - Distanza totale: {{ traceroute.total_distance_label }}</span>
+                                                                                                                                        <span v-if="traceroute.channel_id"> on {{ traceroute.channel_id }}</span>
+                                                                                                                               </div>
+                                                                                                                               <div
+                                                                                                                                       class="mt-1 text-xs text-gray-500 space-y-1"
+                                                                                                                                       v-if="traceroute.created_at || traceroute.updated_at">
+                                                                                                                                        <div v-if="traceroute.created_at">
+                                                                                                                                                Prima info:
+                                                                                                                                                {{
+                                                                                                                                                        formatRelativeAndExactTimestampText(
+                                                                                                                                                                traceroute.created_at,
+                                                                                                                                                        )
+                                                                                                                                                }}
+                                                                                                                                        </div>
+                                                                                                                                        <div v-if="traceroute.updated_at">
+                                                                                                                                                Aggiornamento:
+                                                                                                                                                {{
+                                                                                                                                                        formatRelativeAndExactTimestampText(
+                                                                                                                                                                traceroute.updated_at,
+                                                                                                                                                        )
+                                                                                                                                                }}
+                                                                                                                                        </div>
+                                                                                                                               </div>
 								</div>
 															</div>
 														</div>
@@ -1822,55 +1863,73 @@
 										<div class="bg-gray-200 p-2 font-semibold">Altro</div>
 										<ul role="list" class="flex-1 divide-y divide-gray-200">
 											<!-- first seen -->
-											<li class="flex p-3">
-												<div class="text-sm font-medium text-gray-900">
-													Prima rilevazione
-												</div>
-												<div class="ml-auto text-sm text-gray-700">
-													{{ moment(new Date(selectedNode.created_at)).fromNow()
-													}}
-												</div>
-											</li>
+                                                                                        <li class="flex p-3">
+                                                                                                <div class="text-sm font-medium text-gray-900">
+                                                                                                        Prima rilevazione
+                                                                                                </div>
+                                                                                                <div class="ml-auto text-sm text-gray-700">
+                                                                                                        {{ formatRelativeAndExactTimestampText(selectedNode.created_at) }}
+                                                                                                </div>
+                                                                                        </li>
 
 											<!-- last seen -->
-											<li class="flex p-3">
-												<div class="text-sm font-medium text-gray-900">
-													Ultima rilevazione
-												</div>
-												<div class="ml-auto text-sm text-gray-700">
-													{{ moment(new Date(selectedNode.updated_at)).fromNow()
-													}}
-												</div>
-											</li>
+                                                                                        <li class="flex p-3">
+                                                                                                <div class="text-sm font-medium text-gray-900">
+                                                                                                        Ultima rilevazione
+                                                                                                </div>
+                                                                                                <div class="ml-auto text-sm text-gray-700">
+                                                                                                        {{ formatRelativeAndExactTimestampText(selectedNode.updated_at) }}
+                                                                                                </div>
+                                                                                        </li>
 
-											<!-- neighbours updated -->
-											<li class="flex p-3">
-												<div class="text-sm font-medium text-gray-900">
-													Aggiornamento vicini
-												</div>
-												<div class="ml-auto text-sm text-gray-700">
-													<span v-if="selectedNode.neighbours_updated_at"
-														>{{ moment(new
-														Date(selectedNode.neighbours_updated_at)).fromNow()
-														}}</span
-													>
-													<span v-else>???</span>
-												</div>
-											</li>
+                                                                                        <!-- neighbours first seen -->
+                                                                                        <li class="flex p-3">
+                                                                                                <div class="text-sm font-medium text-gray-900">
+                                                                                                        Prima info vicini
+                                                                                                </div>
+                                                                                                <div class="ml-auto text-sm text-gray-700">
+                                                                                                        {{ formatRelativeAndExactTimestampText(selectedNode.neighbours_first_seen_at) }}
+                                                                                                </div>
+                                                                                        </li>
 
-											<!-- position updated -->
-											<li class="flex p-3">
-												<div class="text-sm font-medium text-gray-900">
-													Aggiornamento posizione
+                                                                                        <!-- neighbours updated -->
+                                                                                        <li class="flex p-3">
+                                                                                                <div class="text-sm font-medium text-gray-900">
+                                                                                                        Aggiornamento vicini
+                                                                                                </div>
+                                                                                                <div class="ml-auto text-sm text-gray-700">
+                                                                                                        {{ formatRelativeAndExactTimestampText(selectedNode.neighbours_updated_at) }}
+                                                                                                </div>
+                                                                                        </li>
+
+                                                                                        <!-- traceroutes first seen -->
+                                                                                        <li class="flex p-3">
+                                                                                                <div class="text-sm font-medium text-gray-900">
+                                                                                                        Prima info traceroute
+                                                                                                </div>
+                                                                                                <div class="ml-auto text-sm text-gray-700">
+                                                                                                        {{ formatRelativeAndExactTimestampText(selectedNode.traceroutes_first_seen_at) }}
+                                                                                                </div>
+                                                                                        </li>
+
+                                                                                        <!-- traceroutes updated -->
+                                                                                        <li class="flex p-3">
+                                                                                                <div class="text-sm font-medium text-gray-900">
+                                                                                                        Aggiornamento traceroute
+                                                                                                </div>
+                                                                                                <div class="ml-auto text-sm text-gray-700">
+                                                                                                        {{ formatRelativeAndExactTimestampText(selectedNode.traceroutes_updated_at) }}
+                                                                                                </div>
+                                                                                        </li>
+
+                                                                                        <!-- position updated -->
+                                                                                        <li class="flex p-3">
+                                                                                                <div class="text-sm font-medium text-gray-900">
+                                                                                                        Aggiornamento posizione
 												</div>
-												<div class="ml-auto text-sm text-gray-700">
-													<span v-if="selectedNode.position_updated_at"
-														>{{ moment(new
-														Date(selectedNode.position_updated_at)).fromNow()
-														}}</span
-													>
-													<span v-else>???</span>
-												</div>
+                                                                                                <div class="ml-auto text-sm text-gray-700">
+                                                                                                        {{ formatRelativeAndExactTimestampText(selectedNode.position_updated_at) }}
+                                                                                                </div>
 											</li>
 										</ul>
 									</div>
@@ -1953,6 +2012,26 @@
                                                                                                   <span>Età: {{ formatTracerouteAgeLabel(selectedTraceRoute) }} - {{ getTracerouteHopCount(selectedTraceRoute) }} salti</span>
                                                                                                   <span v-if="selectedTraceRoute.total_distance_label"> - Distanza totale: {{ selectedTraceRoute.total_distance_label }}</span>
                                                                                                   <span v-if="selectedTraceRoute.channel_id"> on {{ selectedTraceRoute.channel_id }}</span>
+                                                                                                  <div
+                                                                                                          class="mt-1 text-xs text-gray-500 space-y-1"
+                                                                                                          v-if="selectedTraceRoute.created_at || selectedTraceRoute.updated_at">
+                                                                                                          <div v-if="selectedTraceRoute.created_at">
+                                                                                                                  Prima info:
+                                                                                                                  {{
+                                                                                                                          formatRelativeAndExactTimestampText(
+                                                                                                                                  selectedTraceRoute.created_at,
+                                                                                                                          )
+                                                                                                                  }}
+                                                                                                          </div>
+                                                                                                          <div v-if="selectedTraceRoute.updated_at">
+                                                                                                                  Aggiornamento:
+                                                                                                                  {{
+                                                                                                                          formatRelativeAndExactTimestampText(
+                                                                                                                                  selectedTraceRoute.updated_at,
+                                                                                                                          )
+                                                                                                                  }}
+                                                                                                          </div>
+                                                                                                  </div>
                                                                                           </h3>
 										</div>
 										<div class="my-auto ml-3 flex h-7 items-center">
@@ -2488,53 +2567,71 @@
 							class="mx-auto w-screen max-w-md p-4">
 							<div
 								class="flex h-full flex-col bg-white shadow-xl rounded-xl border">
-								<div class="p-2">
-									<div class="flex items-start justify-between">
-										<div>
+                                                                <div class="p-2">
+                                                                        <div class="flex items-start justify-between">
+                                                                                <div>
                                                                                         <h2 class="font-bold">
                                                                                                 Vicini di {{ selectedNodeToShowNeighbours.short_name }}
                                                                                         </h2>
-											<h3
-												v-if="selectedNodeToShowNeighboursType === 'we_heard'"
-												class="text-sm">
+                                                                                        <h3
+                                                                                                v-if="selectedNodeToShowNeighboursType === 'we_heard'"
+                                                                                                class="text-sm">
                                                                                                 Nodi ascoltati da {{
                                                                                                 selectedNodeToShowNeighbours.short_name }}
-											</h3>
-											<h3
-												v-if="selectedNodeToShowNeighboursType === 'heard_us'"
-												class="text-sm">
+                                                                                        </h3>
+                                                                                        <h3
+                                                                                                v-if="selectedNodeToShowNeighboursType === 'heard_us'"
+                                                                                                class="text-sm">
                                                                                                 Nodi che hanno ascoltato {{
                                                                                                 selectedNodeToShowNeighbours.short_name }}
-											</h3>
-										</div>
-										<div class="my-auto ml-3 flex h-7 items-center">
-											<a
-												href="javascript:void(0)"
-												class="rounded-full"
-												@click="dismissShowingNodeNeighbours">
-												<div
-													class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full">
-													<svg
-														class="w-6 h-6"
-														xmlns="http://www.w3.org/2000/svg"
-														viewBox="0 0 24 24"
-														stroke-width="1.5"
-														stroke="currentColor"
-														fill="none"
-														stroke-linecap="round"
-														stroke-linejoin="round">
-														<path
-															stroke="none"
-															d="M0 0h24v24H0z"
-															fill="none"></path>
-														<path d="M18 6l-12 12"></path>
-														<path d="M6 6l12 12"></path>
-													</svg>
-												</div>
-											</a>
-										</div>
-									</div>
-								</div>
+                                                                                        </h3>
+                                                                                </div>
+                                                                                <div class="my-auto ml-3 flex h-7 items-center">
+                                                                                        <a
+                                                                                                href="javascript:void(0)"
+                                                                                                class="rounded-full"
+                                                                                                @click="dismissShowingNodeNeighbours">
+                                                                                                <div
+                                                                                                        class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full">
+                                                                                                        <svg
+                                                                                                                class="w-6 h-6"
+                                                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                                                                viewBox="0 0 24 24"
+                                                                                                                stroke-width="1.5"
+                                                                                                                stroke="currentColor"
+                                                                                                                fill="none"
+                                                                                                                stroke-linecap="round"
+                                                                                                                stroke-linejoin="round">
+                                                                                                                <path
+                                                                                                                        stroke="none"
+                                                                                                                        d="M0 0h24v24H0z"
+                                                                                                                        fill="none"></path>
+                                                                                                                <path d="M18 6l-12 12"></path>
+                                                                                                                <path d="M6 6l12 12"></path>
+                                                                                                        </svg>
+                                                                                                </div>
+                                                                                        </a>
+                                                                                </div>
+                                                                        </div>
+                                                                        <div
+                                                                                class="mt-2 text-xs text-gray-600 space-y-1"
+                                                                                v-if="selectedNodeToShowNeighbours?.neighbours_first_seen_at || selectedNodeToShowNeighbours?.neighbours_updated_at">
+                                                                                <div v-if="selectedNodeToShowNeighbours?.neighbours_first_seen_at">
+                                                                                        Prima info: {{
+                                                                                                formatRelativeAndExactTimestampText(
+                                                                                                        selectedNodeToShowNeighbours.neighbours_first_seen_at,
+                                                                                                )
+                                                                                        }}
+                                                                                </div>
+                                                                                <div v-if="selectedNodeToShowNeighbours?.neighbours_updated_at">
+                                                                                        Aggiornamento: {{
+                                                                                                formatRelativeAndExactTimestampText(
+                                                                                                        selectedNodeToShowNeighbours.neighbours_updated_at,
+                                                                                                )
+                                                                                        }}
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
 							</div>
 						</div>
 					</div>
@@ -3009,6 +3106,24 @@
                                 return "Età sconosciuta";
                         }
 
+                        function formatRelativeAndExactTimestampLabel(
+                                timestamp,
+                                momentLib = moment,
+                        ) {
+                                if (!timestamp) {
+                                        return null;
+                                }
+
+                                const momentFn = typeof momentLib === "function" ? momentLib : moment;
+                                const momentInstance = momentFn(timestamp);
+
+                                if (!momentInstance?.isValid?.()) {
+                                        return null;
+                                }
+
+                                return `${momentInstance.fromNow()} (${momentInstance.format("DD/MM/YYYY HH:mm")})`;
+                        }
+
                         function hasNeighbourInfoExpired(
                                 neighboursUpdatedAt,
                                 maxAgeInSeconds,
@@ -3215,6 +3330,14 @@
                                         },
                                         formatTracerouteAgeLabel: function (traceroute) {
                                                 return getTracerouteAgeLabel(traceroute, this.moment);
+                                        },
+                                        formatRelativeAndExactTimestampText: function (timestamp) {
+                                                return (
+                                                        formatRelativeAndExactTimestampLabel(
+                                                                timestamp,
+                                                                this.moment,
+                                                        ) ?? "???"
+                                                );
                                         },
                                         getTracerouteHopCount: function (traceroute) {
                                                 if (!traceroute || !Array.isArray(traceroute.route)) {
@@ -4767,14 +4890,30 @@
 
 					const terrainImageUrl = getTerrainProfileImage(node, neighbourNode);
 
-					const tooltip = `<b>[${escapeString(node.short_name)}] ${escapeString(node.long_name)}</b> heard <b>[${escapeString(neighbourNode.short_name)}] ${escapeString(neighbourNode.long_name)}</b>`
-                + `<br/>SNR: ${neighbour.snr}dB`
-                + `<br/>Distance: ${distance}`
-                + `<br/><br/>ID: ${node.node_id} heard ${neighbourNode.node_id}`
-                + `<br/>ID esadecimale: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`
-                + (node.neighbours_updated_at ? `<br/>Aggiornamento: ${moment(new Date(node.neighbours_updated_at)).fromNow()}` : '')
-                + `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`
-                + `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
+                                        let tooltip = `<b>[${escapeString(node.short_name)}] ${escapeString(node.long_name)}</b> heard <b>[${escapeString(neighbourNode.short_name)}] ${escapeString(neighbourNode.long_name)}</b>`;
+                                        tooltip += `<br/>SNR: ${neighbour.snr}dB`;
+                                        tooltip += `<br/>Distance: ${distance}`;
+                                        tooltip += `<br/><br/>ID: ${node.node_id} heard ${neighbourNode.node_id}`;
+                                        tooltip += `<br/>ID esadecimale: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`;
+
+                                        const nodeNeighboursFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                                node.neighbours_first_seen_at,
+                                                moment,
+                                        );
+                                        if (nodeNeighboursFirstSeenLabel) {
+                                                tooltip += `<br/>Prima info vicini: ${escapeString(nodeNeighboursFirstSeenLabel)}`;
+                                        }
+
+                                        const nodeNeighboursUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                                node.neighbours_updated_at,
+                                                moment,
+                                        );
+                                        if (nodeNeighboursUpdatedLabel) {
+                                                tooltip += `<br/>Aggiornamento vicini: ${escapeString(nodeNeighboursUpdatedLabel)}`;
+                                        }
+
+                                        tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;
+                                        tooltip += `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
 
 					line
 						.bindTooltip(tooltip, {
@@ -4919,14 +5058,30 @@
 
 					const terrainImageUrl = getTerrainProfileImage(neighbourNode, node);
 
-					const tooltip = `<b>[${escapeString(neighbourNode.short_name)}] ${escapeString(neighbourNode.long_name)}</b> heard <b>[${escapeString(node.short_name)}] ${escapeString(node.long_name)}</b>`
-                + `<br/>SNR: ${neighbour.snr}dB`
-                + `<br/>Distance: ${distance}`
-                + `<br/><br/>ID: ${neighbourNode.node_id} heard ${node.node_id}`
-                + `<br/>ID esadecimale: ${neighbourNode.node_id_hex} heard ${node.node_id_hex}`
-                + (neighbourNode.neighbours_updated_at ? `<br/>Aggiornamento: ${moment(new Date(neighbourNode.neighbours_updated_at)).fromNow()}` : '')
-                + `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`
-                + `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
+                                        let tooltip = `<b>[${escapeString(neighbourNode.short_name)}] ${escapeString(neighbourNode.long_name)}</b> heard <b>[${escapeString(node.short_name)}] ${escapeString(node.long_name)}</b>`;
+                                        tooltip += `<br/>SNR: ${neighbour.snr}dB`;
+                                        tooltip += `<br/>Distance: ${distance}`;
+                                        tooltip += `<br/><br/>ID: ${neighbourNode.node_id} heard ${node.node_id}`;
+                                        tooltip += `<br/>ID esadecimale: ${neighbourNode.node_id_hex} heard ${node.node_id_hex}`;
+
+                                        const neighbourFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                                neighbourNode.neighbours_first_seen_at,
+                                                moment,
+                                        );
+                                        if (neighbourFirstSeenLabel) {
+                                                tooltip += `<br/>Prima info vicini: ${escapeString(neighbourFirstSeenLabel)}`;
+                                        }
+
+                                        const neighbourUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                                neighbourNode.neighbours_updated_at,
+                                                moment,
+                                        );
+                                        if (neighbourUpdatedLabel) {
+                                                tooltip += `<br/>Aggiornamento vicini: ${escapeString(neighbourUpdatedLabel)}`;
+                                        }
+
+                                        tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;
+                                        tooltip += `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
 
 					line
 						.bindTooltip(tooltip, {
@@ -5123,6 +5278,22 @@
                                         const tracerouteAgeLabel = getTracerouteAgeLabel(traceroute, moment);
                                         if (tracerouteAgeLabel) {
                                                 tooltip += `<br/>Età: ${escapeString(tracerouteAgeLabel)}`;
+                                        }
+
+                                        const tracerouteFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                                traceroute.created_at,
+                                                moment,
+                                        );
+                                        if (tracerouteFirstSeenLabel) {
+                                                tooltip += `<br/>Prima info traceroute: ${escapeString(tracerouteFirstSeenLabel)}`;
+                                        }
+
+                                        const tracerouteUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                                traceroute.updated_at,
+                                                moment,
+                                        );
+                                        if (tracerouteUpdatedLabel) {
+                                                tooltip += `<br/>Aggiornamento traceroute: ${escapeString(tracerouteUpdatedLabel)}`;
                                         }
                                         tooltip += `<br/><br/>${tooltipRoute}`;
                                         tooltip += `<br/>Salti: ${hopCount}`;
@@ -5453,14 +5624,30 @@
 
 							const terrainImageUrl = getTerrainProfileImage(node, neighbourNode);
 
-							const tooltip = `<b>[${escapeString(node.short_name)}] ${escapeString(node.long_name)}</b> heard <b>[${escapeString(neighbourNode.short_name)}] ${escapeString(neighbourNode.long_name)}</b>`
-								+ `<br/>SNR: ${neighbour.snr}dB`
-								+ `<br/>Distance: ${distance}`
-								+ `<br/><br/>ID: ${node.node_id} heard ${neighbourNode.node_id}`
-								+ `<br/>ID esadecimale: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`
-								+ (node.neighbours_updated_at ? `<br/>Aggiornamento: ${moment(new Date(node.neighbours_updated_at)).fromNow()}` : '')
-								+ `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`
-								+ `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
+                                                        let tooltip = `<b>[${escapeString(node.short_name)}] ${escapeString(node.long_name)}</b> heard <b>[${escapeString(neighbourNode.short_name)}] ${escapeString(neighbourNode.long_name)}</b>`;
+                                                        tooltip += `<br/>SNR: ${neighbour.snr}dB`;
+                                                        tooltip += `<br/>Distance: ${distance}`;
+                                                        tooltip += `<br/><br/>ID: ${node.node_id} heard ${neighbourNode.node_id}`;
+                                                        tooltip += `<br/>ID esadecimale: ${node.node_id_hex} heard ${neighbourNode.node_id_hex}`;
+
+                                                        const nodeFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                                                node.neighbours_first_seen_at,
+                                                                moment,
+                                                        );
+                                                        if (nodeFirstSeenLabel) {
+                                                                tooltip += `<br/>Prima info: ${nodeFirstSeenLabel}`;
+                                                        }
+
+                                                        const nodeUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                                                node.neighbours_updated_at,
+                                                                moment,
+                                                        );
+                                                        if (nodeUpdatedLabel) {
+                                                                tooltip += `<br/>Aggiornamento: ${nodeUpdatedLabel}`;
+                                                        }
+
+                                                        tooltip += `<br/><br/>Terrain images from <a href="http://www.heywhatsthat.com" target="_blank">HeyWhatsThat.com</a>`;
+                                                        tooltip += `<br/><a href="${terrainImageUrl}" target="_blank"><img src="${terrainImageUrl}" width="100%"></a>`;
 
 							line
 								.bindTooltip(tooltip, {
@@ -5910,19 +6097,53 @@
 				// bottom info
 				tooltip += `<br/><br/>ID: ${node.node_id}`;
 				tooltip += `<br/>ID esadecimale: ${node.node_id_hex}`;
-				tooltip += `<br/>Aggiornamento: ${moment(
-					new Date(node.updated_at)
-				).fromNow()}`;
-				tooltip += node.neighbours_updated_at
-					? `<br/>Aggiornamento vicini: ${moment(
-							new Date(node.neighbours_updated_at)
-					  ).fromNow()}`
-					: "";
-				tooltip += node.position_updated_at
-					? `<br/>Aggiornamento posizione: ${moment(
-							new Date(node.position_updated_at)
-					  ).fromNow()}`
-					: "";
+                                const nodeUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                        node.updated_at,
+                                        moment,
+                                );
+                                if (nodeUpdatedLabel) {
+                                        tooltip += `<br/>Aggiornamento: ${nodeUpdatedLabel}`;
+                                }
+
+                                const neighboursFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                        node.neighbours_first_seen_at,
+                                        moment,
+                                );
+                                if (neighboursFirstSeenLabel) {
+                                        tooltip += `<br/>Prima info vicini: ${neighboursFirstSeenLabel}`;
+                                }
+
+                                const neighboursUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                        node.neighbours_updated_at,
+                                        moment,
+                                );
+                                if (neighboursUpdatedLabel) {
+                                        tooltip += `<br/>Aggiornamento vicini: ${neighboursUpdatedLabel}`;
+                                }
+
+                                const traceroutesFirstSeenLabel = formatRelativeAndExactTimestampLabel(
+                                        node.traceroutes_first_seen_at,
+                                        moment,
+                                );
+                                if (traceroutesFirstSeenLabel) {
+                                        tooltip += `<br/>Prima info traceroute: ${traceroutesFirstSeenLabel}`;
+                                }
+
+                                const traceroutesUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                        node.traceroutes_updated_at,
+                                        moment,
+                                );
+                                if (traceroutesUpdatedLabel) {
+                                        tooltip += `<br/>Aggiornamento traceroute: ${traceroutesUpdatedLabel}`;
+                                }
+
+                                const positionUpdatedLabel = formatRelativeAndExactTimestampLabel(
+                                        node.position_updated_at,
+                                        moment,
+                                );
+                                if (positionUpdatedLabel) {
+                                        tooltip += `<br/>Aggiornamento posizione: ${positionUpdatedLabel}`;
+                                }
 
 				// show details button
 				tooltip += `<br/><br/><button onclick="showNodeDetails(${node.node_id});" class="border border-gray-300 bg-gray-100 p-1 w-full rounded hover:bg-gray-200 mb-1">Mostra dettagli completi</button>`;
