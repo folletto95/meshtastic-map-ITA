@@ -63,6 +63,7 @@ export async function handlePosition(
 			longitude: position.longitudeI,
 			altitude: position.altitude !== 0 ? position.altitude : null,
 			position_precision: position.precisionBits,
+			position_updated_at: new Date(),
 		};
 
 		// update node position in db
