@@ -1,109 +1,56 @@
 import type { MqttProtocol } from "mqtt";
 import { extractBoolean } from "./tools/decrypt.js";
 
-const MAX_SET_INTERVAL_MILLISECONDS = 2147483647;
-export const MAX_SAFE_PURGE_INTERVAL_SECONDS = Math.floor(
-	MAX_SET_INTERVAL_MILLISECONDS / 1000,
-);
-
-function parseNumberEnv(
-	value: string | undefined,
-	defaultValue: number,
-): number {
-	if (value === undefined) {
-		return defaultValue;
-	}
-
-	const trimmed = value.trim();
-
-	if (trimmed === "") {
-		return defaultValue;
-	}
-
-	const parsed = Number.parseInt(trimmed, 10);
-
-	return Number.isNaN(parsed) ? defaultValue : parsed;
-}
-
 export const MQTT_URL: string =
-	process.env.MQTT_URL || "mqtt://192.168.10.202:1883";
+	process.env.MQTT_URL || "mqtt://mqtt.meshnet.si";
 export const MQTT_PROTOCOL: MqttProtocol =
 	process.env.MQTT_PROTOCOL === "mqtts" ? "mqtts" : "mqtt";
-export const MQTT_USERNAME: string = process.env.MQTT_USERNAME || "tette2";
-export const MQTT_PASSWORD: string = process.env.MQTT_PASSWORD || "tettebelle2";
-export const MQTT_CLIENT_ID: string = process.env.MQTT_CLIENT_ID || "Test";
-export const MQTT_TOPIC: string = process.env.MQTT_TOPIC || "msh/#";
+export const MQTT_USERNAME: string = process.env.MQTT_USERNAME || "slovenia";
+export const MQTT_PASSWORD: string =
+	process.env.MQTT_PASSWORD || "meshnet-si-slovenia";
+export const MQTT_CLIENT_ID: string =
+	process.env.MQTT_CLIENT_ID || "map.meshnet.si";
+export const MQTT_TOPIC: string = process.env.MQTT_TOPIC || "si/#";
 
-const SAFE_DEFAULT_PURGE_INTERVAL_SECONDS = Math.min(
-	2592000,
-	MAX_SAFE_PURGE_INTERVAL_SECONDS,
+export const PURGE_INTERVAL_SECONDS: number = Number.parseInt(
+	process.env.PURGE_INTERVAL_SECONDS || "86400",
 );
-
-const RAW_PURGE_INTERVAL_SECONDS = parseNumberEnv(
-	process.env.PURGE_INTERVAL_SECONDS,
-	SAFE_DEFAULT_PURGE_INTERVAL_SECONDS,
+export const PURGE_DEVICE_METRICS_AFTER_SECONDS: number = Number.parseInt(
+	process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS || "604800",
 );
-
-const NORMALISED_PURGE_INTERVAL_SECONDS = Math.max(
-	0,
-	RAW_PURGE_INTERVAL_SECONDS,
+export const PURGE_ENVIROMENT_METRICS_AFTER_SECONDS: number = Number.parseInt(
+	process.env.PURGE_ENVIROMENT_METRICS_AFTER_SECONDS || "604800",
 );
-
-export const PURGE_INTERVAL_SECONDS: number = Math.min(
-	NORMALISED_PURGE_INTERVAL_SECONDS,
-	MAX_SAFE_PURGE_INTERVAL_SECONDS,
+export const PURGE_POWER_METRICS_AFTER_SECONDS: number = Number.parseInt(
+	process.env.PURGE_POWER_METRICS_AFTER_SECONDS || "604800",
 );
-
-export const PURGE_INTERVAL_SECONDS_WAS_NORMALISED: boolean =
-	PURGE_INTERVAL_SECONDS !== RAW_PURGE_INTERVAL_SECONDS;
-
-export const PURGE_DEVICE_METRICS_AFTER_SECONDS: number = parseNumberEnv(
-	process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS,
-	2592000,
+export const PURGE_MAP_REPORTS_AFTER_SECONDS: number = Number.parseInt(
+	process.env.PURGE_MAP_REPORTS_AFTER_SECONDS || "604800",
 );
-export const PURGE_ENVIROMENT_METRICS_AFTER_SECONDS: number = parseNumberEnv(
-	process.env.PURGE_ENVIROMENT_METRICS_AFTER_SECONDS,
-	2592000,
+export const PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS: number = Number.parseInt(
+	process.env.PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS || "604800",
 );
-export const PURGE_POWER_METRICS_AFTER_SECONDS: number = parseNumberEnv(
-	process.env.PURGE_POWER_METRICS_AFTER_SECONDS,
-	2592000,
+export const PURGE_UNHEARD_NODES_FOR_SECONDS: number = Number.parseInt(
+	process.env.PURGE_UNHEARD_NODES_FOR_SECONDS || "604800",
 );
-export const PURGE_MAP_REPORTS_AFTER_SECONDS: number = parseNumberEnv(
-	process.env.PURGE_MAP_REPORTS_AFTER_SECONDS,
-	2592000,
+export const PURGE_POSITIONS_AFTER_SECONDS: number = Number.parseInt(
+	process.env.PURGE_POSITIONS_AFTER_SECONDS || "604800",
 );
-export const PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS: number = parseNumberEnv(
-	process.env.PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS,
-	2592000,
+export const PURGE_SERVICE_ENVELOPES_AFTER_SECONDS: number = Number.parseInt(
+	process.env.PURGE_SERVICE_ENVELOPES_AFTER_SECONDS || "604800",
 );
-export const PURGE_UNHEARD_NODES_FOR_SECONDS: number = parseNumberEnv(
-	process.env.PURGE_UNHEARD_NODES_FOR_SECONDS,
-	2592000,
+export const PURGE_TEXT_MESSAGES_AFTER_SECONDS: number = Number.parseInt(
+	process.env.PURGE_TEXT_MESSAGES_AFTER_SECONDS || "604800",
 );
-export const PURGE_POSITIONS_AFTER_SECONDS: number = parseNumberEnv(
-	process.env.PURGE_POSITIONS_AFTER_SECONDS,
-	2592000,
+export const PURGE_TRACEROUTES_AFTER_SECONDS: number = Number.parseInt(
+	process.env.PURGE_TRACEROUTES_AFTER_SECONDS || "604800",
 );
-export const PURGE_SERVICE_ENVELOPES_AFTER_SECONDS: number = parseNumberEnv(
-	process.env.PURGE_SERVICE_ENVELOPES_AFTER_SECONDS,
-	2592000,
-);
-export const PURGE_TEXT_MESSAGES_AFTER_SECONDS: number = parseNumberEnv(
-	process.env.PURGE_TEXT_MESSAGES_AFTER_SECONDS,
-	2592000,
-);
-export const PURGE_TRACEROUTES_AFTER_SECONDS: number = parseNumberEnv(
-	process.env.PURGE_TRACEROUTES_AFTER_SECONDS,
-	2592000,
-);
-export const PURGE_WAYPOINTS_AFTER_SECONDS: number = parseNumberEnv(
-	process.env.PURGE_WAYPOINTS_AFTER_SECONDS,
-	2592000,
+export const PURGE_WAYPOINTS_AFTER_SECONDS: number = Number.parseInt(
+	process.env.PURGE_WAYPOINTS_AFTER_SECONDS || "604800",
 );
 
 export const COLLECT_SERVICE_ENVELOPES: boolean =
-	!!process.env.COLLECT_SERVICE_ENVELOPES || true;
+	!!process.env.COLLECT_SERVICE_ENVELOPES || false;
 export const COLLECT_POSITIONS: boolean =
 	!!process.env.COLLECT_POSITIONS || true;
 export const COLLECT_TEXT_MESSAGES: boolean =
@@ -113,9 +60,9 @@ export const IGNORE_DIRECT_MESSAGES: boolean =
 export const COLLECT_WAYPOINTS: boolean =
 	!!process.env.COLLECT_WAYPOINTS || true;
 export const COLLECT_NEIGHBOUR_INFO: boolean =
-	!!process.env.COLLECT_NEIGHBOURINFOS || true;
+	!!process.env.COLLECT_NEIGHBOURINFOS || false;
 export const COLLECT_TRACEROUTES: boolean =
-	!!process.env.COLLECT_TRACEROUTES || true;
+	!!process.env.COLLECT_TRACEROUTES || false;
 export const COLLECT_MAP_REPORTS: boolean =
 	!!process.env.COLLECT_MAP_REPORTS || true;
 
@@ -125,9 +72,65 @@ export const LOG_KNOWN_PACKET_TYPES: boolean = extractBoolean(
 );
 export const LOG_UNKNOWN_PACKET_TYPES: boolean = extractBoolean(
 	process.env.LOG_UNKNOWN_PACKET_TYPES,
-	true,
+	false,
 );
 
 export const DECRYPTION_KEYS: string[] = process.env.DECRYPTION_KEYS?.split(
 	",",
-) || ["AQ=="];
+) || [
+	"1PG7OiApB1nwvP+rz05pAQ==",
+	"zrECbRbQIZOFrYf3skmymrsnW9p7Jjr9MjTB8bay40U=",
+];
+
+// print settings on startup
+console.log("Settings:");
+console.log(`- MQTT_URL: ${MQTT_URL}`);
+console.log(`- MQTT_PROTOCOL: ${MQTT_PROTOCOL}`);
+console.log(`- MQTT_USERNAME: ${MQTT_USERNAME}`);
+console.log(`- MQTT_CLIENT_ID: ${MQTT_CLIENT_ID}`);
+console.log(`- MQTT_TOPIC: ${MQTT_TOPIC}`);
+console.log(`- PURGE_INTERVAL_SECONDS: ${PURGE_INTERVAL_SECONDS}`);
+console.log(
+	`- PURGE_DEVICE_METRICS_AFTER_SECONDS: ${PURGE_DEVICE_METRICS_AFTER_SECONDS}`,
+);
+console.log(
+	`- PURGE_ENVIROMENT_METRICS_AFTER_SECONDS: ${PURGE_ENVIROMENT_METRICS_AFTER_SECONDS}`,
+);
+console.log(
+	`- PURGE_POWER_METRICS_AFTER_SECONDS: ${PURGE_POWER_METRICS_AFTER_SECONDS}`,
+);
+console.log(
+	`- PURGE_MAP_REPORTS_AFTER_SECONDS: ${PURGE_MAP_REPORTS_AFTER_SECONDS}`,
+);
+console.log(
+	`- PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS: ${PURGE_NEIGHBOUR_INFOS_AFTER_SECONDS}`,
+);
+console.log(
+	`- PURGE_UNHEARD_NODES_FOR_SECONDS: ${PURGE_UNHEARD_NODES_FOR_SECONDS}`,
+);
+console.log(
+	`- PURGE_POSITIONS_AFTER_SECONDS: ${PURGE_POSITIONS_AFTER_SECONDS}`,
+);
+console.log(
+	`- PURGE_SERVICE_ENVELOPES_AFTER_SECONDS: ${PURGE_SERVICE_ENVELOPES_AFTER_SECONDS}`,
+);
+console.log(
+	`- PURGE_TEXT_MESSAGES_AFTER_SECONDS: ${PURGE_TEXT_MESSAGES_AFTER_SECONDS}`,
+);
+console.log(
+	`- PURGE_TRACEROUTES_AFTER_SECONDS: ${PURGE_TRACEROUTES_AFTER_SECONDS}`,
+);
+console.log(
+	`- PURGE_WAYPOINTS_AFTER_SECONDS: ${PURGE_WAYPOINTS_AFTER_SECONDS}`,
+);
+console.log(`- COLLECT_SERVICE_ENVELOPES: ${COLLECT_SERVICE_ENVELOPES}`);
+console.log(`- COLLECT_POSITIONS: ${COLLECT_POSITIONS}`);
+console.log(`- COLLECT_TEXT_MESSAGES: ${COLLECT_TEXT_MESSAGES}`);
+console.log(`- IGNORE_DIRECT_MESSAGES: ${IGNORE_DIRECT_MESSAGES}`);
+console.log(`- COLLECT_WAYPOINTS: ${COLLECT_WAYPOINTS}`);
+console.log(`- COLLECT_NEIGHBOUR_INFO: ${COLLECT_NEIGHBOUR_INFO}`);
+console.log(`- COLLECT_TRACEROUTES: ${COLLECT_TRACEROUTES}`);
+console.log(`- COLLECT_MAP_REPORTS: ${COLLECT_MAP_REPORTS}`);
+console.log(`- LOG_KNOWN_PACKET_TYPES: ${LOG_KNOWN_PACKET_TYPES}`);
+console.log(`- LOG_UNKNOWN_PACKET_TYPES: ${LOG_UNKNOWN_PACKET_TYPES}`);
+console.log(`- DECRYPTION_KEYS count: ${DECRYPTION_KEYS.length}`);
