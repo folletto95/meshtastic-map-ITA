@@ -30,15 +30,9 @@ import { handleWaypoint } from "./messages/waypoint.js";
 import {
 	LOG_UNKNOWN_PACKET_TYPES,
 	PURGE_INTERVAL_SECONDS,
-	getPurgeIntervalNormalisationWarning,
 } from "./settings.js";
 
 const PURGE_TIMER_SECONDS = PURGE_INTERVAL_SECONDS;
-
-const purgeIntervalWarning = getPurgeIntervalNormalisationWarning();
-if (purgeIntervalWarning) {
-	console.warn(purgeIntervalWarning);
-}
 
 // run automatic purge if configured
 if (PURGE_TIMER_SECONDS !== 0) {
