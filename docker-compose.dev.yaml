@@ -54,6 +54,7 @@ services:
     environment:
       MARIADB_DATABASE: "meshtastic-map"
       MARIADB_ROOT_PASSWORD: "password"
+      MARIADB_ROOT_HOST: "%"
     ports:
       - 3306:3306/tcp
     volumes:

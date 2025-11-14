@@ -44,6 +44,7 @@ services:
     environment:
       MARIADB_DATABASE: "meshtastic-map"
       MARIADB_ROOT_PASSWORD: "password"
+      MARIADB_ROOT_HOST: "%"
     volumes:
       - database_data:/var/lib/mysql
     healthcheck:
