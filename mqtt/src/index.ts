@@ -29,17 +29,15 @@ import { handleWaypoint } from "./messages/waypoint.js";
 
 import {
 	LOG_UNKNOWN_PACKET_TYPES,
-	MAX_SAFE_PURGE_INTERVAL_SECONDS,
 	PURGE_INTERVAL_SECONDS,
-	PURGE_INTERVAL_SECONDS_WAS_NORMALISED,
+	getPurgeIntervalNormalisationWarning,
 } from "./settings.js";
 
 const PURGE_TIMER_SECONDS = PURGE_INTERVAL_SECONDS;
 
-if (PURGE_INTERVAL_SECONDS_WAS_NORMALISED) {
-	console.warn(
-		`PURGE_INTERVAL_SECONDS must be between 0 and ${MAX_SAFE_PURGE_INTERVAL_SECONDS} seconds. Using ${PURGE_TIMER_SECONDS} seconds.`,
-	);
+const purgeIntervalWarning = getPurgeIntervalNormalisationWarning();
+if (purgeIntervalWarning) {
+	console.warn(purgeIntervalWarning);
 }
 
 // run automatic purge if configured

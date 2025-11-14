@@ -13,7 +13,7 @@ export const MQTT_CLIENT_ID: string =
 export const MQTT_TOPIC: string = process.env.MQTT_TOPIC || "si/#";
 
 const DEFAULT_PURGE_INTERVAL_SECONDS = 86400;
-export const MAX_SAFE_PURGE_INTERVAL_SECONDS = Math.floor(2_147_483_647 / 1000);
+const MAX_SAFE_PURGE_INTERVAL_SECONDS = Math.floor(2_147_483_647 / 1000);
 const requestedPurgeIntervalSeconds = Number.parseInt(
 	process.env.PURGE_INTERVAL_SECONDS || `${DEFAULT_PURGE_INTERVAL_SECONDS}`,
 );
@@ -35,8 +35,18 @@ if (Number.isNaN(requestedPurgeIntervalSeconds)) {
 }
 
 export const PURGE_INTERVAL_SECONDS: number = normalisedPurgeIntervalSeconds;
-export const PURGE_INTERVAL_SECONDS_WAS_NORMALISED =
-	purgeIntervalSecondsWasNormalised;
+
+export function getPurgeIntervalNormalisationWarning(): string | null {
+	if (!purgeIntervalSecondsWasNormalised) {
+		return null;
+	}
+
+	return [
+		"PURGE_INTERVAL_SECONDS must be between 0 and",
+		`${MAX_SAFE_PURGE_INTERVAL_SECONDS} seconds.`,
+		`Using ${normalisedPurgeIntervalSeconds} seconds.`,
+	].join(" ");
+}
 export const PURGE_DEVICE_METRICS_AFTER_SECONDS: number = Number.parseInt(
 	process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS || "604800",
 );
