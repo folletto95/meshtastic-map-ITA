@@ -54,7 +54,7 @@ cd meshtastic-map
 Build Docker images:
 
 ```
-docker compose -f docker-compose.dev.yaml build
+./scripts/compose.sh -f docker-compose.dev.yaml build
 ```
 
 Update environment variables:
@@ -72,8 +72,19 @@ ENV lists:
 Run:
 
 ```
-docker compose -f docker-compose.dev.yaml up
+./scripts/compose.sh -f docker-compose.dev.yaml up
 ```
+
+> [!NOTE]
+> Use the `./scripts/compose.sh` helper so commands always go through the
+> Docker Compose plugin. The legacy `docker-compose` Python package crashes with
+> `KeyError: 'ContainerConfig'` when it tries to recreate the MariaDB container.
+> If you accidentally launched the stack with the legacy CLI, stop it and remove
+> the stale containers before retrying:
+>
+> ```
+> docker-compose down --volumes --remove-orphans
+> ```
 
 ## Run
 
@@ -87,7 +98,7 @@ cd meshtastic-map
 Build Docker images:
 
 ```
-docker compose build
+./scripts/compose.sh build
 ```
 
 Update environment variables:
@@ -105,8 +116,19 @@ ENV lists:
 Run:
 
 ```
-docker compose up
+./scripts/compose.sh up
 ```
+
+> [!NOTE]
+> Use the `./scripts/compose.sh` helper so commands always go through the
+> Docker Compose plugin. The legacy `docker-compose` Python package crashes with
+> `KeyError: 'ContainerConfig'` when it tries to recreate the MariaDB container.
+> If you accidentally launched the stack with the legacy CLI, stop it and remove
+> the stale containers before retrying:
+>
+> ```
+> docker-compose down --volumes --remove-orphans
+> ```
 
 ## Updating
 
