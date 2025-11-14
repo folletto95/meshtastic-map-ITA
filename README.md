@@ -75,6 +75,16 @@ Run:
 docker compose -f docker-compose.dev.yaml up
 ```
 
+> [!NOTE]
+> Use the modern `docker compose` plugin. The legacy `docker-compose`
+> Python package can crash with `KeyError: 'ContainerConfig'` when it tries to
+> recreate the MariaDB container. If you accidentally launched the stack with
+> the legacy CLI, stop it and remove the stale containers before retrying:
+>
+> ```
+> docker-compose down --volumes --remove-orphans
+> ```
+
 ## Run
 
 Clone the project repo:
@@ -107,6 +117,16 @@ Run:
 ```
 docker compose up
 ```
+
+> [!NOTE]
+> Use the modern `docker compose` plugin. The legacy `docker-compose`
+> Python package can crash with `KeyError: 'ContainerConfig'` when it tries to
+> recreate the MariaDB container. If you accidentally launched the stack with
+> the legacy CLI, stop it and remove the stale containers before retrying:
+>
+> ```
+> docker-compose down --volumes --remove-orphans
+> ```
 
 ## Updating
 
