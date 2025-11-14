@@ -52,7 +52,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
-    restart: unless-stopped
+      start_interval: 5s
 
   proxy:
     container_name: proxy

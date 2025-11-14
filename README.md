@@ -76,11 +76,10 @@ Run:
 ```
 
 > [!NOTE]
-> Use the `./scripts/compose.sh` helper so commands always go through the
-> Docker Compose plugin. The legacy `docker-compose` Python package crashes with
-> `KeyError: 'ContainerConfig'` when it tries to recreate the MariaDB container.
-> If you accidentally launched the stack with the legacy CLI, stop it and remove
-> the stale containers before retrying:
+> Use the modern `docker compose` plugin. The legacy `docker-compose`
+> Python package can crash with `KeyError: 'ContainerConfig'` when it tries to
+> recreate the MariaDB container. If you accidentally launched the stack with
+> the legacy CLI, stop it and remove the stale containers before retrying:
 >
 > ```
 > docker-compose down --volumes --remove-orphans
@@ -120,11 +119,10 @@ Run:
 ```
 
 > [!NOTE]
-> Use the `./scripts/compose.sh` helper so commands always go through the
-> Docker Compose plugin. The legacy `docker-compose` Python package crashes with
-> `KeyError: 'ContainerConfig'` when it tries to recreate the MariaDB container.
-> If you accidentally launched the stack with the legacy CLI, stop it and remove
-> the stale containers before retrying:
+> Use the modern `docker compose` plugin. The legacy `docker-compose`
+> Python package can crash with `KeyError: 'ContainerConfig'` when it tries to
+> recreate the MariaDB container. If you accidentally launched the stack with
+> the legacy CLI, stop it and remove the stale containers before retrying:
 >
 > ```
 > docker-compose down --volumes --remove-orphans
