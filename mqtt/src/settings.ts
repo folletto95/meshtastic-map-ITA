@@ -37,6 +37,14 @@ if (Number.isNaN(requestedPurgeIntervalSeconds)) {
 export const PURGE_INTERVAL_SECONDS: number = normalisedPurgeIntervalSeconds;
 export const PURGE_INTERVAL_SECONDS_WAS_NORMALISED =
 	purgeIntervalSecondsWasNormalised;
+
+export function getPurgeIntervalNormalisationWarning(): string | null {
+	if (!purgeIntervalSecondsWasNormalised) {
+		return null;
+	}
+
+	return `PURGE_INTERVAL_SECONDS must be between 0 and ${MAX_SAFE_PURGE_INTERVAL_SECONDS} seconds. Using ${normalisedPurgeIntervalSeconds} seconds.`;
+}
 export const PURGE_DEVICE_METRICS_AFTER_SECONDS: number = Number.parseInt(
 	process.env.PURGE_DEVICE_METRICS_AFTER_SECONDS || "604800",
 );
