@@ -7,9 +7,10 @@ services:
       dockerfile: ./app/Dockerfile
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
       mqtt:
         condition: service_started
+    restart: unless-stopped
 
   api:
     container_name: api
@@ -21,6 +22,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "mysql://root:password@database:3306/meshtastic-map?connection_limit=100"
+    restart: unless-stopped
 
   # listens to mqtt packets and saves to database
   mqtt:
@@ -33,6 +35,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "mysql://root:password@database:3306/meshtastic-map?connection_limit=100"
+    restart: unless-stopped
 
   # runs the database to store everything from mqtt
   database:
@@ -49,6 +52,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
+    restart: unless-stopped
 
   proxy:
     container_name: proxy
@@ -68,6 +72,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
+    restart: unless-stopped
 
 volumes:
   database_data:
