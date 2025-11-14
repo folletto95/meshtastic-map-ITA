@@ -7,9 +7,10 @@ services:
       dockerfile: ./app/Dockerfile
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
       mqtt:
         condition: service_started
+    restart: unless-stopped
 
   api:
     container_name: api
@@ -21,6 +22,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "mysql://root:password@database:3306/meshtastic-map?connection_limit=100"
+    restart: unless-stopped
 
   # listens to mqtt packets and saves to database
   mqtt:
@@ -33,18 +35,20 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: "mysql://root:password@database:3306/meshtastic-map?connection_limit=100"
+    restart: unless-stopped
 
   # runs the database to store everything from mqtt
   database:
     container_name: database
-    image: bitnami/mariadb
+    image: mariadb:11.4
     environment:
       MARIADB_DATABASE: "meshtastic-map"
       MARIADB_ROOT_PASSWORD: "password"
     volumes:
-      - database_data:/bitnami/mariadb
+      - database_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "/opt/bitnami/scripts/mariadb/healthcheck.sh"]
+      test:
+        ["CMD-SHELL", "mysqladmin ping -h localhost -p$${MARIADB_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 6
@@ -68,6 +72,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
+    restart: unless-stopped
 
 volumes:
   database_data:

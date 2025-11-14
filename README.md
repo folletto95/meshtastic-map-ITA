@@ -54,7 +54,7 @@ cd meshtastic-map
 Build Docker images:
 
 ```
-docker compose -f docker-compose.dev.yaml build
+./scripts/compose.sh -f docker-compose.dev.yaml build
 ```
 
 Update environment variables:
@@ -72,7 +72,7 @@ ENV lists:
 Run:
 
 ```
-docker compose -f docker-compose.dev.yaml up
+./scripts/compose.sh -f docker-compose.dev.yaml up
 ```
 
 > [!NOTE]
@@ -97,7 +97,7 @@ cd meshtastic-map
 Build Docker images:
 
 ```
-docker compose build
+./scripts/compose.sh build
 ```
 
 Update environment variables:
@@ -115,7 +115,7 @@ ENV lists:
 Run:
 
 ```
-docker compose up
+./scripts/compose.sh up
 ```
 
 > [!NOTE]
