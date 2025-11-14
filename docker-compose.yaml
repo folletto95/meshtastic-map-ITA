@@ -38,6 +38,7 @@ services:
   database:
     container_name: database
     image: mariadb:11.4
+    platform: ${MARIADB_PLATFORM:-linux/amd64}
     environment:
       MARIADB_DATABASE: "meshtastic-map"
       MARIADB_ROOT_PASSWORD: "password"
