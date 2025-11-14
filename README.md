@@ -76,10 +76,11 @@ docker compose -f docker-compose.dev.yaml up
 ```
 
 > [!NOTE]
-> Use the modern Docker Compose plugin (`docker compose`) rather than the legacy
-> `docker-compose` Python package. The legacy CLI can crash with
-> `KeyError: 'ContainerConfig'` when recreating the MariaDB container shipped
-> with this project.
+> The MariaDB service defaults to the `linux/amd64` platform to work around a
+> bug in the legacy `docker-compose` CLI that otherwise fails with
+> `KeyError: 'ContainerConfig'`. If you're running on a different architecture,
+> set `MARIADB_PLATFORM` (for example, `export MARIADB_PLATFORM=linux/arm64`)
+> before starting the stack.
 
 ## Run
 
@@ -115,10 +116,11 @@ docker compose up
 ```
 
 > [!NOTE]
-> Use the modern Docker Compose plugin (`docker compose`) rather than the legacy
-> `docker-compose` Python package. The legacy CLI can crash with
-> `KeyError: 'ContainerConfig'` when recreating the MariaDB container shipped
-> with this project.
+> The MariaDB service defaults to the `linux/amd64` platform to work around a
+> bug in the legacy `docker-compose` CLI that otherwise fails with
+> `KeyError: 'ContainerConfig'`. If you're running on a different architecture,
+> set `MARIADB_PLATFORM` (for example, `export MARIADB_PLATFORM=linux/arm64`)
+> before starting the stack.
 
 ## Updating
 
