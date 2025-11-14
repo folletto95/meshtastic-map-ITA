@@ -51,12 +51,12 @@ services:
       test:
         [
           "CMD-SHELL",
-          "mariadb-admin ping --silent --host=127.0.0.1 --user=root --password=$${MARIADB_ROOT_PASSWORD}"
+          "mysqladmin ping --silent --host=127.0.0.1 --user=root --password=$${MARIADB_ROOT_PASSWORD}"
         ]
       interval: 10s
       timeout: 5s
       retries: 6
-      start_period: 30s
+      start_period: 45s
     restart: unless-stopped
 
   proxy:
